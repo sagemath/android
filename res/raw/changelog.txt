@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <style type='text/css'>
+      a            { color:#a0a0e0 }
+      div.title    { 
+          color:#C0F0C0; 
+          font-size:1.2em; 
+          font-weight:bold; 
+          margin-top:1em; 
+          margin-bottom:0.5em; 
+          text-align:center }
+      div.subtitle { 
+          color:#C0F0C0; 
+          font-size:0.8em; 
+          margin-bottom:1em; 
+          text-align:center }
+      div.freetext { color:#F0F0F0 }
+      div.list     { color:#C0C0F0 }
+      body         { background-color:black; }
+    </style>
+  </head>
+  <body>
+$ 0.3
+  % Version 0.3
+  _ 2012-02-07
+    * Updated for changes in the server
+$ 0.2
+  % Version 0.2
+  _ 2012-26-01
+    * Fix the "Webpage not found" error on some devices
+$ 0.1.1
+  % Version 0.1.1
+  _ 2012-24-01
+    * Fix crash at start on pre-honeycomb devices
+$ 0.1
+  % Version 0.1
+  _ 2012-21-01
+    * First public alpha version
+$ END_OF_CHANGE_LOG
+  </body>
+</html>

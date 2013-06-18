@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:orientation="vertical"
+         android:layout_width="match_parent"
+         android:layout_height="fill_parent"
+         android:paddingLeft="0dp"
+         android:background="@drawable/cell_groups_gradient"
+         android:paddingTop="5dp"
+         android:paddingRight="0dp">
+
+     <TextView
+         android:id="@+id/label"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_weight="0"
+         android:text="Select topic:"
+         android:layout_marginLeft="5dp"
+         android:layout_marginBottom="5dp"
+         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+     <ListView android:id="@id/android:list"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@drawable/cell_groups_gradient"
+               android:layout_weight="1"
+               android:layout_marginLeft="10dp"
+               android:drawSelectorOnTop="false"/>
+     
+     <TextView
+         android:id="@+id/ad"
+         android:layout_width="match_parent"
+         android:layout_height="60dp"
+         android:layout_weight="0"
+         android:text="place ad here (468x60)?"
+         android:background="@drawable/advertising"
+         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+ </LinearLayout>
+
