@@ -1,43 +1,30 @@
 package org.sagemath.singlecellserver;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.UUID;
 
-import javax.net.ssl.HandshakeCompletedListener;
-
-import junit.framework.Assert;
-
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 import android.text.format.Time;
+import android.util.Log;
+
+import com.codebutler.android_websockets.WebSocketClient;
 
 
 /**
@@ -48,17 +35,18 @@ import android.text.format.Time;
  */
 public class SageSingleCell {
 	private final static String TAG = "SageSingleCell";
-	
+
 	private long timeout  = 30*1000;
-	
+
 	// private String server = "http://localhost:8001";
-	private String server = "http://sagemath.org:5467";
+	private String server = "http://sagecell.sagemath.org/kernel";
 	private String server_path_eval = "/eval";
 	private String server_path_output_poll = "/output_poll";
 	private String server_path_files = "/files";
-	
+
+
 	protected boolean downloadDataFiles = true;
-	
+
 	/**
 	 * Whether to immediately download data files or only save their URI
 	 *  
@@ -67,7 +55,7 @@ public class SageSingleCell {
 	public void setDownloadDataFiles(boolean value) {
 		downloadDataFiles = value;
 	}
-	
+
 	/**
 	 * Set the server
 	 * 
@@ -81,7 +69,7 @@ public class SageSingleCell {
 		this.server_path_output_poll = poll;
 		this.server_path_files = files;
 	}
-	
+
 	public interface OnSageListener {
 
 		/** 
@@ -95,23 +83,23 @@ public class SageSingleCell {
 		 * @param output
 		 */
 		public void onSageAdditionalOutputListener(CommandOutput output);
-		
+
 		/**
 		 * Callback for an interact_prepare message
 		 * @param interact The interact
 		 */
 		public void onSageInteractListener(Interact interact);
-		
-		
+
+
 		/**
 		 * The Sage session has been closed
 		 * @param reason A SessionEnd message or a HttpError 
 		 */
 		public void onSageFinishedListener(CommandReply reason);
 	}
-	
+
 	private OnSageListener listener;
-	
+
 	/**
 	 * Set the result callback, see {@link #query(String)}
 	 * 
@@ -120,20 +108,20 @@ public class SageSingleCell {
 	public void setOnSageListener(OnSageListener listener) {
 		this.listener = listener;
 	}
-		
-    public SageSingleCell() {
-        logging();
-    }
-    
-    public void logging() { 
-    	// You also have to
-    	// adb shell setprop log.tag.httpclient.wire.header VERBOSE
-    	// adb shell setprop log.tag.httpclient.wire.content VERBOSE
-    	java.util.logging.Logger apacheWireLog = java.util.logging.Logger.getLogger("org.apache.http.wire");
-    	apacheWireLog.setLevel(java.util.logging.Level.FINEST);
-    }
- 	
-    
+
+	public SageSingleCell() {
+		logging();
+	}
+
+	public void logging() { 
+		// You also have to
+		// adb shell setprop log.tag.httpclient.wire.header VERBOSE
+		// adb shell setprop log.tag.httpclient.wire.content VERBOSE
+		java.util.logging.Logger apacheWireLog = java.util.logging.Logger.getLogger("org.apache.http.wire");
+		apacheWireLog.setLevel(java.util.logging.Level.FINEST);
+	}
+
+
 	protected static String streamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
@@ -153,36 +141,36 @@ public class SageSingleCell {
 		}	
 		return sb.toString();
 	}
-	
+
 	public static class SageInterruptedException extends Exception {
 		private static final long serialVersionUID = -5638564842011063160L;
 	}
-	
+
 	LinkedList<ServerTask> threads = new LinkedList<ServerTask>();
-	
+
 	private void addThread(ServerTask thread) {
 		synchronized (threads) {
 			threads.add(thread);
 		}
 	}
-	
+
 	private void removeThread(ServerTask thread) {
 		synchronized (threads) {
 			threads.remove(thread);
 		}
 	}
-	
+
 	public enum LogLevel { NONE, BRIEF, VERBOSE };
-	
+
 	private LogLevel logLevel = LogLevel.NONE;
-	
+
 	public void setLogLevel(LogLevel logLevel) {
 		this.logLevel = logLevel;
 	}
-	
+
 	public class ServerTask extends Thread {
 		private final static String TAG = "ServerTask";
-		
+
 		private final UUID session;
 		private final String sageInput;
 		private boolean sendOnly = false;
@@ -193,9 +181,14 @@ public class SageSingleCell {
 		private CommandRequest request, currentRequest;
 		private LinkedList<String> outputBlocks = new LinkedList<String>();
 		private long initialTime = System.currentTimeMillis();
-		
+		private String kernel_url;
+		private String shell_url;
+		private String iopub_url;
+		private WebSocketClient shellclient;
+		private WebSocketClient iopubclient;
+
 		protected LinkedList<CommandReply> result = new LinkedList<CommandReply>();
-		
+
 		protected void log(Command command) {
 			if (logLevel.equals(LogLevel.NONE)) return;
 			String s;
@@ -216,7 +209,7 @@ public class SageSingleCell {
 			System.out.println(s);
 			System.out.flush();
 		}
-		
+
 		/**
 		 * Whether to only send or also receive the replies
 		 * @param sendOnly
@@ -224,7 +217,7 @@ public class SageSingleCell {
 		protected void setSendOnly(boolean sendOnly) {
 			this.sendOnly = sendOnly;
 		}
-		
+
 		protected void addReply(CommandReply reply) {
 			log(reply);
 			result.add(reply);
@@ -242,7 +235,7 @@ public class SageSingleCell {
 				}
 			}
 		}
-		
+
 		/**
 		 * The timeout for the http request
 		 * @return timeout in milliseconds
@@ -250,105 +243,220 @@ public class SageSingleCell {
 		public long timeout() {
 			return timeout;
 		}
-		
+
 		private void init() {
-	        HttpParams params = new BasicHttpParams();
-	        params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-	        httpClient = new DefaultHttpClient(params);
-	        addThread(this);
+			HttpParams params = new BasicHttpParams();
+			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+			httpClient = new DefaultHttpClient(params);
+			addThread(this);
 			currentRequest = request = new ExecuteRequest(sageInput, sageMode, session);
 		}
-		
+
 		public ServerTask() {
 			this.sageInput = null;
 			this.session = null;
 			init();
 		}
-		
+
 		public ServerTask(String sageInput) {
 			this.sageInput = sageInput;
 			this.session = null;
 			init();
-	    }
+		}
 
 		public ServerTask(String sageInput, UUID session) {
 			this.sageInput = sageInput;
 			this.session = session;
 			init();
-	    }
-	
+		}
+
 		public void interrupt() {
 			interrupt = true;
 		}
-		
+
 		public boolean isInterrupted() {
 			return interrupt;
 		}
-		
-	    protected HttpResponse postEval(JSONObject request)
-	    		throws ClientProtocolException, IOException, SageInterruptedException, JSONException {
-	    	if (interrupt) throw new SageInterruptedException(); 
-	        HttpPost httpPost = new HttpPost(server + server_path_eval);
-	        MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-	        if (request.has("content"))
-	        	multipartEntity.addPart("message", new StringBody(request.toString()));
-	        else {
-	        	JSONObject content = request.getJSONObject("content");
-	        	JSONObject header  = request.getJSONObject("header");
-	        	multipartEntity.addPart("commands", new StringBody(JSONObject.quote(content.getString("code"))));
-	        	multipartEntity.addPart("msg_id", new StringBody(header.getString("msg_id")));
-	        	multipartEntity.addPart("sage_mode", new StringBody("on"));
-	        }
-	        httpPost.setEntity(multipartEntity);
-	        HttpResponse httpResponse = httpClient.execute(httpPost);
-	        return httpResponse;
-	    }
 
-	    
-	    protected HttpResponse pollOutput(CommandRequest request, int sequence) 
-	    		throws ClientProtocolException, IOException, SageInterruptedException {
-	    	if (interrupt) throw new SageInterruptedException(); 
-	    	Time time = new Time();
-	    	StringBuilder query = new StringBuilder();
-	    	time.setToNow();
-	    	// query.append("?callback=jQuery");
-	    	query.append("?computation_id=" + request.session.toString());
-	    	query.append("&sequence=" + sequence);
-	    	query.append("&rand=" + time.toMillis(true));
-	    	HttpGet httpGet = new HttpGet(server + server_path_output_poll + query);
-	    	return httpClient.execute(httpGet);
-	    }
-	    
-//	    protected void callSageOutputListener(CommandOutput output) {
-//			listener.onSageOutputListener(output);
-//	    }
-//	    
-//	    protected void callSageReplaceOutputListener(CommandOutput output) {
-//			listener.onSageReplaceOutputListener(output);
-//	    }
-//	    
-//	    protected void callSageInteractListener(Interact interact) {
-//			listener.onSageInteractListener(interact);
-//	    }
-	    
-	    protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
-			StringBuilder query = new StringBuilder();
-	    	query.append("/"+reply.session.toString());
-	    	query.append("/"+filename);
-	    	return new URI(server + server_path_files + query);
-	    }
+		protected HttpResponse postEval(JSONObject request)
+				throws ClientProtocolException, IOException, SageInterruptedException, JSONException, URISyntaxException {
+			if (interrupt) throw new SageInterruptedException(); 
+			Log.i(TAG, "SageSingleCell: postEval() called\n");
+			//HttpGet httpget = new HttpGet(server);
+			//httpget.addHeader("Accept", "application/json");
+			HttpPost httpPost = new HttpPost(server);
+			URI absolute = new URI("http://sagecell.sagemath.org/");
+			URI relative = new URI("kernel");
+			httpPost.setURI(absolute.resolve(relative));
+			httpPost.addHeader("Accept-Econding", "identity");
 
-	    protected HttpResponse downloadFile(URI uri)
+
+			//httpPost.setHeader("Accept", "application/json");
+			//MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+			//httpPost.setEntity(multipartEntity);
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+
+			InputStream outputStream = httpResponse.getEntity().getContent();
+			String output = SageSingleCell.streamToString(outputStream);
+			outputStream.close();
+
+			Log.i(TAG, "output = " + output);
+			JSONObject outputJSON = new JSONObject(output);
+
+
+			if (outputJSON.has("kernel_id") & outputJSON.has("ws_url")) {
+				String kernel_id = outputJSON.getString("kernel_id");
+				String ws_url = outputJSON.getString("ws_url"); 
+				kernel_url = ws_url + "kernel/" + kernel_id.toString() + "/";
+				shell_url = kernel_url + "shell";
+				iopub_url = kernel_url + "iopub";
+				Log.i(TAG, "Kernel URL: " + kernel_url);
+				Log.i(TAG, "Shell URL: " + shell_url);
+				Log.i(TAG, "iopub URL: " + iopub_url);
+			}
+
+			initializeSockets();
+
+			return httpResponse;
+		}
+
+		protected void initializeSockets() {
+
+
+			shellclient = new WebSocketClient(URI.create(shell_url), new WebSocketClient.Listener() {
+				@Override
+				public void onConnect() {
+					Log.d(TAG, "shell socket connected!");
+				}
+
+				@Override
+				public void onMessage(String message) {
+					Log.d(TAG, String.format("Got string message from shell!\n%s", message));
+				}
+
+				@Override
+				public void onMessage(byte[] data) {
+					Log.d(TAG, String.format("Got binary message! %s"));
+				}
+
+				@Override
+				public void onDisconnect(int code, String reason) {
+					Log.d(TAG, String.format("Disconnected! Code: %d Reason: %s", code, reason));
+				}
+
+				@Override
+				public void onError(Exception error) {
+					Log.e(TAG, "Error!", error);
+				}
+
+			}, null);
+			
+			iopubclient = new WebSocketClient(URI.create(iopub_url), new WebSocketClient.Listener() {
+				@Override
+				public void onConnect() {
+					Log.d(TAG, "iopub socket connected!");
+				}
+
+				@Override
+				public void onMessage(String message) {
+					Log.d(TAG, String.format("Got string message from iopub!\n%s", message));
+				}
+
+				@Override
+				public void onMessage(byte[] data) {
+					Log.d(TAG, String.format("Got binary message! %s"));
+				}
+
+				@Override
+				public void onDisconnect(int code, String reason) {
+					Log.d(TAG, String.format("Disconnected! Code: %d Reason: %s", code, reason));
+				}
+
+				@Override
+				public void onError(Exception error) {
+					Log.e(TAG, "Error!", error);
+				}
+
+			}, null);
+
+			shellclient.connect();
+			iopubclient.connect();
+			
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				Log.i(TAG, "Couldn't sleep :(");
+			}
+			
+			String calculation = "9+22";
+			sendInitialMessage(calculation);
+
+		}
+
+		protected void sendInitialMessage(String calculation){
+			//String message = "{'header': {'msg_type': 'execute_request', 'msg_id':" + request.msg_id + ", 'username': '', 'session':" + request.session + "},'parent_header':{},'metadata': {},'content': {'code': '1+1', 'silent': False, 'user_variables': [], 'allow_stdin': False}}";
+			String message = "{\"content\": {\"user_variables\": [], \"allow_stdin\": false, \"code\": \""+calculation+"\", \"silent\": false, \"user_expressions\": {\"_sagecell_files\": \"sys._sage_.new_files()\"}}, \"header\": {\"username\": \"\", \"msg_id\": \""+request.msg_id+"\", \"session\": \""+request.session+"\", \"msg_type\": \"execute_request\"}, \"parent_header\": {}, \"metadata\": {}}";
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				Log.i(TAG, "Couldn't sleep...");
+			}
+			try {
+				shellclient.wait(1000);
+			} catch (Exception e) {
+				Log.i(TAG, "Couldn't sleep...");
+			}
+			
+			
+			shellclient.send(message);
+			Log.i(TAG, "Tried to send message:\n" + message);
+		}
+
+		protected HttpResponse pollOutput(CommandRequest request, int sequence) 
 				throws ClientProtocolException, IOException, SageInterruptedException {
-	    	if (interrupt) throw new SageInterruptedException(); 
-	    	HttpGet httpGet = new HttpGet(uri);
-	    	return httpClient.execute(httpGet);
-	    }
-	 
-	    protected boolean downloadDataFiles() {
-	    	return SageSingleCell.this.downloadDataFiles;
-	    }
-	    
+			if (interrupt) throw new SageInterruptedException(); 
+			Time time = new Time();
+			StringBuilder query = new StringBuilder();
+			time.setToNow();
+			// query.append("?callback=jQuery");
+			query.append("?computation_id=" + request.session.toString());
+			query.append("&sequence=" + sequence);
+			query.append("&rand=" + time.toMillis(true));
+			HttpGet httpGet = new HttpGet(server + server_path_output_poll + query);
+			return httpClient.execute(httpGet);
+		}
+
+		//	    protected void callSageOutputListener(CommandOutput output) {
+		//			listener.onSageOutputListener(output);
+		//	    }
+		//	    
+		//	    protected void callSageReplaceOutputListener(CommandOutput output) {
+		//			listener.onSageReplaceOutputListener(output);
+		//	    }
+		//	    
+		//	    protected void callSageInteractListener(Interact interact) {
+		//			listener.onSageInteractListener(interact);
+		//	    }
+
+		protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
+			StringBuilder query = new StringBuilder();
+			query.append("/"+reply.session.toString());
+			query.append("/"+filename);
+			return new URI(server + server_path_files + query);
+		}
+
+		protected HttpResponse downloadFile(URI uri)
+				throws ClientProtocolException, IOException, SageInterruptedException {
+			if (interrupt) throw new SageInterruptedException(); 
+			HttpGet httpGet = new HttpGet(uri);
+			return httpClient.execute(httpGet);
+		}
+
+		protected boolean downloadDataFiles() {
+			return SageSingleCell.this.downloadDataFiles;
+		}
+
 		@Override
 		public void run() {
 			super.run();
@@ -358,13 +466,13 @@ public class SageSingleCell {
 				removeThread(this);
 				return;
 			}
-			request.receiveReply(this);
+			request.sendRequest(this);
 			removeThread(this);
-			listener.onSageFinishedListener(result.getLast());
+			//listener.onSageFinishedListener(result.getLast());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Start an asynchronous query on the Sage server
 	 * The result will be handled by the callback set by {@link #setOnSageListener(OnSageListener)}
@@ -374,7 +482,7 @@ public class SageSingleCell {
 		ServerTask task = new ServerTask(sageInput);
 		task.start();
 	}
-	
+
 	/**
 	 * Update an interactive element 
 	 * @param interact  The interact_prepare message we got from the server as we set up the interact
@@ -397,7 +505,7 @@ public class SageSingleCell {
 		task.setSendOnly(true);
 		task.start();
 	}
-	
+
 	/**
 	 *  Interrupt all pending Sage server transactions
 	 */
@@ -407,8 +515,8 @@ public class SageSingleCell {
 				thread.interrupt();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Whether a computation is currently running
 	 * 
@@ -426,7 +534,7 @@ public class SageSingleCell {
 
 
 /*
-  
+
 === Send request === 
 
 POST /eval HTTP/1.1
@@ -491,7 +599,7 @@ Connection: keep-alive
 Content-Length: 44
 
 jQuery15015045171417295933_1323715011672({})
- 
+
 
 
 === Poll for reply (success) ===
@@ -593,4 +701,4 @@ Content-Length: 269
 
 jQuery15015045171417295933_1323715011665({"content": [{"parent_header": {"session": "9b3ed6bb-01e8-4a6e-9076-14c71324daf6"}, "msg_type": "extension", "sequence": 1, "content": {"msg_type": "session_end"}, "header": {"msg_id": "e01180d4-934c-4f12-858c-72d52e0330cd"}}]})
 
-*/
+ */

@@ -1,31 +1,14 @@
 package org.sagemath.singlecellserver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Timer;
 import java.util.UUID;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sagemath.singlecellserver.SageSingleCell.SageInterruptedException;
-
-import android.text.format.Time;
-import android.util.Log;
 
 public class CommandRequest extends Command {
 	private static final String TAG = "CommandRequest";
@@ -58,7 +41,7 @@ public class CommandRequest extends Command {
 		CommandReply reply;
 		try {
 			HttpResponse httpResponse = server.postEval(toJSON());
-			processInitialReply(httpResponse);
+			//processInitialReply(httpResponse);
 			return;
 		} catch (JSONException e) {
 			reply = new HttpError(this, e.getLocalizedMessage());
@@ -68,26 +51,56 @@ public class CommandRequest extends Command {
 			reply = new HttpError(this, e.getLocalizedMessage());
 		} catch (SageInterruptedException e) {
 			reply = new HttpError(this, "Interrupted on user request");
-		}			
+		} catch (URISyntaxException e) {
+			reply = new HttpError(this, e.getLocalizedMessage());
+		}
 		error = true;
 		server.addReply(reply);
 	}
 	
 	
-	public StatusLine processInitialReply(HttpResponse response) 
+	/*public StatusLine processInitialReply(HttpResponse response) 
 			throws IllegalStateException, IOException, JSONException {
+		System.out.println("CommandRequest: processInitialReply called\n");
+        //InputStream outputStream = response.getEntity().getContent();
+        //String output = SageSingleCell.streamToString(outputStream);
+        //outputStream.close();
+
+		
+        Log.i(TAG, "\n\n\n-----INITIAL RESPONSE-------\n" + response.toString());
+        Log.i(TAG, "----END INITIAL RESPONSE----\n");
+        
         InputStream outputStream = response.getEntity().getContent();
         String output = SageSingleCell.streamToString(outputStream);
         outputStream.close();
 
-        System.out.println("output = " + output);
+        /*
+        Log.i(TAG, "output = " + output);
         JSONObject outputJSON = new JSONObject(output);
-        if (outputJSON.has("session_id"))
-        	session = UUID.fromString(outputJSON.getString("session_id"));
+        
+
+        if (outputJSON.has("kernel_id") & outputJSON.has("ws_url")) {
+        	String kernel_id = outputJSON.getString("kernel_id");
+        	String ws_url = outputJSON.getString("ws_url"); 
+        	kernel_url = ws_url + "kernel/" + kernel_id.toString() + "/";
+        	shell_url = kernel_url + "shell";
+        	iopub_url = kernel_url + "iopub";
+            Log.i(TAG, "Kernel URL: " + kernel_url);
+            Log.i(TAG, "Shell URL: " + shell_url);
+            Log.i(TAG, "iopub URL: " + iopub_url);
+        }
+        
+        //JSONObject outputJSON = new JSONObject(output);
+        //if (outputJSON.has("session_id"))
+        	//session = UUID.fromString(outputJSON.getString("session_id"));
+        
+        
+        
+
         return response.getStatusLine();
-	}
+	}*/
 	
-	
+	/*
 	public void receiveReply(SageSingleCell.ServerTask server) {
 		sendRequest(server);
 		if (error) return;
@@ -178,7 +191,7 @@ public class CommandRequest extends Command {
 		}        
 		return result;
     }	
-    	
+    	 */
 
 	public String toLongString() {
 		JSONObject json;

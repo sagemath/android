@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.sagemath.droid.R;
+
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,8 +31,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.WebView;
-
-import org.sagemath.droid.R;
 
 public class ChangeLog {
     
@@ -133,7 +134,7 @@ public class ChangeLog {
     public AlertDialog getFullLogDialog() {
         return  this.getDialog(true);
     }
-    
+    @TargetApi(11)
     private AlertDialog getDialog(boolean full) {
         WebView wv = new WebView(this.context);
         wv.setBackgroundColor(0); // transparent

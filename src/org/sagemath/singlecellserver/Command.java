@@ -2,12 +2,8 @@ package org.sagemath.singlecellserver;
 
 import java.util.UUID;
 
-import junit.framework.Assert;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 
 /**
  * The base class for server communication. All derived classes should 
@@ -22,10 +18,14 @@ public class Command {
 	
 	protected UUID session;
 	protected UUID msg_id;
+	protected UUID kernel_id;
+	protected String kernel_url;
 	
 	protected Command() {
 		this.session = UUID.randomUUID();
 		msg_id = UUID.randomUUID();
+		this.kernel_id =  UUID.randomUUID();
+		this.kernel_url =  "";
 	}
 	
 	protected Command(UUID session) {
