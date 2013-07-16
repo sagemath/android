@@ -23,7 +23,7 @@ public class Command {
 	
 	protected Command() {
 		this.session = UUID.randomUUID();
-		msg_id = UUID.randomUUID();
+		this.msg_id = UUID.randomUUID();
 		this.kernel_id =  UUID.randomUUID();
 		this.kernel_url =  "";
 	}
@@ -33,7 +33,7 @@ public class Command {
 			this.session = UUID.randomUUID();
 		else
 			this.session = session;
-		msg_id = UUID.randomUUID();
+		this.msg_id = UUID.randomUUID();
 	}
 	
 	public String toShortString() {

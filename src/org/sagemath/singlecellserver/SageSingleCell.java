@@ -222,14 +222,19 @@ public class SageSingleCell {
 			log(reply);
 			result.add(reply);
 			if (reply.isInteract()) {
+				Log.i(TAG, "addReply(reply): Reply is an interact.");
 				interact = (Interact) reply;
 				listener.onSageInteractListener(interact);
 			}
 			else if (reply.containsOutput() && reply.isReplyTo(currentRequest)) {
+				Log.i(TAG, "addReply(reply): Reply is response to currentRequest.");
 				CommandOutput output = (CommandOutput) reply;
-				if (outputBlocks.contains(output.outputBlock()))
+				if (outputBlocks.contains(output.outputBlock())) {
+					Log.i(TAG,"Output contains an output block");
 					listener.onSageAdditionalOutputListener(output);
+				}
 				else {
+					Log.i(TAG,"Added an output block");
 					outputBlocks.add(output.outputBlock());
 					listener.onSageOutputListener(output);
 				}
@@ -245,6 +250,7 @@ public class SageSingleCell {
 		}
 
 		private void init() {
+			Log.i(TAG, "SageSingleCell.init() called");
 			HttpParams params = new BasicHttpParams();
 			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 			httpClient = new DefaultHttpClient(params);
@@ -304,7 +310,6 @@ public class SageSingleCell {
 			Log.i(TAG, "output = " + output);
 			JSONObject outputJSON = new JSONObject(output);
 
-
 			if (outputJSON.has("kernel_id") & outputJSON.has("ws_url")) {
 				String kernel_id = outputJSON.getString("kernel_id");
 				String ws_url = outputJSON.getString("ws_url"); 
@@ -317,13 +322,14 @@ public class SageSingleCell {
 			}
 
 			initializeSockets();
+			
+			sendInitialMessage(request.toString());
 
 			return httpResponse;
 		}
 
 		protected void initializeSockets() {
-
-
+			
 			shellclient = new WebSocketClient(URI.create(shell_url), new WebSocketClient.Listener() {
 				@Override
 				public void onConnect() {
@@ -361,6 +367,15 @@ public class SageSingleCell {
 				@Override
 				public void onMessage(String message) {
 					Log.d(TAG, String.format("Got string message from iopub!\n%s", message));
+					try {
+						JSONObject JSONreply = new JSONObject(message);
+						CommandReply reply = new CommandReply(JSONreply);
+						addReply(reply);
+						Log.i(TAG, "Tried to add reply");
+					} catch (JSONException e) {
+						Log.e(TAG, "Had trouble parsing the JSON reply...");
+					}
+					
 				}
 
 				@Override
@@ -389,14 +404,10 @@ public class SageSingleCell {
 				Log.i(TAG, "Couldn't sleep :(");
 			}
 			
-			String calculation = "9+22";
-			sendInitialMessage(calculation);
-
 		}
 
-		protected void sendInitialMessage(String calculation){
-			//String message = "{'header': {'msg_type': 'execute_request', 'msg_id':" + request.msg_id + ", 'username': '', 'session':" + request.session + "},'parent_header':{},'metadata': {},'content': {'code': '1+1', 'silent': False, 'user_variables': [], 'allow_stdin': False}}";
-			String message = "{\"content\": {\"user_variables\": [], \"allow_stdin\": false, \"code\": \""+calculation+"\", \"silent\": false, \"user_expressions\": {\"_sagecell_files\": \"sys._sage_.new_files()\"}}, \"header\": {\"username\": \"\", \"msg_id\": \""+request.msg_id+"\", \"session\": \""+request.session+"\", \"msg_type\": \"execute_request\"}, \"parent_header\": {}, \"metadata\": {}}";
+		protected void sendInitialMessage(String message){
+			//String Stringmessage = "{\"content\": {\"user_variables\": [], \"allow_stdin\": false, \"code\": \""+sageInput+"\", \"silent\": false, \"user_expressions\": {\"_sagecell_files\": \"sys._sage_.new_files()\"}}, \"header\": {\"username\": \"\", \"msg_id\": \""+request.msg_id+"\", \"session\": \""+request.session+"\", \"msg_type\": \"execute_request\"}, \"parent_header\": {}, \"metadata\": {}}";
 			try {
 				Thread.sleep(1000);
 			} catch (Exception e) {
@@ -413,6 +424,7 @@ public class SageSingleCell {
 			Log.i(TAG, "Tried to send message:\n" + message);
 		}
 
+/*
 		protected HttpResponse pollOutput(CommandRequest request, int sequence) 
 				throws ClientProtocolException, IOException, SageInterruptedException {
 			if (interrupt) throw new SageInterruptedException(); 
@@ -426,6 +438,7 @@ public class SageSingleCell {
 			HttpGet httpGet = new HttpGet(server + server_path_output_poll + query);
 			return httpClient.execute(httpGet);
 		}
+*/
 
 		//	    protected void callSageOutputListener(CommandOutput output) {
 		//			listener.onSageOutputListener(output);
@@ -460,6 +473,7 @@ public class SageSingleCell {
 		@Override
 		public void run() {
 			super.run();
+			Log.i(TAG, "SageSingleCell run() called");
 			log(request);
 			if (sendOnly) {
 				request.sendRequest(this);
@@ -479,6 +493,7 @@ public class SageSingleCell {
 	 * @param sageInput
 	 */
 	public void query(String sageInput) {
+		Log.i(TAG, "sageInput is " + sageInput);
 		ServerTask task = new ServerTask(sageInput);
 		task.start();
 	}

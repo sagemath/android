@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sagemath.singlecellserver.SageSingleCell.SageInterruptedException;
 
+import android.util.Log;
+
 public class CommandRequest extends Command {
 	private static final String TAG = "CommandRequest";
 	
@@ -28,9 +30,12 @@ public class CommandRequest extends Command {
 	}
 	
 	public JSONObject toJSON() throws JSONException {
+		Log.i(TAG, "CommandRequest.toJSON() called");
 		JSONObject header = new JSONObject();
+
 		header.put("session", session.toString());
 		header.put("msg_id", msg_id.toString());
+		header.put("username","");
 		JSONObject result = new JSONObject();
 		result.put("header", header);
 		return result;
@@ -40,6 +45,7 @@ public class CommandRequest extends Command {
 	protected void sendRequest(SageSingleCell.ServerTask server) {
 		CommandReply reply;
 		try {
+			Log.i(TAG, "CommandRequest.sendRequest() called");
 			HttpResponse httpResponse = server.postEval(toJSON());
 			//processInitialReply(httpResponse);
 			return;
