@@ -3,7 +3,7 @@ package org.sagemath.singlecellserver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Traceback extends ExecuteReply {
+public class Traceback extends CommandOutput {
 	private final static String TAG = "Traceback";
 
 	JSONObject content;
@@ -19,7 +19,7 @@ public class Traceback extends ExecuteReply {
 	}
 
 	public String toString() {
-		return "Traceback "+ename+": "+evalue;
+		return ename+": "+evalue;
 	}
 	
 	public String toShortString() {

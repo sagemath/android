@@ -3,6 +3,7 @@ package org.sagemath.singlecellserver;
 import java.util.UUID;
 
 import org.json.JSONObject;
+import android.util.Log;
 
 
 /**
@@ -53,6 +54,7 @@ public class Command {
 	 * @return boolean
 	 */
 	public boolean containsOutput() {
+		Log.i(TAG, "Command.containsOutput is FALSE");
 		return false;
 	}
 	

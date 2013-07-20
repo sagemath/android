@@ -5,6 +5,8 @@ import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 
 /**
  * <h1>Python output</h1>
@@ -58,6 +60,7 @@ public class PythonOutput extends CommandOutput {
 	
 	protected PythonOutput(JSONObject json) throws JSONException {
 		super(json);
+		Log.i(TAG, "PythonOutput created!");
 		content = json.getJSONObject("content");
 		data = content.getJSONObject("data");
 		text = data.getString("text/plain");

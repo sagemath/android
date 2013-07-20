@@ -3,13 +3,12 @@ package org.sagemath.droid;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import junit.framework.Assert;
-
 import org.sagemath.singlecellserver.CommandOutput;
 import org.sagemath.singlecellserver.DataFile;
 import org.sagemath.singlecellserver.DisplayData;
 import org.sagemath.singlecellserver.ExecuteReply;
 import org.sagemath.singlecellserver.HtmlFiles;
+import org.sagemath.singlecellserver.PythonInput;
 import org.sagemath.singlecellserver.PythonOutput;
 import org.sagemath.singlecellserver.ResultStream;
 import org.sagemath.singlecellserver.Traceback;
@@ -67,6 +66,8 @@ public class OutputBlock extends WebView {
 			addDivHtmlFiles((HtmlFiles) output);
 		else if (output instanceof DisplayData) 
 			addDivDisplayData((DisplayData) output);
+		else if (output instanceof PythonInput) 
+			addDivPythonInput((PythonInput) output);
 		else if (output instanceof PythonOutput) 
 			addDivPythonOutput((PythonOutput) output);
 		else if (output instanceof ResultStream) 
@@ -104,6 +105,11 @@ public class OutputBlock extends WebView {
 
 	private void addDivPythonOutput(PythonOutput pythonOutput) {
 		String div = htmlify(pythonOutput.get());
+		divs.add(div);
+	}
+	
+	private void addDivPythonInput(PythonInput pythonInput) {
+		String div = htmlify(pythonInput.get());
 		divs.add(div);
 	}
 	

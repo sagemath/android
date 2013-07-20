@@ -21,7 +21,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.text.format.Time;
 import android.util.Log;
 
 import com.codebutler.android_websockets.WebSocketClient;
@@ -219,7 +218,9 @@ public class SageSingleCell {
 		}
 
 		protected void addReply(CommandReply reply) {
+			Log.i(TAG, "addReply successfully received a CommandReply");
 			log(reply);
+			Log.i(TAG, "reply.isReplyTo(currentRequest): " + String.valueOf(reply.isReplyTo(currentRequest)));
 			result.add(reply);
 			if (reply.isInteract()) {
 				Log.i(TAG, "addReply(reply): Reply is an interact.");
@@ -366,14 +367,15 @@ public class SageSingleCell {
 
 				@Override
 				public void onMessage(String message) {
-					Log.d(TAG, String.format("Got string message from iopub!\n%s", message));
+					Log.d(TAG, String.format("Got string message from iopub!\n"));
 					try {
+						Log.i(TAG, "Trying to add reply");
 						JSONObject JSONreply = new JSONObject(message);
-						CommandReply reply = new CommandReply(JSONreply);
+						CommandReply reply = CommandReply.parse(JSONreply);
 						addReply(reply);
-						Log.i(TAG, "Tried to add reply");
 					} catch (JSONException e) {
 						Log.e(TAG, "Had trouble parsing the JSON reply...");
+						e.printStackTrace();
 					}
 					
 				}
@@ -401,27 +403,28 @@ public class SageSingleCell {
 			try {
 				Thread.sleep(1000);
 			} catch (Exception e) {
-				Log.i(TAG, "Couldn't sleep :(");
+				Log.i(TAG, "Couldn't sleep in initializeSockets");
 			}
 			
 		}
 
 		protected void sendInitialMessage(String message){
 			//String Stringmessage = "{\"content\": {\"user_variables\": [], \"allow_stdin\": false, \"code\": \""+sageInput+"\", \"silent\": false, \"user_expressions\": {\"_sagecell_files\": \"sys._sage_.new_files()\"}}, \"header\": {\"username\": \"\", \"msg_id\": \""+request.msg_id+"\", \"session\": \""+request.session+"\", \"msg_type\": \"execute_request\"}, \"parent_header\": {}, \"metadata\": {}}";
+			/*
 			try {
 				Thread.sleep(1000);
 			} catch (Exception e) {
-				Log.i(TAG, "Couldn't sleep...");
+				Log.i(TAG, "Thread couldn't sleep in sendInitialMessage...");
 			}
 			try {
 				shellclient.wait(1000);
 			} catch (Exception e) {
-				Log.i(TAG, "Couldn't sleep...");
+				Log.i(TAG, "shellclient couldn't sleep in sendInitialMessage...");
 			}
-			
+			*/
 			
 			shellclient.send(message);
-			Log.i(TAG, "Tried to send message:\n" + message);
+			Log.i(TAG, "shellclient tried to send message:\n" + message);
 		}
 
 /*

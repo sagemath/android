@@ -2,8 +2,6 @@ package org.sagemath.singlecellserver;
 
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,8 +21,23 @@ public class CommandReply extends Command {
 	protected CommandReply(JSONObject json) throws JSONException {
 		this.json = json;
 		JSONObject parent_header = json.getJSONObject("parent_header");
-		session = UUID.fromString(parent_header.getString("session"));
-		msg_id = UUID.fromString(parent_header.getString("msg_id"));
+		// TODO Make this clean! It makes no sense at all from a design perspective.
+		// Maybe just get rid of it entirely.
+		if (this instanceof Status) {
+			JSONObject content = json.getJSONObject("content");
+			if (content.getString("execution_state").equals("dead")) {
+				// To prevent JSONExceptions of iopub's dead execution state not
+				// having a session or msg_id.
+				// UUID doesn't matter for iopub when execution state is dead...
+				// So just make a random one? I feel ashamed.
+				session = UUID.randomUUID();
+				msg_id = UUID.randomUUID();
+			}
+		} else {
+			session = UUID.fromString(parent_header.getString("session"));
+			msg_id = UUID.fromString(parent_header.getString("msg_id"));
+		}
+
 	}
 	
 	protected CommandReply(CommandRequest request) {
@@ -66,12 +79,21 @@ public class CommandReply extends Command {
 	 * @return a new CommandReply or derived class
 	 */
 	protected static CommandReply parse(JSONObject json) throws JSONException {
-		String msg_type = json.getString("msg_type");
+		Log.i(TAG, "Trying to parse " + json.toString());
+		JSONObject header = json.getJSONObject("header");
+		String msg_type = header.getString("msg_type");
+		Log.d(TAG, "msg_type = " + msg_type);
 		JSONObject content = json.getJSONObject("content");
 		Log.d(TAG, "content = "+content.toString());
 		//	prettyPrint(json);
 		if (msg_type.equals("pyout"))
 			return new PythonOutput(json);
+		else if (msg_type.equals("status")) {
+			return new Status(json);
+		}
+		else if (msg_type.equals("pyin")) {
+			return new PythonInput(json);
+		}
 		else if (msg_type.equals("display_data")) {
 			JSONObject data = json.getJSONObject("content").getJSONObject("data");
 			if (data.has("text/filename"))
@@ -81,11 +103,10 @@ public class CommandReply extends Command {
 		}
 		else if (msg_type.equals("stream"))
 			return new ResultStream(json);
+		else if (msg_type.equals("pyerr"))
+			return new Traceback(json);
 		else if (msg_type.equals("execute_reply")) {
-			if (content.has("traceback")) 
-				return new Traceback(json); 
-			else
-				return new ExecuteReply(json);		  
+			return new ExecuteReply(json);		  
 		} else if (msg_type.equals("extension")) {
 			String ext_msg_type = content.getString("msg_type");
 			if (ext_msg_type.equals("session_end"))
