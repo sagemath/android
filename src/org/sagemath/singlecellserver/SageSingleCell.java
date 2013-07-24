@@ -509,7 +509,7 @@ public class SageSingleCell {
 	 */
 	public void interact(Interact interact, String name, Object value) {
 		String sageInput = 
-				"_update_interact('" + interact.getID() + 
+				"sys._sage_.update_interact('" + interact.getID() + 
 				"',control_vals=dict(" + name + 
 				"=" + value.toString() + ",))";
 		ServerTask task = new ServerTask(sageInput, interact.session);

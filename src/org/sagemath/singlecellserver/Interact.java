@@ -1,7 +1,10 @@
 package org.sagemath.singlecellserver;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 
 /*
@@ -47,15 +50,17 @@ public class Interact extends CommandOutput {
 	private final static String TAG = "Interact";
 	
 	private final String id;
-	protected JSONObject controls, layout;
+	protected JSONObject controls;
+	protected JSONArray layout;
 	
 	
 	protected Interact(JSONObject json) throws JSONException {
 		super(json);
-		JSONObject content = json.getJSONObject("content").getJSONObject("content");
-		id = content.getString("interact_id");
-		controls = content.getJSONObject("controls");
-		layout = content.getJSONObject("layout");
+		Log.i(TAG, "Created a new Interact!");
+		JSONObject interact = json.getJSONObject("content").getJSONObject("data").getJSONObject("application/sage-interact");
+		id = interact.getString("new_interact_id");
+		controls = interact.getJSONObject("controls");
+		layout = interact.getJSONArray("layout");
 	}
 
 	public long extendTimeOut() {
@@ -78,7 +83,7 @@ public class Interact extends CommandOutput {
 		return controls;
 	}
 	
-	public JSONObject getLayout() {
+	public JSONArray getLayout() {
 		return layout;
 	}
 

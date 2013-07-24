@@ -1,9 +1,9 @@
 package org.sagemath.singlecellserver;
 
-import junit.framework.Assert;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 public class DisplayData extends CommandOutput {
 	private final static String TAG = "DisplayData";
@@ -13,6 +13,7 @@ public class DisplayData extends CommandOutput {
 	
 	protected DisplayData(JSONObject json) throws JSONException {
 		super(json);
+		Log.i(TAG, "Created new DisplayData!");
 		data = json.getJSONObject("content").getJSONObject("data");
 		mime = data.keys().next().toString();
 		value = data.getString(mime);
@@ -36,7 +37,8 @@ public class DisplayData extends CommandOutput {
 			return value;
 		if (mime.equals("text/plain"))
 			return "<pre>"+value+"</pre>";
-		return null;
+		//return null;
+		return "Failed to handle mime in DisplayData (FIX THIS!)";
 	}
 	
 }

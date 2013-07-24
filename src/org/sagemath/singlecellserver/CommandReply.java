@@ -98,6 +98,8 @@ public class CommandReply extends Command {
 			JSONObject data = json.getJSONObject("content").getJSONObject("data");
 			if (data.has("text/filename"))
 				return new DataFile(json);
+			else if (data.has("application/sage-interact"))
+				return new Interact(json);
 			else
 				return new DisplayData(json);
 		}

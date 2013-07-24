@@ -66,8 +66,9 @@ public class OutputBlock extends WebView {
 			addDivHtmlFiles((HtmlFiles) output);
 		else if (output instanceof DisplayData) 
 			addDivDisplayData((DisplayData) output);
-		else if (output instanceof PythonInput) 
-			addDivPythonInput((PythonInput) output);
+		else if (output instanceof PythonInput) {
+			//addDivPythonInput((PythonInput) output);
+		}
 		else if (output instanceof PythonOutput) 
 			addDivPythonOutput((PythonOutput) output);
 		else if (output instanceof ResultStream) 
@@ -108,10 +109,10 @@ public class OutputBlock extends WebView {
 		divs.add(div);
 	}
 	
-	private void addDivPythonInput(PythonInput pythonInput) {
-		String div = htmlify(pythonInput.get());
-		divs.add(div);
-	}
+	//private void addDivPythonInput(PythonInput pythonInput) {
+	//	String div = htmlify(pythonInput.get());
+	//	divs.add(div);
+	//}
 	
 	private void addDivResultStream(ResultStream resultStream) {
 		String div = htmlify(resultStream.get());

@@ -1,8 +1,6 @@
 package org.sagemath.droid;
 
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -13,9 +11,6 @@ import org.sagemath.singlecellserver.Interact;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.SlidingDrawer;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -45,7 +40,7 @@ public class InteractView extends TableLayout {
 	}
 	
 	private Interact interact;
-	private JSONObject layout;
+	private JSONArray layout;
 	
 	private List<String> layoutPositions = Arrays.asList(
 			"top_left", "top_center", "top_right", "left", "right",
@@ -55,15 +50,23 @@ public class InteractView extends TableLayout {
 		// Log.e(TAG, "set "+interact.toShortString());
 		this.interact = interact;
 		removeAllViews();
-		JSONObject layout = interact.getLayout();
+		JSONArray layout = interact.getLayout();
+		JSONArray vars = new JSONArray();
+		try {
+			vars = layout.getJSONArray(0);
+		} catch (JSONException e) {
+			Log.e(TAG, "Error parsing layout.vars" + e.getLocalizedMessage());
+		}
 		ListIterator<String> iter = layoutPositions.listIterator();
-		while (iter.hasNext()) {
+		int i = 0;
+		while (i < vars.length()) {
 			JSONArray variables;
 			try {
-				variables = layout.getJSONArray(iter.next());
-				for (int i=0; i<variables.length(); i++)
-					addInteract(interact, variables.getString(i));
+				variables = vars.getJSONArray(i);
+				Log.i(TAG, "variables.toString() " + variables.toString());
+				addInteract(interact, variables.getString(0));
 			} catch (JSONException e) {}
+			i++;
 		}
 	}
 	

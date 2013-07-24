@@ -62,7 +62,7 @@ public class PythonInput extends CommandOutput {
 	 * @return Text representation of the input;
 	 */
 	public String get() {
-		return pyinput + "=";
+		return pyinput;
 	}
 	
 }
