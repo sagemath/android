@@ -44,6 +44,7 @@ public class SageSingleCell {
 	private String server_path_files = "/files";
 
 
+
 	protected boolean downloadDataFiles = true;
 
 	/**
@@ -180,11 +181,11 @@ public class SageSingleCell {
 		private CommandRequest request, currentRequest;
 		private LinkedList<String> outputBlocks = new LinkedList<String>();
 		private long initialTime = System.currentTimeMillis();
+		private WebSocketClient shellclient;
+		private WebSocketClient iopubclient;
 		private String kernel_url;
 		private String shell_url;
 		private String iopub_url;
-		private WebSocketClient shellclient;
-		private WebSocketClient iopubclient;
 
 		protected LinkedList<CommandReply> result = new LinkedList<CommandReply>();
 
@@ -273,8 +274,21 @@ public class SageSingleCell {
 
 		public ServerTask(String sageInput, UUID session) {
 			this.sageInput = sageInput;
-			this.session = session;
+			this.session = session;		
+			
 			init();
+		}
+		
+		public ServerTask(String sageInput, UUID session, String kernel_url) {
+			// Same as the other ServerTask method for updating interacts,
+			// except without running a new postEval -- just initializeSockets
+			// and send the updated message.
+			this.sageInput = sageInput;
+			this.session = session;		
+			this.shell_url = kernel_url + "shell";
+			this.iopub_url = kernel_url + "iopub";
+			
+			//init();
 		}
 
 		public void interrupt() {
@@ -330,7 +344,7 @@ public class SageSingleCell {
 		}
 
 		protected void initializeSockets() {
-			
+			Log.i(TAG, "Initializing socket with shell_url: " + shell_url);
 			shellclient = new WebSocketClient(URI.create(shell_url), new WebSocketClient.Listener() {
 				@Override
 				public void onConnect() {
@@ -478,6 +492,18 @@ public class SageSingleCell {
 			super.run();
 			Log.i(TAG, "SageSingleCell run() called");
 			log(request);
+			// JUST Initialize sockets and send message if 
+			// we're only updating the interact --
+			// don't get new kernel_url
+			/*
+			if (sageInput.contains("update_interact")) {
+				Log.i(TAG, "Running an update_interact...");
+				initializeSockets();
+				sendInitialMessage(request.toString());
+				//removeThread(this);
+				return;
+			} */
+			
 			if (sendOnly) {
 				request.sendRequest(this);
 				removeThread(this);
@@ -508,11 +534,24 @@ public class SageSingleCell {
 	 * @param value     The new value
 	 */
 	public void interact(Interact interact, String name, Object value) {
+		Log.i(TAG, "UPDATING INTERACT VARIABLE: " + name);
+		Log.i(TAG, "UPDATED INTERACT VALUE: " + value.toString());
+		/*
 		String sageInput = 
-				"sys._sage_.update_interact('" + interact.getID() + 
-				"',control_vals=dict(" + name + 
-				"=" + value.toString() + ",))";
+				"sys._sage_.update_interact(\"" + interact.getID() + 
+				"\",{\"" + name + 
+				"\":" + value.toString() + "})";
+		*/
+		String sageInput = 
+				"sys._sage_.update_interact(\"" + interact.getID() + 
+				"\",\"" + name + 
+				"\",\"" + value.toString() + "\")";
+				
+		// ServerTask task = new ServerTask(sageInput, interact.session, kernel_url);
+		// Pass the kernel_url so that we can open a new session without an HTTP post that
+		// gets an entirely different set of sockets.
 		ServerTask task = new ServerTask(sageInput, interact.session);
+
 		synchronized (threads) {
 			for (ServerTask thread: threads)
 				if (thread.interact == interact) {

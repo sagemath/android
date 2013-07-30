@@ -134,6 +134,7 @@ public class InteractView extends TableLayout {
 
 	
 	protected void notifyChange(InteractControlBase view) {
+		Log.i(TAG, "InteractView value: " + view.getVariableName() + " = " + view.getValue());
 		listener.onInteractListener(interact, view.getVariableName(), view.getValue());
 	}
 	

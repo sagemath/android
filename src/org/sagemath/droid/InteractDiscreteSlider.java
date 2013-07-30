@@ -59,9 +59,11 @@ public class InteractDiscreteSlider
 		this.values.clear();
 		try {
 			JSONArray values= control.getJSONArray("values");
-			for (int i=0; i<values.length(); i++)
-				this.values.add( values.getString(i) );
-				
+			Log.i(TAG, "SLIDER VALUES: " + values.toString());
+			for (int i=0; i<values.length(); i++){
+				Log.i(TAG, "Adding value: " + values.getString(i));
+				this.values.add( values.getString(i));
+			}
 		} catch (JSONException e) {
 			Log.e(TAG, e.getLocalizedMessage());
 			this.values.add("0");
@@ -71,13 +73,13 @@ public class InteractDiscreteSlider
 		updateValueText();
 	}
 
-	public Integer getValue() {
-		int raw = seekBar.getProgress();
-		return raw;
+	public String getValue() {
+		int index = seekBar.getProgress();
+		return values.get(index);
 	}
 	
 	private void updateValueText() {
-		nameValueText.setText(getVariableName() + "=" + values.get(getValue()));		
+		nameValueText.setText(getVariableName() + "=" + getValue());		
 	}
 	
 	@Override

@@ -28,9 +28,9 @@ public class CommandReply extends Command {
 			if (content.getString("execution_state").equals("dead")) {
 				// To prevent JSONExceptions of iopub's dead execution state not
 				// having a session or msg_id.
-				// UUID doesn't matter for iopub when execution state is dead...
-				// So just make a random one? I feel ashamed.
-				session = UUID.randomUUID();
+				// msg_id doesn't matter for iopub when execution state is dead...
+				// Need to preserve session in case of update_interact.
+				session = this.session;
 				msg_id = UUID.randomUUID();
 			}
 		} else {
