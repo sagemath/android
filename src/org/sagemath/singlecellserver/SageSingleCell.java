@@ -42,8 +42,7 @@ public class SageSingleCell {
 	private String server_path_eval = "/eval";
 	private String server_path_output_poll = "/output_poll";
 	private String server_path_files = "/files";
-
-
+	ServerTask task;
 
 	protected boolean downloadDataFiles = true;
 
@@ -53,6 +52,7 @@ public class SageSingleCell {
 	 * @param value Download immediately if true
 	 */
 	public void setDownloadDataFiles(boolean value) {
+		Log.i(TAG, "Tried to setDownloadDataFiles set to " + String.valueOf(value));
 		downloadDataFiles = value;
 	}
 
@@ -147,19 +147,20 @@ public class SageSingleCell {
 	}
 
 	LinkedList<ServerTask> threads = new LinkedList<ServerTask>();
-
+/*
 	private void addThread(ServerTask thread) {
 		synchronized (threads) {
 			threads.add(thread);
 		}
 	}
-
+*/
+/*
 	private void removeThread(ServerTask thread) {
 		synchronized (threads) {
 			threads.remove(thread);
 		}
 	}
-
+*/
 	public enum LogLevel { NONE, BRIEF, VERBOSE };
 
 	private LogLevel logLevel = LogLevel.NONE;
@@ -168,11 +169,11 @@ public class SageSingleCell {
 		this.logLevel = logLevel;
 	}
 
-	public class ServerTask extends Thread {
+	public class ServerTask {
 		private final static String TAG = "ServerTask";
 
-		private final UUID session;
-		private final String sageInput;
+		private UUID session;
+		private String sageInput;
 		private boolean sendOnly = false;
 		private final boolean sageMode = true; 
 		private boolean interrupt = false;
@@ -219,16 +220,24 @@ public class SageSingleCell {
 		}
 
 		protected void addReply(CommandReply reply) {
+
 			Log.i(TAG, "addReply successfully received a CommandReply");
 			log(reply);
+			if (reply instanceof DataFile) {
+				try {
+				((DataFile) reply).downloadFile(this);
+				} catch (Exception e) {
+					Log.e(TAG, "Error download file:");
+					e.printStackTrace();
+				}
+			}
 			Log.i(TAG, "reply.isReplyTo(currentRequest): " + String.valueOf(reply.isReplyTo(currentRequest)));
 			result.add(reply);
 			if (reply.isInteract()) {
 				Log.i(TAG, "addReply(reply): Reply is an interact.");
 				interact = (Interact) reply;
 				listener.onSageInteractListener(interact);
-			}
-			else if (reply.containsOutput() && reply.isReplyTo(currentRequest)) {
+			} else if (reply.containsOutput() && reply.isReplyTo(currentRequest)) {
 				Log.i(TAG, "addReply(reply): Reply is response to currentRequest.");
 				CommandOutput output = (CommandOutput) reply;
 				if (outputBlocks.contains(output.outputBlock())) {
@@ -256,7 +265,7 @@ public class SageSingleCell {
 			HttpParams params = new BasicHttpParams();
 			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 			httpClient = new DefaultHttpClient(params);
-			addThread(this);
+			//addThread(this);
 			currentRequest = request = new ExecuteRequest(sageInput, sageMode, session);
 		}
 
@@ -338,7 +347,8 @@ public class SageSingleCell {
 
 			initializeSockets();
 			
-			sendInitialMessage(request.toString());
+			//Log.i(TAG, "shellclient sending request.toString(): " + request.toString());
+			shellclient.send(request.toString());
 
 			return httpResponse;
 		}
@@ -350,27 +360,22 @@ public class SageSingleCell {
 				public void onConnect() {
 					Log.d(TAG, "shell socket connected!");
 				}
-
 				@Override
 				public void onMessage(String message) {
 					Log.d(TAG, String.format("Got string message from shell!\n%s", message));
 				}
-
 				@Override
 				public void onMessage(byte[] data) {
 					Log.d(TAG, String.format("Got binary message! %s"));
 				}
-
 				@Override
 				public void onDisconnect(int code, String reason) {
 					Log.d(TAG, String.format("Disconnected! Code: %d Reason: %s", code, reason));
 				}
-
 				@Override
 				public void onError(Exception error) {
 					Log.e(TAG, "Error!", error);
 				}
-
 			}, null);
 			
 			iopubclient = new WebSocketClient(URI.create(iopub_url), new WebSocketClient.Listener() {
@@ -378,7 +383,6 @@ public class SageSingleCell {
 				public void onConnect() {
 					Log.d(TAG, "iopub socket connected!");
 				}
-
 				@Override
 				public void onMessage(String message) {
 					Log.d(TAG, String.format("Got string message from iopub!\n"));
@@ -391,24 +395,20 @@ public class SageSingleCell {
 						Log.e(TAG, "Had trouble parsing the JSON reply...");
 						e.printStackTrace();
 					}
-					
 				}
 
 				@Override
 				public void onMessage(byte[] data) {
 					Log.d(TAG, String.format("Got binary message! %s"));
 				}
-
 				@Override
 				public void onDisconnect(int code, String reason) {
 					Log.d(TAG, String.format("Disconnected! Code: %d Reason: %s", code, reason));
 				}
-
 				@Override
 				public void onError(Exception error) {
 					Log.e(TAG, "Error!", error);
 				}
-
 			}, null);
 
 			shellclient.connect();
@@ -421,7 +421,7 @@ public class SageSingleCell {
 			}
 			
 		}
-
+/*
 		protected void sendInitialMessage(String message){
 			//String Stringmessage = "{\"content\": {\"user_variables\": [], \"allow_stdin\": false, \"code\": \""+sageInput+"\", \"silent\": false, \"user_expressions\": {\"_sagecell_files\": \"sys._sage_.new_files()\"}}, \"header\": {\"username\": \"\", \"msg_id\": \""+request.msg_id+"\", \"session\": \""+request.session+"\", \"msg_type\": \"execute_request\"}, \"parent_header\": {}, \"metadata\": {}}";
 			/*
@@ -435,12 +435,12 @@ public class SageSingleCell {
 			} catch (Exception e) {
 				Log.i(TAG, "shellclient couldn't sleep in sendInitialMessage...");
 			}
-			*/
+			
 			
 			shellclient.send(message);
 			Log.i(TAG, "shellclient tried to send message:\n" + message);
 		}
-
+*/
 /*
 		protected HttpResponse pollOutput(CommandRequest request, int sequence) 
 				throws ClientProtocolException, IOException, SageInterruptedException {
@@ -470,14 +470,18 @@ public class SageSingleCell {
 		//	    }
 
 		protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
-			StringBuilder query = new StringBuilder();
-			query.append("/"+reply.session.toString());
-			query.append("/"+filename);
-			return new URI(server + server_path_files + query);
+			Log.i(TAG, "SageSingleCell.downloadFileURI called for " + filename);
+			String fileurl = kernel_url.replace("ws", "http") + "files/" + filename;
+			//StringBuilder query = new StringBuilder();
+			//query.append("/"+reply.session.toString());
+			//query.append("/"+filename);
+			Log.i(TAG, "Final URI is: " + fileurl);
+			return new URI(fileurl);
 		}
 
 		protected HttpResponse downloadFile(URI uri)
 				throws ClientProtocolException, IOException, SageInterruptedException {
+			Log.i(TAG, "downloadFile called with URI " + uri.toString());
 			if (interrupt) throw new SageInterruptedException(); 
 			HttpGet httpGet = new HttpGet(uri);
 			return httpClient.execute(httpGet);
@@ -487,9 +491,9 @@ public class SageSingleCell {
 			return SageSingleCell.this.downloadDataFiles;
 		}
 
-		@Override
-		public void run() {
-			super.run();
+		public void start() {
+			//Previously a thread's runnable.
+			//super.run();
 			Log.i(TAG, "SageSingleCell run() called");
 			log(request);
 			// JUST Initialize sockets and send message if 
@@ -504,13 +508,8 @@ public class SageSingleCell {
 				return;
 			} */
 			
-			if (sendOnly) {
-				request.sendRequest(this);
-				removeThread(this);
-				return;
-			}
 			request.sendRequest(this);
-			removeThread(this);
+			return;
 			//listener.onSageFinishedListener(result.getLast());
 		}
 	}
@@ -523,7 +522,7 @@ public class SageSingleCell {
 	 */
 	public void query(String sageInput) {
 		Log.i(TAG, "sageInput is " + sageInput);
-		ServerTask task = new ServerTask(sageInput);
+		task = new ServerTask(sageInput);
 		task.start();
 	}
 
@@ -542,16 +541,38 @@ public class SageSingleCell {
 				"\",{\"" + name + 
 				"\":" + value.toString() + "})";
 		*/
+		
 		String sageInput = 
 				"sys._sage_.update_interact(\"" + interact.getID() + 
 				"\",\"" + name + 
-				"\",\"" + value.toString() + "\")";
+				"\"," + value.toString() + ")";
+		
+		/*String sageInput = 
+				"sys._sage_.update_interact(\"" + interact.getID() + 
+				"\"," + name + 
+				"," + value.toString() + ")";
+		*/
 				
 		// ServerTask task = new ServerTask(sageInput, interact.session, kernel_url);
 		// Pass the kernel_url so that we can open a new session without an HTTP post that
 		// gets an entirely different set of sockets.
-		ServerTask task = new ServerTask(sageInput, interact.session);
-
+		//ServerTask task = new ServerTask(sageInput, interact.session);
+		task.currentRequest = task.request = new ExecuteRequest(sageInput, true, interact.session);
+		//task.sageInput = sageInput;
+		//task.session = interact.session;
+		//task.initializeSockets();
+		String message = "";
+		
+		try {
+			message = task.request.toJSON().toString();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		Log.i(TAG, "SageSingleCell.interact() trying to send message...");
+		task.shellclient.send(message);
+		
+		/*
 		synchronized (threads) {
 			for (ServerTask thread: threads)
 				if (thread.interact == interact) {
@@ -559,8 +580,9 @@ public class SageSingleCell {
 					thread.outputBlocks.clear();
 				}
 		}
-		task.setSendOnly(true);
-		task.start();
+		*/
+		//task.setSendOnly(true);
+		//task.start();
 	}
 
 	/**

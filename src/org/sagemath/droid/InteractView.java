@@ -51,20 +51,21 @@ public class InteractView extends TableLayout {
 		this.interact = interact;
 		removeAllViews();
 		JSONArray layout = interact.getLayout();
-		JSONArray vars = new JSONArray();
+		//JSONArray vars = new JSONArray();
+		/*
 		try {
 			vars = layout.getJSONArray(0);
 		} catch (JSONException e) {
 			Log.e(TAG, "Error parsing layout.vars" + e.getLocalizedMessage());
-		}
-		ListIterator<String> iter = layoutPositions.listIterator();
+		}*/
+		//ListIterator<String> iter = layoutPositions.listIterator();
 		int i = 0;
-		while (i < vars.length()) {
+		while (i < layout.length()) {
 			JSONArray variables;
 			try {
-				variables = vars.getJSONArray(i);
+				variables = layout.getJSONArray(i);
+				addInteract(interact, variables.getJSONArray(0).getString(0));
 				Log.i(TAG, "variables.toString() " + variables.toString());
-				addInteract(interact, variables.getString(0));
 			} catch (JSONException e) {}
 			i++;
 		}
@@ -76,14 +77,18 @@ public class InteractView extends TableLayout {
 			JSONObject control = controls.getJSONObject(variable);
 			String control_type = control.getString("control_type");
 			if (control_type.equals("slider")) {
+				Log.i(TAG, "Control type is slider.");
 				String subtype = control.getString("subtype");
-				if (subtype.equals("discrete"))
+				if (subtype.equals("discrete")){
+					Log.i(TAG,"Subtype is discrete slider.");
 					addDiscreteSlider(variable, control);
-				else if (subtype.equals("continuous"))
+				} else if (subtype.equals("continuous")) {
+					Log.i(TAG,"Subtype is continuous slider.");
 					addContinuousSlider(variable, control);
-				else	
+				} else	
 					Log.e(TAG, "Unknown slider type: "+subtype);
 			} else if (control_type.equals("selector")) {
+				Log.i(TAG, "Control type is selector.");
 				addSelector(variable, control);
 			}		
 		} catch (JSONException e) {

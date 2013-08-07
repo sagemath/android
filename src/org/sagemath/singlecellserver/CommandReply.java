@@ -30,14 +30,14 @@ public class CommandReply extends Command {
 				// having a session or msg_id.
 				// msg_id doesn't matter for iopub when execution state is dead...
 				// Need to preserve session in case of update_interact.
-				session = this.session;
-				msg_id = UUID.randomUUID();
+				JSONObject header = json.getJSONObject("header");
+				session = UUID.fromString(header.getString("session"));
+				msg_id = UUID.fromString(header.getString("msg_id"));
 			}
 		} else {
 			session = UUID.fromString(parent_header.getString("session"));
 			msg_id = UUID.fromString(parent_header.getString("msg_id"));
 		}
-
 	}
 	
 	protected CommandReply(CommandRequest request) {
@@ -97,6 +97,8 @@ public class CommandReply extends Command {
 		else if (msg_type.equals("display_data")) {
 			JSONObject data = json.getJSONObject("content").getJSONObject("data");
 			if (data.has("text/filename"))
+				return new DataFile(json);
+			else if (data.has("text/image-filename"))
 				return new DataFile(json);
 			else if (data.has("application/sage-interact"))
 				return new Interact(json);

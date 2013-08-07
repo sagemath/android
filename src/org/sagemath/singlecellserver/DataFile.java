@@ -1,13 +1,10 @@
 package org.sagemath.singlecellserver;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.Buffer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,11 +13,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sagemath.singlecellserver.SageSingleCell.SageInterruptedException;
 
+import android.util.Log;
+
 public class DataFile extends DisplayData {
 	private final static String TAG = "DataFile"; 
-
+	protected byte[] data;
+	protected URI uri;
+	
 	protected DataFile(JSONObject json) throws JSONException {
 		super(json);
+		Log.i(TAG, "Created new DataFile!");
 	}
 
 
@@ -40,15 +42,16 @@ public class DataFile extends DisplayData {
 		return null;
 	}
 	
-	protected byte[] data;
-	protected URI uri;
+
 	
 	public URI getURI() {
+		Log.i(TAG, "DataFile.getURI() called");
 		return uri;
 	}
 	
 	public void downloadFile(SageSingleCell.ServerTask server) 
 			throws IOException, URISyntaxException, SageInterruptedException {
+		Log.i(TAG, "DataFile.downloadFile called.");
 		uri = server.downloadFileURI(this, this.value);
 		if (server.downloadDataFiles())
 			download(server, uri);

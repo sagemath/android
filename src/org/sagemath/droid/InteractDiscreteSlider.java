@@ -73,13 +73,13 @@ public class InteractDiscreteSlider
 		updateValueText();
 	}
 
-	public String getValue() {
+	public Integer getValue() {
 		int index = seekBar.getProgress();
-		return values.get(index);
+		return index;
 	}
 	
 	private void updateValueText() {
-		nameValueText.setText(getVariableName() + "=" + getValue());		
+		nameValueText.setText(getVariableName() + "=" + values.get(getValue()));   		
 	}
 	
 	@Override
