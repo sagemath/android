@@ -1,9 +1,9 @@
 package org.sagemath.droid;
 
+import org.sagemath.singlecellserver.Interact;
+import org.sagemath.singlecellserver.SageSingleCell;
+
 import sheetrock.panda.changelog.ChangeLog;
-
-import com.example.android.actionbarcompat.ActionBarActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,15 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.sagemath.singlecellserver.Interact;
-import org.sagemath.singlecellserver.SageSingleCell;
+import com.example.android.actionbarcompat.ActionBarActivity;
 
 /**
  * The main activity of the Sage app
@@ -172,6 +170,7 @@ public class SageActivity
 		imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 		server.interrupt();
 		outputView.clear();
+		Log.i(TAG, "Called outputView.clear()!");
 		server.query(input.getText().toString());
         getActionBarHelper().setRefreshActionItemState(true);
         outputView.requestFocus();
@@ -185,8 +184,11 @@ public class SageActivity
 
 	@Override
 	public void onSageInteractListener(Interact interact, String name, Object value) {
-		Log.e(TAG, name + " = " + value);
+		Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
+		//outputView.clear();
+		//Log.i(TAG, "Interact output view cleared!");
 		server.interact(interact, name, value);
+		Log.i(TAG, "onSageInteractListener() called!");
 	}
 
 	@Override

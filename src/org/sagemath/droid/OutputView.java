@@ -84,23 +84,31 @@ public class OutputView
 	 * @return
 	 */
 	private OutputBlock getOutputBlock(CommandOutput output) {
+		Log.i(TAG, "getOutputBlock(): " + output.outputBlock());
 		return getOutputBlock(output.outputBlock());
 	}
 	
 	private OutputBlock getOutputBlock(String output_block) {
 		ListIterator<OutputBlock> iter = blocks.listIterator();
+		Log.i(TAG, "getOutputBlock(String output_block): " + output_block);
 		while (iter.hasNext()) {
 			OutputBlock block = iter.next();
-			if (block.getOutputBlock().equals(output_block))
+			if (block.getOutputBlock().equals(output_block)) {
+				Log.i(TAG, "getOutputBlock().equals(output_block): " + block + ", " + output_block);
 				return block;
+			}
 		}
+		Log.i(TAG, "Returning newOutputBlock()");
 		return newOutputBlock();
 	}
 	
 	private OutputBlock newOutputBlock() {
+		Log.i(TAG, "newOutputBlock()");
 		OutputBlock block = new OutputBlock(context, cell);
 		addView(block);
+		Log.i(TAG, "addview: " + block);
 		blocks.add(block);
+		Log.i(TAG, "blocks.add: " + block);
 		return block;
 	}
 	
@@ -114,20 +122,24 @@ public class OutputView
 			if (output != null) {
 				// Log.d(TAG, "set "+output.toShortString());
 				OutputBlock block = getOutputBlock(output);
+				Log.i(TAG, "Setting block output: " + output);
 				block.set(output);
 			}
 			if (additionalOutput != null ) {
 				// Log.d(TAG, "add "+additionalOutput.toShortString());
 				OutputBlock block = getOutputBlock(additionalOutput);
+				Log.i(TAG, "Adding additionalOutput: " + additionalOutput);
 				block.add(additionalOutput);
 			}
 			if (interact != null) {
 				InteractView interactView = new InteractView(context);
 				interactView.set(interact);
 				interactView.setOnInteractListener(OutputView.this);
+				Log.i(TAG, "Adding interact view: " +interact.toString());
 				addView(interactView);
 			}
 			if (finished != null) 
+				Log.i(TAG, "onSageFinishedListener called.");
 				listener.onSageFinishedListener();
 		}
 	}
