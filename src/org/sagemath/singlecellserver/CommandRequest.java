@@ -30,7 +30,7 @@ public class CommandRequest extends Command {
 	}
 	
 	public JSONObject toJSON() throws JSONException {
-		Log.i(TAG, "CommandRequest.toJSON() called");
+		//Log.i(TAG, "CommandRequest.toJSON() called");
 		JSONObject header = new JSONObject();
 
 		header.put("session", session.toString());

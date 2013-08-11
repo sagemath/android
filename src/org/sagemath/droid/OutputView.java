@@ -95,7 +95,7 @@ public class OutputView
 			OutputBlock block = iter.next();
 			if (block.getOutputBlock().equals(output_block)) {
 				//Log.i(TAG, "getOutputBlock().equals(output_block): " + block + ", " + output_block);
-				Log.i(TAG,"Returning block");
+				//Log.i(TAG,"Returning block " + block.name);
 				return block;
 			}
 		}
@@ -119,6 +119,16 @@ public class OutputView
 		private CommandReply finished;
 		@Override
 		public void run() {
+			/*
+			if (interact != null){
+				OutputBlock block = getOutputBlock(output);
+				block.numberDivs();
+				//if (block.numberDivs()) {
+				//	block.clearBlocks();
+				//}
+			}
+			*/
+			
 			if (output != null) {
 				// Log.d(TAG, "set "+output.toShortString());
 				OutputBlock block = getOutputBlock(output);
@@ -126,16 +136,20 @@ public class OutputView
 				block.set(output);
 			}
 			if (additionalOutput != null ) {
-				Log.d(TAG, "add "+additionalOutput.toShortString());
 				OutputBlock block = getOutputBlock(additionalOutput);
-				//Log.i(TAG, "Adding additionalOutput: " + additionalOutput);
+				Log.i(TAG, "Adding additionalOutput: " + additionalOutput);
+				//block.clearBlocks();
 				block.add(additionalOutput);
 			}
 			if (interact != null) {
+				
+				//OutputBlock block = getOutputBlock(output);
+				//block.numberDivs();
+				
 				InteractView interactView = new InteractView(context);
 				interactView.set(interact);
 				interactView.setOnInteractListener(OutputView.this);
-				//Log.i(TAG, "Adding interact view: " +interact.toString());
+				Log.i(TAG, "Adding interact view: " +interact.toString());
 				addView(interactView);
 			}
 			if (finished != null) 

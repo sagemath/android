@@ -137,7 +137,10 @@ public class OutputBlock extends WebView {
 	}
 
 	public void add(CommandOutput output) {
-		Log.i(TAG, "add(CommandOutput output)");
+		Log.i(TAG, "add(CommandOutput output)" + output.toString());
+		if (output.toString().contains("sys._sage_.update_interact")) {
+			clearBlocks();
+		}
 		if (name == null) {
 			Log.e(TAG, "adding output without initially setting it");
 			return;
@@ -157,7 +160,7 @@ public class OutputBlock extends WebView {
 	}
 	
 	public void set(CommandOutput output) {
-		Log.i(TAG, "set(CommandOutput output");
+		Log.i(TAG, "set(CommandOutput output)" + output.toString());
 		if (name == null) {
 			name = output.outputBlock();
 		}
@@ -169,6 +172,12 @@ public class OutputBlock extends WebView {
 	
 	public void clearBlocks() {
 		divs.clear();
+	}
+	
+	public void numberDivs() {
+		for (String div:divs){
+			Log.i(TAG, "EXISTING DIV: " + div);
+		}
 	}
 	
 	public String getOutputBlock() {
