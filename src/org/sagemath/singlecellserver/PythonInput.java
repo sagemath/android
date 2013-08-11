@@ -19,7 +19,7 @@ public class PythonInput extends CommandOutput {
 	
 	protected PythonInput(JSONObject json) throws JSONException {
 		super(json);
-		Log.i(TAG, "PythonInput created!");
+		//Log.i(TAG, "PythonInput created!");
 		content = json.getJSONObject("content");
 		pyinput = content.getString("code");
 	}

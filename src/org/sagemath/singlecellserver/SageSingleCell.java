@@ -221,7 +221,7 @@ public class SageSingleCell {
 
 		protected void addReply(CommandReply reply) {
 
-			Log.i(TAG, "addReply successfully received a CommandReply");
+			//Log.i(TAG, "addReply successfully received a CommandReply");
 			log(reply);
 			if (reply instanceof DataFile) {
 				try {
@@ -231,21 +231,21 @@ public class SageSingleCell {
 					e.printStackTrace();
 				}
 			}
-			Log.i(TAG, "reply.isReplyTo(currentRequest): " + String.valueOf(reply.isReplyTo(currentRequest)));
+			//Log.i(TAG, "reply.isReplyTo(currentRequest): " + String.valueOf(reply.isReplyTo(currentRequest)));
 			result.add(reply);
 			if (reply.isInteract()) {
-				Log.i(TAG, "addReply(reply): Reply is an interact.");
+				//Log.i(TAG, "addReply(reply): Reply is an interact.");
 				interact = (Interact) reply;
 				listener.onSageInteractListener(interact);
 			} else if (reply.containsOutput() && reply.isReplyTo(currentRequest)) {
-				Log.i(TAG, "addReply(reply): Reply is response to currentRequest.");
+				//Log.i(TAG, "addReply(reply): Reply is response to currentRequest.");
 				CommandOutput output = (CommandOutput) reply;
 				if (outputBlocks.contains(output.outputBlock())) {
-					Log.i(TAG,"Output contains an output block");
+					//Log.i(TAG,"Output contains an output block");
 					listener.onSageAdditionalOutputListener(output);
 				}
 				else {
-					Log.i(TAG,"Added an output block");
+					//Log.i(TAG,"Added an output block");
 					outputBlocks.add(output.outputBlock());
 					listener.onSageOutputListener(output);
 				}
@@ -331,7 +331,7 @@ public class SageSingleCell {
 			String output = SageSingleCell.streamToString(outputStream);
 			outputStream.close();
 
-			Log.i(TAG, "output = " + output);
+			//Log.i(TAG, "output = " + output);
 			JSONObject outputJSON = new JSONObject(output);
 
 			if (outputJSON.has("kernel_id") & outputJSON.has("ws_url")) {
@@ -340,9 +340,9 @@ public class SageSingleCell {
 				kernel_url = ws_url + "kernel/" + kernel_id.toString() + "/";
 				shell_url = kernel_url + "shell";
 				iopub_url = kernel_url + "iopub";
-				Log.i(TAG, "Kernel URL: " + kernel_url);
-				Log.i(TAG, "Shell URL: " + shell_url);
-				Log.i(TAG, "iopub URL: " + iopub_url);
+				//Log.i(TAG, "Kernel URL: " + kernel_url);
+				//Log.i(TAG, "Shell URL: " + shell_url);
+				//Log.i(TAG, "iopub URL: " + iopub_url);
 			}
 
 			initializeSockets();
@@ -354,7 +354,7 @@ public class SageSingleCell {
 		}
 
 		protected void initializeSockets() {
-			Log.i(TAG, "Initializing socket with shell_url: " + shell_url);
+			//Log.i(TAG, "Initializing socket with shell_url: " + shell_url);
 			shellclient = new WebSocketClient(URI.create(shell_url), new WebSocketClient.Listener() {
 				@Override
 				public void onConnect() {
@@ -362,7 +362,8 @@ public class SageSingleCell {
 				}
 				@Override
 				public void onMessage(String message) {
-					Log.d(TAG, String.format("Got string message from shell!\n%s", message));
+					//Log.d(TAG, String.format("Got string message from shell!"));
+					//Log.d(TAG, String.format("Got string message from shell!\n%s", message));
 				}
 				@Override
 				public void onMessage(byte[] data) {
@@ -385,9 +386,9 @@ public class SageSingleCell {
 				}
 				@Override
 				public void onMessage(String message) {
-					Log.d(TAG, String.format("Got string message from iopub!\n"));
+					//Log.d(TAG, String.format("Got string message from iopub!\n"));
 					try {
-						Log.i(TAG, "Trying to add reply");
+						//Log.i(TAG, "Trying to add reply");
 						JSONObject JSONreply = new JSONObject(message);
 						CommandReply reply = CommandReply.parse(JSONreply);
 						addReply(reply);

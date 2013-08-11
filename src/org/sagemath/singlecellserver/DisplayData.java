@@ -13,7 +13,7 @@ public class DisplayData extends CommandOutput {
 	
 	protected DisplayData(JSONObject json) throws JSONException {
 		super(json);
-		Log.i(TAG, "Created new DisplayData!");
+		//Log.i(TAG, "Created new DisplayData!");
 		data = json.getJSONObject("content").getJSONObject("data");
 		mime = data.keys().next().toString();
 		value = data.getString(mime);

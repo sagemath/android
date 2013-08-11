@@ -105,7 +105,7 @@ public class CellData {
 	}
 	
 	private void addOutputBlock(String block) {
-		Log.i(TAG, "addOutputBlock: " + block);
+		//Log.i(TAG, "addOutputBlock: " + block);
 		if (outputBlocks == null) 
 			outputBlocks = new LinkedList<String>();
 		if (!outputBlocks.contains(block)) {

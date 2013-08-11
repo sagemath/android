@@ -59,9 +59,9 @@ public class InteractDiscreteSlider
 		this.values.clear();
 		try {
 			JSONArray values= control.getJSONArray("values");
-			Log.i(TAG, "SLIDER VALUES: " + values.toString());
+			//Log.i(TAG, "SLIDER VALUES: " + values.toString());
 			for (int i=0; i<values.length(); i++){
-				Log.i(TAG, "Adding value: " + values.getString(i));
+				//Log.i(TAG, "Adding value: " + values.getString(i));
 				this.values.add( values.getString(i));
 			}
 		} catch (JSONException e) {

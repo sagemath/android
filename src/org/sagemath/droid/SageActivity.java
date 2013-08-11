@@ -185,7 +185,7 @@ public class SageActivity
 	@Override
 	public void onSageInteractListener(Interact interact, String name, Object value) {
 		Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
-		//outputView.clear();
+		//outputView.interactClear();
 		//Log.i(TAG, "Interact output view cleared!");
 		server.interact(interact, name, value);
 		Log.i(TAG, "onSageInteractListener() called!");

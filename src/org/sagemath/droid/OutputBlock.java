@@ -101,10 +101,12 @@ public class OutputBlock extends WebView {
 
 	private void addDivDisplayData(DisplayData displayData) {
 		String div = displayData.toHTML();
+		Log.i(TAG, "addDivDisplayData");
 		divs.add(div);
 	}
 
 	private void addDivPythonOutput(PythonOutput pythonOutput) {
+		Log.i(TAG, "addDivPythonOutput");
 		String div = htmlify(pythonOutput.get());
 		divs.add(div);
 	}
@@ -115,16 +117,19 @@ public class OutputBlock extends WebView {
 	//}
 	
 	private void addDivResultStream(ResultStream resultStream) {
+		Log.i(TAG, "addDivResultStream");
 		String div = htmlify(resultStream.get());
 		divs.add(div);
 	}
 
 	private void addDivTraceback(Traceback traceback) {
+		Log.i(TAG, "addDivTraceback");
 		String div = htmlify(traceback.toString());
 		divs.add(div);
 	}
 	
 	private void addDivExecuteReply(ExecuteReply reply) {
+		Log.i(TAG, "addDivExecuteReply");
 		if (reply.getStatus().equals("ok"))
 			divs.add("<font color=\"green\">ok</font>");
 		else
@@ -132,6 +137,7 @@ public class OutputBlock extends WebView {
 	}
 
 	public void add(CommandOutput output) {
+		Log.i(TAG, "add(CommandOutput output)");
 		if (name == null) {
 			Log.e(TAG, "adding output without initially setting it");
 			return;
@@ -145,11 +151,13 @@ public class OutputBlock extends WebView {
 	}
 
 	public void set(String output_block) {
+		Log.i(TAG, "set(String output_block");
  		if (cell.hasCachedOutput(output_block))
 			loadUrl(cell.getUrlString(output_block));
 	}
 	
 	public void set(CommandOutput output) {
+		Log.i(TAG, "set(CommandOutput output");
 		if (name == null) {
 			name = output.outputBlock();
 		}
@@ -157,6 +165,10 @@ public class OutputBlock extends WebView {
 			Log.e(TAG, "Output has wrong output_block field");
 		divs.clear();
 		add(output);
+	}
+	
+	public void clearBlocks() {
+		divs.clear();
 	}
 	
 	public String getOutputBlock() {

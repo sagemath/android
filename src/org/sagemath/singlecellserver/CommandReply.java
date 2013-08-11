@@ -79,12 +79,12 @@ public class CommandReply extends Command {
 	 * @return a new CommandReply or derived class
 	 */
 	protected static CommandReply parse(JSONObject json) throws JSONException {
-		Log.i(TAG, "Trying to parse " + json.toString());
+		//Log.i(TAG, "Trying to parse " + json.toString());
 		JSONObject header = json.getJSONObject("header");
 		String msg_type = header.getString("msg_type");
-		Log.d(TAG, "msg_type = " + msg_type);
+		//Log.d(TAG, "msg_type = " + msg_type);
 		JSONObject content = json.getJSONObject("content");
-		Log.d(TAG, "content = "+content.toString());
+		//Log.d(TAG, "content = "+content.toString());
 		//	prettyPrint(json);
 		if (msg_type.equals("pyout"))
 			return new PythonOutput(json);

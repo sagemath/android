@@ -60,7 +60,7 @@ public class PythonOutput extends CommandOutput {
 	
 	protected PythonOutput(JSONObject json) throws JSONException {
 		super(json);
-		Log.i(TAG, "PythonOutput created!");
+		//Log.i(TAG, "PythonOutput created!");
 		content = json.getJSONObject("content");
 		data = content.getJSONObject("data");
 		text = data.getString("text/plain");

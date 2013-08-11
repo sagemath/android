@@ -27,7 +27,7 @@ public class CommandOutput extends CommandReply {
 	}
 
 	public boolean containsOutput() {
-		Log.i(TAG, "CommandOutput.containsOutput is TRUE");
+		//Log.i(TAG, "CommandOutput.containsOutput is TRUE");
 		return true;
 	}
 	

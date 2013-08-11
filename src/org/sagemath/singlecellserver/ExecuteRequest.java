@@ -16,14 +16,14 @@ public class ExecuteRequest extends CommandRequest {
 	
 	public ExecuteRequest(String input, boolean sage, UUID session) {
 		super(session);
-		Log.i(TAG, "ExecuteRequest called with input " + input);
+		//Log.i(TAG, "ExecuteRequest called with input " + input);
 		this.input = input;
 		this.sage = sage;
 	}
 	
 	public ExecuteRequest(String input) {
 		super();
-		Log.i(TAG, "Input is " + input);
+		//Log.i(TAG, "Input is " + input);
 		this.input = input;
 		sage = true;
 	}
@@ -37,7 +37,7 @@ public class ExecuteRequest extends CommandRequest {
 	}
 	
 	public JSONObject toJSON() throws JSONException {
-		Log.i(TAG, "ExecuteRequest.toJSON() called");
+		//Log.i(TAG, "ExecuteRequest.toJSON() called");
 		JSONObject result = super.toJSON();
 		JSONObject header = result.getJSONObject("header");
 		header.put("msg_type", "execute_request");
