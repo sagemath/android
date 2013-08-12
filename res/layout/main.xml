@@ -95,12 +95,13 @@
                     android:id="@+id/sage_output"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/sage_input"
                     android:layout_marginTop="10dp"
-                    android:padding="5dp" />
+                    android:padding="5dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/bg_card" />
                 
             </RelativeLayout>
 
