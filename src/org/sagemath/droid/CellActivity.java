@@ -3,15 +3,13 @@ package org.sagemath.droid;
 import org.sagemath.droid.CellGroupsFragment.OnGroupSelectedListener;
 
 import sheetrock.panda.changelog.ChangeLog;
-
-import com.example.android.actionbarcompat.ActionBarActivity;
-
+import sheetrock.panda.changelog.SimpleEula;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.android.actionbarcompat.ActionBarActivity;
 
 public class CellActivity
 		extends ActionBarActivity 
@@ -20,11 +18,20 @@ public class CellActivity
 
 	private ChangeLog changeLog;
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		CellCollection.initialize(getApplicationContext());
 		setContentView(R.layout.cell_activity);
+		
+		try {
+			new SimpleEula(this).show();
+		} catch (Exception e) {
+			Log.e(TAG, "Error showing EULA: " + e.toString());
+			e.printStackTrace();
+			//this.finish();
+		}
 		
 		changeLog = new ChangeLog(this);
         if (changeLog.firstRun())

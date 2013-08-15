@@ -6,15 +6,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.UUID;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
@@ -122,7 +126,7 @@ public class SageSingleCell {
 	}
 
 
-	protected static String streamToString(InputStream is) {
+	public static String streamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -314,24 +318,62 @@ public class SageSingleCell {
 			Log.i(TAG, "SageSingleCell: postEval() called\n");
 			//HttpGet httpget = new HttpGet(server);
 			//httpget.addHeader("Accept", "application/json");
-			HttpPost httpPost = new HttpPost(server);
-			URI absolute = new URI("http://sagecell.sagemath.org/");
-			URI relative = new URI("kernel");
-			httpPost.setURI(absolute.resolve(relative));
-			httpPost.addHeader("Accept-Econding", "identity");
-
+			HttpPost httpPost = new HttpPost();
+			URI absolute = new URI("http://sagecell.sagemath.org");
+			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
+			URI kernelRelative = new URI("/kernel");
+			URI tosRelative = new URI("/tos.html");
+			URI sageURI = absolute.resolve(kernelRelative);
+			URI tosURI = absolute.resolve(tosRelative);
+			// To construct a URI with a port (for testing on http://sagecell.sagemath.org:10080):
+			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
+			int port = 10080;
+			URI testURI = new URI(sageURI.getScheme(), sageURI.getUserInfo(), sageURI.getHost(), port, 
+					sageURI.getPath(), sageURI.getQuery(), sageURI.getFragment());
+			Log.i(TAG, "Test URI: " + testURI.toString());
+			//httpPost.setURI(testURI);
+			
+			URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
+					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
+			Log.i(TAG, "Terms URI: " + termsURI.toString());
+			
+			Log.i(TAG, "Sage URI: " + sageURI.toString());
+			httpPost.setURI(testURI);
+			//httpPost.addHeader("Accept-Econding", "identity");
+			//httpPost.addHeader("accepted_tos", "true");
+			
+			
+			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+		    postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
+		    postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
+		    httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 
 			//httpPost.setHeader("Accept", "application/json");
 			//MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-
 			//httpPost.setEntity(multipartEntity);
+		    
+			/*
+			
+			URI absolute = new URI("http://sagecell.sagemath.org");
+			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
+			URI tosRelative = new URI("/tos.html");
+			URI tosURI = absolute.resolve(tosRelative);
+			URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
+					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
+			Log.i(TAG, "Terms URI: " + termsURI.toString());
+			HttpGet termsGet = new HttpGet();
+			termsGet.setURI(termsURI);
+			HttpResponse termsResponse = httpClient.execute(termsGet);
+			InputStream termsStream = termsResponse.getEntity().getContent();
+			String termsHTML = SageSingleCell.streamToString(termsStream);
+			Log.i(TAG, "Terms: " + termsHTML);
+			*/
 			HttpResponse httpResponse = httpClient.execute(httpPost);
-
 			InputStream outputStream = httpResponse.getEntity().getContent();
 			String output = SageSingleCell.streamToString(outputStream);
 			outputStream.close();
 
-			//Log.i(TAG, "output = " + output);
+			Log.i(TAG, "output = " + output);
 			JSONObject outputJSON = new JSONObject(output);
 
 			if (outputJSON.has("kernel_id") & outputJSON.has("ws_url")) {
