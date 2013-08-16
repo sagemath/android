@@ -28,14 +28,15 @@ import android.util.Log;
 import android.widget.TextView;
 
 public class SimpleEula {
-	
+
 	// Original SimpleEula via Donn Felker
 	// https://github.com/donnfelker
 	// Modified by Rasmi Elasmar for use in
 	// the Sage Android Application
-	
+
 	private final static String TAG = "SimpleEula";
 	private String EULA_PREFIX = "eula_";
+	private boolean error;
 	private Activity CellActivity;
 
 	public SimpleEula(Activity context) {
@@ -63,11 +64,10 @@ public class SimpleEula {
 
 			// Show the Eula
 			String title = CellActivity.getString(R.string.app_name) + " v" + versionInfo.versionName;
-			
+
 			//Includes the updates as well so users know what changed. 
 			//String message = CellActivity.getString(R.string.updates) + "\n\n" + CellActivity.getString(R.string.eula);
-			
-			
+
 			URI absolute = new URI("http://sagecell.sagemath.org");
 			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 			URI tosRelative = new URI("/tos.html");
@@ -78,41 +78,45 @@ public class SimpleEula {
 			Log.i(TAG, "Terms URI: " + termsURI.toString());
 			HttpGet termsGet = new HttpGet();
 			termsGet.setURI(termsURI);
-			
+
 			DefaultHttpClient termsHttpClient = new DefaultHttpClient();
 			HttpResponse termsResponse = termsHttpClient.execute(termsGet);
 			InputStream termsStream = termsResponse.getEntity().getContent();
+
 			String termsHTML = SageSingleCell.streamToString(termsStream);
 			Log.i(TAG, "Terms: " + termsHTML);
-			
 			String warning = "<p>By continuing, you indicate that you have read and agree to the <a href=\"http://sagecell.sagemath.org:10080/tos.html\">Sage Cell Server Terms of Usage</a>:</p>";
-
-			AlertDialog dialog = new AlertDialog.Builder(CellActivity)
+			
+			if (termsHTML.contains("404") || termsHTML.contains("405")){
+				error = true;
+			}
+			
+			if (!error){
+				AlertDialog dialog = new AlertDialog.Builder(CellActivity)
 				.setTitle(title)
 				.setMessage(Html.fromHtml((warning + termsHTML)))
 				.setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialogInterface, int i) {
-					// Mark this version as read.
-					SharedPreferences.Editor editor = prefs.edit();
-					editor.putBoolean(eulaKey, true);
-					editor.commit();
-					dialogInterface.dismiss();
-				}
-			})
-			.setNegativeButton(android.R.string.cancel, new Dialog.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// Close the activity as they have declined the EULA
-					CellActivity.finish(); 
-				}
-
-			}).create();
-			dialog.show();
-			// Make links clickable, via Michael Burton: http://about.me/michaelburton
-			((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						// Mark this version as read.
+						SharedPreferences.Editor editor = prefs.edit();
+						editor.putBoolean(eulaKey, true);
+						editor.commit();
+						dialogInterface.dismiss();
+					}
+				})
+				.setNegativeButton(android.R.string.cancel, new Dialog.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Close the activity as they have declined the EULA
+						CellActivity.finish(); 
+					}
+				}).create();
+				dialog.show();
+				// Make links clickable, via Michael Burton: http://about.me/michaelburton
+				((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+			}
 		}
 	}
 
