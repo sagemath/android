@@ -338,7 +338,7 @@ public class SageSingleCell {
 			Log.i(TAG, "Terms URI: " + termsURI.toString());
 			
 			Log.i(TAG, "Sage URI: " + sageURI.toString());
-			httpPost.setURI(testURI);
+			httpPost.setURI(sageURI);
 			//httpPost.addHeader("Accept-Econding", "identity");
 			//httpPost.addHeader("accepted_tos", "true");
 			

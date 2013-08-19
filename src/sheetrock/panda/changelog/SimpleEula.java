@@ -77,7 +77,7 @@ public class SimpleEula {
 					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
 			Log.i(TAG, "Terms URI: " + termsURI.toString());
 			HttpGet termsGet = new HttpGet();
-			termsGet.setURI(termsURI);
+			termsGet.setURI(tosURI);
 
 			DefaultHttpClient termsHttpClient = new DefaultHttpClient();
 			HttpResponse termsResponse = termsHttpClient.execute(termsGet);
