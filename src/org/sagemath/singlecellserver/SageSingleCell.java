@@ -42,7 +42,7 @@ public class SageSingleCell {
 	private long timeout  = 30*1000;
 
 	// private String server = "http://localhost:8001";
-	private String server = "http://sagecell.sagemath.org/kernel";
+	private String server = "https://sagecell.sagemath.org/kernel";
 	private String server_path_eval = "/eval";
 	private String server_path_output_poll = "/output_poll";
 	private String server_path_files = "/files";
@@ -319,7 +319,7 @@ public class SageSingleCell {
 			//HttpGet httpget = new HttpGet(server);
 			//httpget.addHeader("Accept", "application/json");
 			HttpPost httpPost = new HttpPost();
-			URI absolute = new URI("http://sagecell.sagemath.org");
+			URI absolute = new URI("https://sagecell.sagemath.org");
 			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 			URI kernelRelative = new URI("/kernel");
 			URI tosRelative = new URI("/tos.html");
@@ -514,7 +514,7 @@ public class SageSingleCell {
 
 		protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
 			Log.i(TAG, "SageSingleCell.downloadFileURI called for " + filename);
-			String fileurl = kernel_url.replace("ws", "http") + "files/" + filename;
+			String fileurl = kernel_url.replace("ws", "https") + "files/" + filename;
 			//StringBuilder query = new StringBuilder();
 			//query.append("/"+reply.session.toString());
 			//query.append("/"+filename);

@@ -68,7 +68,7 @@ public class SimpleEula {
 			//Includes the updates as well so users know what changed. 
 			//String message = CellActivity.getString(R.string.updates) + "\n\n" + CellActivity.getString(R.string.eula);
 
-			URI absolute = new URI("http://sagecell.sagemath.org");
+			URI absolute = new URI("https://sagecell.sagemath.org");
 			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 			URI tosRelative = new URI("/tos.html");
 			URI tosURI = absolute.resolve(tosRelative);
