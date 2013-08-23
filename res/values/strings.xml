@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, SageActivity!</string>
     <string name="app_name">Sage</string>
+    <string name="history">History</string>
 
 </resources>

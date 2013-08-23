@@ -95,12 +95,22 @@ public class OutputView
 			OutputBlock block = iter.next();
 			if (block.getOutputBlock().equals(output_block)) {
 				//Log.i(TAG, "getOutputBlock().equals(output_block): " + block + ", " + output_block);
-				//Log.i(TAG,"Returning block " + block.name);
+				Log.i(TAG,"Returning block " + block.name);
 				return block;
 			}
 		}
 		Log.i(TAG, "Returning newOutputBlock()");
+		
 		return newOutputBlock();
+	}
+	
+	public void setOutputBlocks(String html) {
+		blocks.clear();
+
+		OutputBlock newBlock = new OutputBlock(context, cell, html);
+		newBlock.reload();
+		Log.i(TAG, "Creatng new block with HTML: " + html);
+		blocks.add(newBlock);
 	}
 	
 	private OutputBlock newOutputBlock() {
@@ -109,6 +119,7 @@ public class OutputView
 		addView(block);
 		//Log.i(TAG, "Creating newOutputBlock: addview: " + block.toString());
 		blocks.add(block);
+		
 		return block;
 	}
 	

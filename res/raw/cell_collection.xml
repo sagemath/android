@@ -102,4 +102,15 @@ def _(order=(1..12)):
 		<uuid>18b4bba6-f0cb-42a2-80c8-976a2ac195c6</uuid>
 	</cell>
 	
+		<cell>
+		<group>History</group>
+		<title>History Item 1</title>
+		<rank>0</rank>
+		<description>Testing a history item.</description>
+		<input><![CDATA[
+1+1
+		]]></input>
+		<uuid>18b4bba6-f0cb-44a2-80c8-976a2ac195c6</uuid>
+	</cell>
+	
 </cell_collection>

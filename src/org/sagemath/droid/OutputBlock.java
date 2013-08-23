@@ -28,6 +28,13 @@ public class OutputBlock extends WebView {
 		this.cell = cell;
 	}
 	
+	public OutputBlock(Context context, CellData cell, String htmlData) {
+		super(context);
+		this.cell = cell;
+		divs.clear();
+		divs.add(htmlData);
+	}
+	
 	// The output_block field of the JSON message
 	protected String name;  
 
@@ -184,5 +191,9 @@ public class OutputBlock extends WebView {
 		return name;
 	}
 	
+	public void setHTML(String html) {
+		clearBlocks();
+		divs.add(html);
+	}
 	
 }

@@ -98,6 +98,10 @@ public class CellCollection {
 		}
 	}
 	
+	public void addCell(CellData cell) {
+		data.add(cell);
+	}
+	
 	protected File getCacheDirBase() {
 		return context.getCacheDir();
 	}

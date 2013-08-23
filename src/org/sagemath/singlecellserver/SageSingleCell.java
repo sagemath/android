@@ -514,7 +514,7 @@ public class SageSingleCell {
 
 		protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
 			Log.i(TAG, "SageSingleCell.downloadFileURI called for " + filename);
-			String fileurl = kernel_url.replace("ws", "https") + "files/" + filename;
+			String fileurl = kernel_url.replace("ws", "http") + "files/" + filename;
 			//StringBuilder query = new StringBuilder();
 			//query.append("/"+reply.session.toString());
 			//query.append("/"+filename);
