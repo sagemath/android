@@ -116,10 +116,12 @@ public class OutputView
 	private OutputBlock newOutputBlock() {
 		Log.i(TAG, "Creating newOutputBlock");
 		OutputBlock block = new OutputBlock(context, cell);
+		Log.i(TAG, "Block data: " + block.getHtml());
+		Log.i(TAG, "Block data: " + block.getHTML());
 		addView(block);
 		//Log.i(TAG, "Creating newOutputBlock: addview: " + block.toString());
 		blocks.add(block);
-		
+		block.setHistoryHTML();
 		return block;
 	}
 	
@@ -201,6 +203,10 @@ public class OutputView
 		//removeAllViews();
 		//blocks.clear();
 		//cell.clearCache();
+	}
+	
+	public void displayHistory() {
+		
 	}
 
 	@Override

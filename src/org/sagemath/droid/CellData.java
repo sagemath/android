@@ -43,13 +43,16 @@ public class CellData {
 		this.description = dateFormat.format(date);
 		this.input = originalCell.input;
 		this.rank = originalCell.rank;
+		
 		if (originalCell.htmlData.contains("null")) {
 			originalCell.htmlData.replace("null", "");
 		}
 		if (originalCell.htmlData.contains("<html><body></body></html>")) {
 			originalCell.htmlData.replace("<html><body></body></html>", "");
 		}
+		
 		this.htmlData = originalCell.htmlData;
+		saveOutput(uuid.toString(), htmlData);
 	}
 
 	public String getGroup() {
@@ -95,8 +98,9 @@ public class CellData {
 	public void saveOutput(String output_block, String html) {
 		addOutputBlock(output_block);
 		htmlData += html;
-		Log.i(TAG, "CellData added output_block: " + html);
+		Log.i(TAG, "CellData added output_block to " + title + " " + uuid.toString() + ": "+ html);
 		File f = cacheDirIndexFile(output_block);
+		Log.i(TAG, "Saving html: " + output_block + " " + html);
 		FileOutputStream os;
 		try {
 			os = new FileOutputStream(f);
