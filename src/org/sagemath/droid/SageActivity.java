@@ -57,7 +57,7 @@ OnItemSelectedListener
 
 		CellCollection.initialize(getApplicationContext());
 		cell = CellCollection.getInstance().getCurrentCell();
-		
+
 
 		server.setServer("http://aleph.sagemath.org", "/eval", "/output_poll", "/files");
 
@@ -81,14 +81,20 @@ OnItemSelectedListener
 		roundBracket.setOnClickListener(this);
 		squareBracket.setOnClickListener(this);
 		curlyBracket.setOnClickListener(this);
-		runButton.setOnClickListener(this);    	
+		runButton.setOnClickListener(this);
+		try {
+			Log.i(TAG, "Cell group is: " + cell.group);
+			Log.i(TAG, "Cell title is: " + cell.title);
+			Log.i(TAG, "Cell uuid is: " + cell.uuid.toString());
+			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
+		} catch (Exception e) {}
 		
 		if (cell.group.equals("History")) {
 			outputView.setOutputBlocks(cell.htmlData);
 			
 			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
 		}
-	
+
 
 		server.setDownloadDataFiles(false);
 		setTitle(cell.getTitle());
@@ -201,15 +207,19 @@ OnItemSelectedListener
 
 	@Override
 	protected void onPause() {
-		super.onPause();
-		if (!cell.getGroup().equals("History")) {
-			CellData HistoryCell = new CellData(cell);
-			HistoryCell.input = input.getText().toString();
-			String shortenedInput = HistoryCell.input;
-			if (HistoryCell.input.length() > 8)
-				shortenedInput = shortenedInput.substring(0,8);
-			HistoryCell.title = shortenedInput;
-			CellCollection.getInstance().addCell(HistoryCell);
+		try {
+			super.onPause();
+			if (!cell.getGroup().equals("History")) {
+				CellData HistoryCell = new CellData(cell);
+				HistoryCell.input = input.getText().toString();
+				String shortenedInput = HistoryCell.input;
+				if (HistoryCell.input.length() > 8)
+					shortenedInput = shortenedInput.substring(0,8);
+				HistoryCell.title = shortenedInput;
+				CellCollection.getInstance().addCell(HistoryCell);
+			}
+		} catch (RuntimeException RE) {
+			Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
 		}
 	}
 

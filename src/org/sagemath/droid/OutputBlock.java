@@ -22,6 +22,7 @@ public class OutputBlock extends WebView {
 	private final static String TAG = "OutputBlock";
 
 	private final CellData cell;
+	private LinkedList<String> divs = new LinkedList<String>();
 	
 	public OutputBlock(Context context, CellData cell) {
 		super(context);
@@ -30,9 +31,15 @@ public class OutputBlock extends WebView {
 	
 	public OutputBlock(Context context, CellData cell, String htmlData) {
 		super(context);
+		Log.i(TAG, "Created outputblock from htmldata.");
 		this.cell = cell;
 		divs.clear();
 		divs.add(htmlData);
+		try {
+		Log.i(TAG, "outputblock created: " + " " + cell.title + " " + cell.uuid.toString() + " " + " ");
+		} catch (Exception e){
+			Log.i(TAG, "outputblock exception: " + e.getMessage());
+		}
 	}
 	
 	// The output_block field of the JSON message
@@ -50,8 +57,6 @@ public class OutputBlock extends WebView {
 		s.append("</pre>");
 		return s.toString();
 	}
-
-	private LinkedList<String> divs = new LinkedList<String>();
 	
 	public String getHtml() {
 		StringBuilder s = new StringBuilder();
@@ -194,6 +199,18 @@ public class OutputBlock extends WebView {
 	public void setHTML(String html) {
 		clearBlocks();
 		divs.add(html);
+	}
+	
+	public void setHistoryHTML() {
+		loadUrl(cell.getUrlString(cell.uuid.toString()));
+	}
+	
+	public String getHTML() {
+		String htmldata = "";
+		for(String div: divs) {
+			htmldata += div;
+		}
+		return htmldata;
 	}
 	
 }
