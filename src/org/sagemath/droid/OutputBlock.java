@@ -72,6 +72,9 @@ public class OutputBlock extends WebView {
 	}
 	
 	private void addDiv(CommandOutput output) {
+
+		Log.i(TAG, "Adding output: " + output.toLongString());
+		
 		if (output instanceof DataFile) 
 			addDivDataFile((DataFile) output);
 		else if (output instanceof HtmlFiles) 
@@ -159,6 +162,7 @@ public class OutputBlock extends WebView {
 		}
 		if (!name.equals(output.outputBlock()))
 			Log.e(TAG, "Output has wrong output_block field");
+		
 		addDiv(output);
 		// loadData(getHtml(), "text/html", "UTF-8");
 		cell.saveOutput(getOutputBlock(), getHtml());

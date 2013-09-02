@@ -29,7 +29,7 @@ public class CellData {
 	protected String input;
 	protected Integer rank;
 	protected Boolean favorite;
-	protected String htmlData;
+	protected String htmlData = "";
 	protected LinkedList<String> outputBlocks;
 	
 	public CellData() {}
@@ -43,15 +43,18 @@ public class CellData {
 		this.description = dateFormat.format(date);
 		this.input = originalCell.input;
 		this.rank = originalCell.rank;
+		this.favorite = originalCell.favorite;
 		
+		/*
 		if (originalCell.htmlData.contains("null")) {
 			originalCell.htmlData.replace("null", "");
 		}
 		if (originalCell.htmlData.contains("<html><body></body></html>")) {
 			originalCell.htmlData.replace("<html><body></body></html>", "");
-		}
+		}*/
 		
 		this.htmlData = originalCell.htmlData;
+		
 		saveOutput(uuid.toString(), htmlData);
 	}
 

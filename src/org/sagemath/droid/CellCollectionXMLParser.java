@@ -73,6 +73,7 @@ public class CellCollectionXMLParser {
 		cell.input = getTextValue(cellElement, "input");
 		cell.rank = getIntValue(cellElement, "rank");
 		cell.uuid = getUuidValue(cellElement, "uuid");
+		cell.favorite = getBooleanValue(cellElement, "favorite");
 		return cell;
 	}
 
@@ -94,6 +95,10 @@ public class CellCollectionXMLParser {
 	
 	private UUID getUuidValue(Element element, String tagName) {
 		return UUID.fromString(getTextValue(element, tagName));
+	}
+	
+	private Boolean getBooleanValue(Element element, String tagName) {
+		return Boolean.parseBoolean(getTextValue(element, tagName));
 	}
 
 }	
