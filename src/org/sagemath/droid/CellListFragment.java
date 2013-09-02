@@ -2,13 +2,11 @@ package org.sagemath.droid;
 
 import java.util.LinkedList;
 
-import org.sagemath.droid.CellGroupsFragment.OnGroupSelectedListener;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 public class CellListFragment 
@@ -43,6 +41,8 @@ public class CellListFragment
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		//CheckBox favorite = (CheckBox) l.findViewById(R.id.favorite);
+		
 		CellData cell = cells.get(position);
 		CellCollection.getInstance().setCurrentCell(cell);
 		Intent i = new Intent(getActivity().getApplicationContext(), SageActivity.class);
