@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="insert_text_values">
-        <item >&lt;select&gt;</item><item>for-loop</item><item >[ &lt;action&gt; for &lt;var&gt; in &lt;iterable&gt; ] </item>
-        
+        <item >Insert...</item><item>for-loop</item><item >[ &lt;action&gt; for &lt;var&gt; in &lt;iterable&gt; ] </item>
         
     </string-array>
     <string name="insert_text_prompt">Insert...</string>
