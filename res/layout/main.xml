@@ -1,107 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scrollView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-    	android:scrollbarStyle="insideInset"
-    	android:scrollbarAlwaysDrawVerticalTrack="true"
-		android:scrollbars="vertical"
-		android:fillViewport="True"
-    >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="True"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbarStyle="insideInset"
+    android:scrollbars="vertical" >
 
-            <RelativeLayout
-                android:id="@+id/relativeLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
-                <TextView
-                    android:id="@+id/insert_text_header"
-                    android:layout_width="@dimen/insert_width"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:padding="5dp"
-                    android:text="@string/insert_text_header" />
-                
-                <EditText
-                    android:id="@+id/sage_input"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/insert_text_header"
-                    android:inputType="textMultiLine|textNoSuggestions"
-                    android:imeOptions="flagNoExtractUi|actionDone"
-                    android:text="plot(sin(x),x,0,2*pi)"
-                    android:minLines="7"
-                >
-                    <requestFocus />
-                </EditText>
+        <LinearLayout
+            android:id="@+id/bracket_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
+            <Spinner
+                android:id="@+id/insert_text"
+                android:layout_width="@dimen/insert_width"
+                android:layout_height="wrap_content"
+                android:entries="@array/insert_text_values"
+                android:prompt="@string/insert_text_prompt" />
 
-                <Spinner
-                    android:id="@+id/insert_text"
-                    android:layout_width="@dimen/insert_width"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/insert_text_header"
-                    android:layout_below="@+id/insert_text_header"
-                    android:paddingLeft="10dp"
-                    android:entries="@array/insert_text_values"
-                    android:prompt="@string/insert_text_prompt" />
+            <Button
+                android:id="@+id/bracket_round"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:singleLine="true"
+                android:text="( )" />
 
-                <LinearLayout
-                    android:id="@+id/bracket_layout"
-                    android:layout_width="@dimen/insert_width"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/insert_text"
-                    android:layout_below="@+id/insert_text" >
+            <Button
+                android:id="@+id/bracket_square"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:singleLine="true"
+                android:text="[ ]" />
 
-                    <Button
-                        android:id="@+id/bracket_round"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="0dp"
-                        android:singleLine="true"
-                        android:text="( )" />
+            <Button
+                android:id="@+id/bracket_curly"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:singleLine="true"
+                android:text="{ }" />
+        </LinearLayout>
 
-                    <Button
-                        android:id="@+id/bracket_square"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="0dp"
-                        android:singleLine="true"
-                        android:text="[ ]" />
+        <EditText
+            android:id="@+id/sage_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bracket_layout"
+            android:imeOptions="flagNoExtractUi|actionDone"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:minLines="5"
+            android:text="plot(sin(x),x,0,2*pi)" >
 
-                    <Button
-                        android:id="@+id/bracket_curly"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="0dp"
-                        android:singleLine="true"
-                        android:text="{ }" />
-                </LinearLayout>
+            <requestFocus />
+        </EditText>
 
-                <Button
-                    android:id="@+id/button_run"
-                    android:layout_width="@dimen/insert_width"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/sage_input"
-                    android:layout_alignLeft="@+id/bracket_layout"
-                    android:text="Run" />
+        <ImageButton
+            android:id="@+id/button_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/sage_input"
+            android:layout_alignRight="@id/sage_input"
+            android:contentDescription="Run"
+            android:src="@android:drawable/ic_media_play" />
 
-                <org.sagemath.droid.OutputView
-                    android:id="@+id/sage_output"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/sage_input"
-                    android:layout_marginTop="10dp"
-                    android:padding="5dp"
-                    android:layout_marginLeft="8dp"
-                    android:background="@drawable/bg_card" />
-                
-            </RelativeLayout>
+        <org.sagemath.droid.OutputView
+            android:id="@+id/sage_output"
+            android:layout_below="@id/sage_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_card"
+            android:padding="5dp" />
+    </RelativeLayout>
 
-    </ScrollView>
+</ScrollView>

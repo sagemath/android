@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ OnItemSelectedListener
 
 	private EditText input;
 	private Button roundBracket, squareBracket, curlyBracket;
-	private Button runButton;
+	private ImageButton runButton;
 	private Spinner insertSpinner;
 	private OutputView outputView;
 
@@ -71,7 +72,7 @@ OnItemSelectedListener
 		roundBracket  = (Button) findViewById(R.id.bracket_round);
 		squareBracket = (Button) findViewById(R.id.bracket_square);
 		curlyBracket  = (Button) findViewById(R.id.bracket_curly);        
-		runButton = (Button) findViewById(R.id.button_run);
+		runButton = (ImageButton) findViewById(R.id.button_run);
 		outputView = (OutputView) findViewById(R.id.sage_output);
 		insertSpinner = (Spinner) findViewById(R.id.insert_text);
 		server.setOnSageListener(outputView);
@@ -213,8 +214,8 @@ OnItemSelectedListener
 				CellData HistoryCell = new CellData(cell);
 				HistoryCell.input = input.getText().toString();
 				String shortenedInput = HistoryCell.input;
-				if (HistoryCell.input.length() > 8)
-					shortenedInput = shortenedInput.substring(0,8);
+				if (HistoryCell.input.length() > 16)
+					shortenedInput = shortenedInput.substring(0,16);
 				HistoryCell.title = shortenedInput;
 				CellCollection.getInstance().addCell(HistoryCell);
 			}
