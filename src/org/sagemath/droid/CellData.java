@@ -16,11 +16,22 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.net.Uri;
 import android.util.Log;
 
 public class CellData {
-	private final static String TAG = "CellData";
+	private static final String TAG = "CellData";
+	private static final String JSON_UUID = "uuid";
+	private static final String JSON_GROUP = "group";
+	private static final String JSON_TITLE= "title";
+	private static final String JSON_DESCRIPTION = "description";
+	private static final String JSON_INPUT = "input";
+	private static final String JSON_RANK = "rank";
+	private static final String JSON_FAVORITE = "favorite";
+	private static final String JSON_HTML = "htmlData";
 
 	protected UUID uuid;
 	protected String group;
@@ -31,7 +42,7 @@ public class CellData {
 	protected Boolean favorite;
 	protected String htmlData = "";
 	protected LinkedList<String> outputBlocks;
-	
+
 	public CellData() {}
 
 	public CellData(CellData originalCell) {
@@ -44,7 +55,7 @@ public class CellData {
 		this.input = originalCell.input;
 		this.rank = originalCell.rank;
 		this.favorite = originalCell.favorite;
-		
+
 		/*
 		if (originalCell.htmlData.contains("null")) {
 			originalCell.htmlData.replace("null", "");
@@ -52,10 +63,22 @@ public class CellData {
 		if (originalCell.htmlData.contains("<html><body></body></html>")) {
 			originalCell.htmlData.replace("<html><body></body></html>", "");
 		}*/
-		
+
 		this.htmlData = originalCell.htmlData;
-		
+
 		saveOutput(uuid.toString(), htmlData);
+	}
+
+	public CellData(JSONObject json) throws JSONException {
+		
+		uuid = UUID.fromString(json.getString(JSON_UUID));
+		group = json.getString(JSON_GROUP);
+		title = json.getString(JSON_TITLE);
+		description = json.getString(JSON_DESCRIPTION);
+		input = json.getString(JSON_INPUT);
+		rank = json.getInt(JSON_RANK);
+		favorite = json.getBoolean(JSON_FAVORITE);
+		htmlData = json.getString(JSON_HTML);
 	}
 
 	public String getGroup() {
@@ -73,7 +96,7 @@ public class CellData {
 	public String getInput() {
 		return input;
 	}
-	
+
 	public Boolean isFavorite() {
 		return favorite;
 	}
@@ -200,6 +223,31 @@ public class CellData {
 		}
 		return outputBlocks;
 	}
+
+	public JSONObject toJSON() throws JSONException {
+		/*
+		 * 	protected UUID uuid;
+			protected String group;
+			protected String title;
+			protected String description;
+			protected String input;
+			protected Integer rank;
+			protected Boolean favorite;
+			protected String htmlData = "";
+		 */
+		JSONObject json = new JSONObject();
+		json.put(JSON_UUID, uuid.toString());
+		json.put(JSON_GROUP, group);
+		json.put(JSON_TITLE,  title);
+		json.put(JSON_DESCRIPTION, description);
+		json.put(JSON_INPUT, input);
+		json.put(JSON_RANK, rank);
+		json.put(JSON_FAVORITE, favorite);
+		json.put(JSON_HTML, htmlData);
+
+		return json;
+	}
+
 
 
 

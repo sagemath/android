@@ -94,6 +94,12 @@ OnItemSelectedListener
 			outputView.setOutputBlocks(cell.htmlData);
 			
 			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
+		} else {
+			try {
+				outputView.clear();
+			} catch (Exception e) {
+				Log.e(TAG, "Error clearing output view." + e.getLocalizedMessage());
+			}
 		}
 
 
@@ -218,10 +224,13 @@ OnItemSelectedListener
 					shortenedInput = shortenedInput.substring(0,16);
 				HistoryCell.title = shortenedInput;
 				CellCollection.getInstance().addCell(HistoryCell);
+			} else {
+				outputView.clear();
 			}
 		} catch (RuntimeException RE) {
 			Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
 		}
+		CellCollection.getInstance().saveCells();
 	}
 
 	@Override

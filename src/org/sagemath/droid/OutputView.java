@@ -196,6 +196,11 @@ public class OutputView
 	public void clear() {
 		removeAllViews();
 		blocks.clear();
+		try {
+			blocks.getFirst().clearBlocks();
+		} catch (Exception e) {
+			Log.e(TAG, "Error clearing output blocks " + e.getLocalizedMessage());
+		}
 		cell.clearCache();
 	}
 	

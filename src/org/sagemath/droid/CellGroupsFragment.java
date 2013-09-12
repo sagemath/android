@@ -68,5 +68,10 @@ public class CellGroupsFragment extends ListFragment {
 	    Window window = activity.getWindow();
 	    window.setFormat(PixelFormat.RGBA_8888);
 	}
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		CellCollection.getInstance().saveCells();
+	}
 	
 }

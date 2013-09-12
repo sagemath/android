@@ -1,47 +1,58 @@
 package org.sagemath.droid;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.UUID;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import junit.framework.Assert;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import android.content.Context;
 import android.util.Log;
 
 public class CellCollection {
-	private final static String TAG = "CellCollection";
+	private static final String TAG = "CellCollection";
+	private static final String JSONfilename = "celldata.json";
 	
 	private static CellCollection instance = new CellCollection();
 	private LinkedList<CellData> data;
 	private CellData current;
 	private Context context;
+	private CellCollectionJSONParser JSONParser;
 	private CellCollection() {}
 	
 	public static void initialize(Context context) {
 		if (instance.data != null) return;
+		instance.JSONParser = new CellCollectionJSONParser(context, JSONfilename);
 		instance.context = context;
 		instance.data = new LinkedList<CellData>();
-		CellCollectionXMLParser parser = new CellCollectionXMLParser();
-        InputStream ins = context.getResources().openRawResource(R.raw.cell_collection);
-        instance.data.addAll(parser.parse(ins));
-        instance.current = instance.getGroup("My Worksheets").getFirst();
+		boolean containsData = false;
+		String[] files = context.fileList();
+		for (String file: files) {
+			if (file.equals("celldata.json")) 
+				containsData = true;
+		}
+		if (containsData) {
+			try  {
+				instance.data.addAll(instance.JSONParser.loadCells());
+				Log.i(TAG, "Loaded cell data from JSON!");
+			} catch (Exception e) {
+				Log.e(TAG, "Couldn't load cells properly.");
+			}
+			
+		} else {
+			Log.i(TAG, "Loaded cell data from stock XML file.");
+			CellCollectionXMLParser parser = new CellCollectionXMLParser();
+	        InputStream ins = context.getResources().openRawResource(R.raw.cell_collection);
+	        instance.data.addAll(parser.parse(ins));
+		}
+		
+		instance.current = instance.getGroup("My Worksheets").getFirst();
+
+	}
+	
+	public void setData(LinkedList<CellData> cellData) {
+		data = cellData;
 	}
 	
 	public static CellCollection getInstance() {
@@ -100,6 +111,16 @@ public class CellCollection {
 	
 	public void addCell(CellData cell) {
 		data.add(cell);
+	}
+	
+	public boolean saveCells () {
+		try {
+			JSONParser.saveCellData(data);
+			return true;
+		} catch (Exception e) {
+			Log.e(TAG, "Error saving cells to JSON. " + e.getLocalizedMessage());
+			return false;
+		}
 	}
 	
 	protected File getCacheDirBase() {
