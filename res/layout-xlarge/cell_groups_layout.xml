@@ -25,7 +25,7 @@
                android:layout_weight="1"
                android:layout_marginLeft="10dp"
                android:drawSelectorOnTop="false"/>
-     
+     <!--  
      <TextView
          android:id="@+id/ad"
          android:layout_width="468px"
@@ -34,6 +34,7 @@
          android:text="place ad here (468x60)?"
          android:background="@drawable/advertising"
          android:textAppearance="?android:attr/textAppearanceLarge" />
+         -->
 
  </LinearLayout>
 

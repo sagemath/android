@@ -91,6 +91,7 @@ public class OutputView
 	private OutputBlock getOutputBlock(String output_block) {
 		ListIterator<OutputBlock> iter = blocks.listIterator();
 		//Log.i(TAG, "getOutputBlock(String output_block): " + output_block);
+		try {
 		while (iter.hasNext()) {
 			OutputBlock block = iter.next();
 			if (block.getOutputBlock().equals(output_block)) {
@@ -99,6 +100,11 @@ public class OutputView
 				return block;
 			}
 		}
+		} catch (Exception e) {
+			Log.e(TAG, "Error getting output block.");
+			return newOutputBlock();
+		}
+		
 		Log.i(TAG, "Returning newOutputBlock()");
 		
 		return newOutputBlock();
@@ -163,7 +169,7 @@ public class OutputView
 				interactView.set(interact);
 				interactView.setOnInteractListener(OutputView.this);
 				Log.i(TAG, "Adding interact view: " +interact.toString());
-				addView(interactView);
+				addView(interactView, 0);
 			}
 			if (finished != null) 
 				Log.i(TAG, "onSageFinishedListener called.");

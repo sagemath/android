@@ -4,5 +4,12 @@
     <string name="hello">Hello World, SageActivity!</string>
     <string name="app_name">Sage</string>
     <string name="history">History</string>
+    <string name="add_new_title">Add New Cell</string>
+    <string name="insert_title_label">Title</string>
+    <string name="insert_title_hint">Name this Cell.</string>
+    <string name="insert_group_label">Group</string>
+    <string name="insert_group_hint">Select a Group.</string>
+    <string name="insert_input_label">Input</string>
+    <string name="insert_input_hint">Enter your calculation input.</string>
 
 </resources>

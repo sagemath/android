@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +39,8 @@ Button.OnClickListener,
 OutputView.onSageListener,
 OnItemSelectedListener
 {
-	private final static String TAG = "SageActivity";
+	private static final String TAG = "SageActivity";
+	private static final String DIALOG_NEW_CELL = "newCell";
 
 	private ChangeLog changeLog;
 
@@ -89,10 +91,10 @@ OnItemSelectedListener
 			Log.i(TAG, "Cell uuid is: " + cell.uuid.toString());
 			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
 		} catch (Exception e) {}
-		
+
 		if (cell.group.equals("History")) {
 			outputView.setOutputBlocks(cell.htmlData);
-			
+
 			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
 		} else {
 			try {
@@ -109,6 +111,11 @@ OnItemSelectedListener
 			getActionBarHelper().setRefreshActionItemState(true);    
 
 		input.setText(cell.getInput());
+		Boolean isNewCell = getIntent().getBooleanExtra("NEWCELL", false);
+		if (isNewCell){
+			runButton();
+		}
+
 	}
 
 
@@ -129,6 +136,11 @@ OnItemSelectedListener
 			return true;
 		case R.id.menu_refresh:
 			runButton();
+			return true;
+		case R.id.menu_add:
+			FragmentManager fm = this.getSupportFragmentManager();
+			NewCellDialog dialog = new NewCellDialog();
+			dialog.show(fm, DIALOG_NEW_CELL);
 			return true;
 		case R.id.menu_search:
 			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
@@ -190,8 +202,15 @@ OnItemSelectedListener
 		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 		server.interrupt();
-		outputView.clear();
-		Log.i(TAG, "Called outputView.clear()!");
+		try {
+			if (!cell.getGroup().equals("History")) {
+				outputView.clear();
+				Log.i(TAG, "Called outputView.clear()!");
+			}
+		} catch (Exception e){
+			Log.e(TAG, "Error clearing output...");
+		}
+
 		server.query(input.getText().toString());
 		getActionBarHelper().setRefreshActionItemState(true);
 		outputView.requestFocus();

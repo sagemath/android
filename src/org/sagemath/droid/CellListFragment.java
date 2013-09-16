@@ -19,6 +19,12 @@ public class CellListFragment
 	protected CellListAdapter adapter;
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		

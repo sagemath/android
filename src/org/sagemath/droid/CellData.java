@@ -40,21 +40,25 @@ public class CellData {
 	protected String input;
 	protected Integer rank;
 	protected Boolean favorite;
-	protected String htmlData = "";
+	protected String htmlData;
 	protected LinkedList<String> outputBlocks;
 
-	public CellData() {}
+	public CellData() {
+		uuid = UUID.randomUUID();
+		favorite = false;
+		htmlData = "";
+	}
 
 	public CellData(CellData originalCell) {
-		this.uuid = UUID.randomUUID(); 
-		this.group = "History";
-		this.title = originalCell.title;
+		uuid = UUID.randomUUID(); 
+		group = "History";
+		title = originalCell.title;
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa",Locale.US);
-		this.description = dateFormat.format(date);
-		this.input = originalCell.input;
-		this.rank = originalCell.rank;
-		this.favorite = originalCell.favorite;
+		description = dateFormat.format(date);
+		input = originalCell.input;
+		rank = originalCell.rank;
+		favorite = originalCell.favorite;
 
 		/*
 		if (originalCell.htmlData.contains("null")) {
@@ -64,7 +68,7 @@ public class CellData {
 			originalCell.htmlData.replace("<html><body></body></html>", "");
 		}*/
 
-		this.htmlData = originalCell.htmlData;
+		htmlData = originalCell.htmlData;
 
 		saveOutput(uuid.toString(), htmlData);
 	}

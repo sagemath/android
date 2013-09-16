@@ -44,6 +44,13 @@ public class CellGroupsFragment extends ListFragment {
 	protected CellGroupsAdapter adapter;
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		adapter.notifyDataSetChanged();
+	}
+	
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		groups = CellCollection.getInstance().groups();
@@ -55,11 +62,6 @@ public class CellGroupsFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.cell_groups_layout, container);
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
 	}
 	
 	@Override

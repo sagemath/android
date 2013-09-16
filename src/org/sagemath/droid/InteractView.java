@@ -123,23 +123,26 @@ public class InteractView extends TableLayout {
 		InteractContinuousSlider slider = new InteractContinuousSlider(this, variable, context);
 		slider.setRange(control);
 		addView(slider);
+		//Log.i(TAG, "Added Continuous Slider view!");
 	}
 	
 	protected void addDiscreteSlider(String variable, JSONObject control) throws JSONException {
 		InteractDiscreteSlider slider = new InteractDiscreteSlider(this, variable, context);
 		slider.setValues(control);
 		addView(slider);
+		//Log.i(TAG, "Added Discrete Slider view!");
 	}
 	
 	protected void addSelector(String variable, JSONObject control) throws JSONException {
 		InteractSelector selector = new InteractSelector(this, variable, context);
 		selector.setValues(control);
 		addView(selector);
+		//Log.i(TAG, "Added Selector view!");
 	}
 
 	
 	protected void notifyChange(InteractControlBase view) {
-		Log.i(TAG, "InteractView value: " + view.getVariableName() + " = " + view.getValue());
+		//Log.i(TAG, "InteractView value: " + view.getVariableName() + " = " + view.getValue());
 		listener.onInteractListener(interact, view.getVariableName(), view.getValue());
 	}
 	
