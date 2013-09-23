@@ -14,6 +14,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -46,6 +47,7 @@ public class SageSingleCell {
 	private String server_path_eval = "/eval";
 	private String server_path_output_poll = "/output_poll";
 	private String server_path_files = "/files";
+	private URI shareURI;
 	ServerTask task;
 
 	protected boolean downloadDataFiles = true;
@@ -266,11 +268,17 @@ public class SageSingleCell {
 
 		private void init() {
 			Log.i(TAG, "SageSingleCell.init() called");
+			
 			HttpParams params = new BasicHttpParams();
 			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 			httpClient = new DefaultHttpClient(params);
 			//addThread(this);
 			currentRequest = request = new ExecuteRequest(sageInput, sageMode, session);
+			try {
+				shareURI = getShareURI(sageInput);
+			} catch (Exception e) {
+				Log.e(TAG, "Error getting Share URI" + e.getLocalizedMessage());
+			}
 		}
 
 		public ServerTask() {
@@ -310,6 +318,52 @@ public class SageSingleCell {
 
 		public boolean isInterrupted() {
 			return interrupt;
+		}
+		
+		public URI getShareURI(String sageInput) throws 
+				JSONException, URISyntaxException, ClientProtocolException, IOException {
+			URI shareURI = new URI("http://sagecell.sagemath.org");
+			/*
+			JSONObject permalinkContentHeader = new JSONObject().put("msg_type","execute_request");
+			JSONObject permalinkContentCode = new JSONObject().put("code", sageInput);
+			JSONObject permalinkMessage = new JSONObject();
+			permalinkMessage.put("content", permalinkContentCode);
+			permalinkMessage.put("header", permalinkContentHeader);
+			permalinkMessage.put("metadata", new JSONObject());
+			Log.i(TAG, "Permalink JSON message: " + permalinkMessage.toString());
+			*/
+			URI absolute = new URI("https://sagecell.sagemath.org");
+			URI permalinkRelative = new URI("/permalink");
+			URI permalinkURI = absolute.resolve(permalinkRelative);
+			
+			HttpPost permalinkPost = new HttpPost();
+			permalinkPost.setURI(permalinkURI);
+			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+			postParameters.add(new BasicNameValuePair("code", sageInput));
+		    //postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
+		    //postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
+		    permalinkPost.setEntity(new UrlEncodedFormEntity(postParameters));
+		    
+		    HttpParams params = new BasicHttpParams();
+			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+			
+		    HttpClient shareHttpClient = new DefaultHttpClient(params);
+		    HttpResponse httpResponse = shareHttpClient.execute(permalinkPost);
+			InputStream outputStream = httpResponse.getEntity().getContent();
+			String output = SageSingleCell.streamToString(outputStream);
+			outputStream.close();
+			
+			Log.i(TAG, "output = " + output);
+			JSONObject outputJSON = new JSONObject(output);
+
+			if (outputJSON.has("query")) {
+				String query_id = outputJSON.getString("query");
+				URI shareURIRelative = new URI("/?q=" + query_id);
+				shareURI = shareURI.resolve(shareURIRelative);
+			}
+			Log.i(TAG, "Share URI: " + shareURI);
+			
+			return shareURI;
 		}
 
 		protected HttpResponse postEval(JSONObject request)
@@ -567,6 +621,10 @@ public class SageSingleCell {
 		Log.i(TAG, "sageInput is " + sageInput);
 		task = new ServerTask(sageInput);
 		task.start();
+	}
+	
+	public URI getShareURI() {
+		return shareURI;
 	}
 
 	/**

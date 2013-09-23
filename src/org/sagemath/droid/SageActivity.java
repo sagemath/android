@@ -147,6 +147,11 @@ OnItemSelectedListener
 			return true;
 		case R.id.menu_share:
 			Toast.makeText(this, "Tapped share", Toast.LENGTH_SHORT).show();
+			String shareURL = server.getShareURI().toString();
+			Intent share = new Intent(android.content.Intent.ACTION_SEND);
+			share.setType("text/plain");
+			share.putExtra(Intent.EXTRA_TEXT, shareURL);
+			startActivity(share);
 			return true;
 		case R.id.menu_changelog:
 			changeLog.getFullLogDialog().show();
