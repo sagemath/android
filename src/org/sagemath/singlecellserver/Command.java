@@ -3,6 +3,7 @@ package org.sagemath.singlecellserver;
 import java.util.UUID;
 
 import org.json.JSONObject;
+
 import android.util.Log;
 
 
@@ -65,14 +66,8 @@ public class Command {
 		}
 		JSONWriter writer = new JSONWriter();
 		writer.write(json.toString());
-//		try {
-//			json.write(writer);
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
 		StringBuffer str = writer.getBuffer();
 		System.out.println(str);	
 	}
-
 	
 }

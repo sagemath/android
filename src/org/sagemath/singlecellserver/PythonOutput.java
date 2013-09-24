@@ -5,8 +5,6 @@ import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 
 /**
  * <h1>Python output</h1>

@@ -2,8 +2,6 @@ package org.sagemath.droid;
 
 import java.util.LinkedList;
 
-import javax.crypto.spec.IvParameterSpec;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

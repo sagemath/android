@@ -25,7 +25,6 @@ public class Traceback extends CommandOutput {
 	public String toShortString() {
 		return "Traceback "+ename;
 	}
-
 	
 }
 

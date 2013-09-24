@@ -60,14 +60,6 @@ public class CellData {
 		rank = originalCell.rank;
 		favorite = originalCell.favorite;
 
-		/*
-		if (originalCell.htmlData.contains("null")) {
-			originalCell.htmlData.replace("null", "");
-		}
-		if (originalCell.htmlData.contains("<html><body></body></html>")) {
-			originalCell.htmlData.replace("<html><body></body></html>", "");
-		}*/
-
 		htmlData = originalCell.htmlData;
 
 		saveOutput(uuid.toString(), htmlData);
@@ -229,16 +221,7 @@ public class CellData {
 	}
 
 	public JSONObject toJSON() throws JSONException {
-		/*
-		 * 	protected UUID uuid;
-			protected String group;
-			protected String title;
-			protected String description;
-			protected String input;
-			protected Integer rank;
-			protected Boolean favorite;
-			protected String htmlData = "";
-		 */
+
 		JSONObject json = new JSONObject();
 		json.put(JSON_UUID, uuid.toString());
 		json.put(JSON_GROUP, group);
@@ -251,8 +234,5 @@ public class CellData {
 
 		return json;
 	}
-
-
-
 
 }

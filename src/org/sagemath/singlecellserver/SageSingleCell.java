@@ -153,20 +153,7 @@ public class SageSingleCell {
 	}
 
 	LinkedList<ServerTask> threads = new LinkedList<ServerTask>();
-/*
-	private void addThread(ServerTask thread) {
-		synchronized (threads) {
-			threads.add(thread);
-		}
-	}
-*/
-/*
-	private void removeThread(ServerTask thread) {
-		synchronized (threads) {
-			threads.remove(thread);
-		}
-	}
-*/
+	
 	public enum LogLevel { NONE, BRIEF, VERBOSE };
 
 	private LogLevel logLevel = LogLevel.NONE;
@@ -272,8 +259,9 @@ public class SageSingleCell {
 			HttpParams params = new BasicHttpParams();
 			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 			httpClient = new DefaultHttpClient(params);
-			//addThread(this);
+			
 			currentRequest = request = new ExecuteRequest(sageInput, sageMode, session);
+			
 			try {
 				shareURI = getShareURI(sageInput);
 			} catch (Exception e) {
@@ -308,8 +296,6 @@ public class SageSingleCell {
 			this.session = session;		
 			this.shell_url = kernel_url + "shell";
 			this.iopub_url = kernel_url + "iopub";
-			
-			//init();
 		}
 
 		public void interrupt() {
@@ -322,16 +308,7 @@ public class SageSingleCell {
 		
 		public URI getShareURI(String sageInput) throws 
 				JSONException, URISyntaxException, ClientProtocolException, IOException {
-			URI shareURI = new URI("http://sagecell.sagemath.org");
-			/*
-			JSONObject permalinkContentHeader = new JSONObject().put("msg_type","execute_request");
-			JSONObject permalinkContentCode = new JSONObject().put("code", sageInput);
-			JSONObject permalinkMessage = new JSONObject();
-			permalinkMessage.put("content", permalinkContentCode);
-			permalinkMessage.put("header", permalinkContentHeader);
-			permalinkMessage.put("metadata", new JSONObject());
-			Log.i(TAG, "Permalink JSON message: " + permalinkMessage.toString());
-			*/
+			URI shareURI = new URI("https://sagecell.sagemath.org");
 			URI absolute = new URI("https://sagecell.sagemath.org");
 			URI permalinkRelative = new URI("/permalink");
 			URI permalinkURI = absolute.resolve(permalinkRelative);
@@ -340,8 +317,6 @@ public class SageSingleCell {
 			permalinkPost.setURI(permalinkURI);
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 			postParameters.add(new BasicNameValuePair("code", sageInput));
-		    //postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
-		    //postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
 		    permalinkPost.setEntity(new UrlEncodedFormEntity(postParameters));
 		    
 		    HttpParams params = new BasicHttpParams();
@@ -370,15 +345,13 @@ public class SageSingleCell {
 				throws ClientProtocolException, IOException, SageInterruptedException, JSONException, URISyntaxException {
 			if (interrupt) throw new SageInterruptedException(); 
 			Log.i(TAG, "SageSingleCell: postEval() called\n");
-			//HttpGet httpget = new HttpGet(server);
-			//httpget.addHeader("Accept", "application/json");
 			HttpPost httpPost = new HttpPost();
 			URI absolute = new URI("https://sagecell.sagemath.org");
 			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 			URI kernelRelative = new URI("/kernel");
-			URI tosRelative = new URI("/tos.html");
 			URI sageURI = absolute.resolve(kernelRelative);
-			URI tosURI = absolute.resolve(tosRelative);
+			
+			/*
 			// To construct a URI with a port (for testing on http://sagecell.sagemath.org:10080):
 			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 			int port = 10080;
@@ -386,42 +359,17 @@ public class SageSingleCell {
 					sageURI.getPath(), sageURI.getQuery(), sageURI.getFragment());
 			Log.i(TAG, "Test URI: " + testURI.toString());
 			//httpPost.setURI(testURI);
-			
-			URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
-					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
-			Log.i(TAG, "Terms URI: " + termsURI.toString());
+			*/
 			
 			Log.i(TAG, "Sage URI: " + sageURI.toString());
 			httpPost.setURI(sageURI);
-			//httpPost.addHeader("Accept-Econding", "identity");
-			//httpPost.addHeader("accepted_tos", "true");
-			
 			
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 		    postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
 		    postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
 		    httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 
-			//httpPost.setHeader("Accept", "application/json");
-			//MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-			//httpPost.setEntity(multipartEntity);
-		    
-			/*
-			
-			URI absolute = new URI("http://sagecell.sagemath.org");
-			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
-			URI tosRelative = new URI("/tos.html");
-			URI tosURI = absolute.resolve(tosRelative);
-			URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
-					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
-			Log.i(TAG, "Terms URI: " + termsURI.toString());
-			HttpGet termsGet = new HttpGet();
-			termsGet.setURI(termsURI);
-			HttpResponse termsResponse = httpClient.execute(termsGet);
-			InputStream termsStream = termsResponse.getEntity().getContent();
-			String termsHTML = SageSingleCell.streamToString(termsStream);
-			Log.i(TAG, "Terms: " + termsHTML);
-			*/
+
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			InputStream outputStream = httpResponse.getEntity().getContent();
 			String output = SageSingleCell.streamToString(outputStream);
@@ -518,60 +466,10 @@ public class SageSingleCell {
 			}
 			
 		}
-/*
-		protected void sendInitialMessage(String message){
-			//String Stringmessage = "{\"content\": {\"user_variables\": [], \"allow_stdin\": false, \"code\": \""+sageInput+"\", \"silent\": false, \"user_expressions\": {\"_sagecell_files\": \"sys._sage_.new_files()\"}}, \"header\": {\"username\": \"\", \"msg_id\": \""+request.msg_id+"\", \"session\": \""+request.session+"\", \"msg_type\": \"execute_request\"}, \"parent_header\": {}, \"metadata\": {}}";
-			/*
-			try {
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				Log.i(TAG, "Thread couldn't sleep in sendInitialMessage...");
-			}
-			try {
-				shellclient.wait(1000);
-			} catch (Exception e) {
-				Log.i(TAG, "shellclient couldn't sleep in sendInitialMessage...");
-			}
-			
-			
-			shellclient.send(message);
-			Log.i(TAG, "shellclient tried to send message:\n" + message);
-		}
-*/
-/*
-		protected HttpResponse pollOutput(CommandRequest request, int sequence) 
-				throws ClientProtocolException, IOException, SageInterruptedException {
-			if (interrupt) throw new SageInterruptedException(); 
-			Time time = new Time();
-			StringBuilder query = new StringBuilder();
-			time.setToNow();
-			// query.append("?callback=jQuery");
-			query.append("?computation_id=" + request.session.toString());
-			query.append("&sequence=" + sequence);
-			query.append("&rand=" + time.toMillis(true));
-			HttpGet httpGet = new HttpGet(server + server_path_output_poll + query);
-			return httpClient.execute(httpGet);
-		}
-*/
-
-		//	    protected void callSageOutputListener(CommandOutput output) {
-		//			listener.onSageOutputListener(output);
-		//	    }
-		//	    
-		//	    protected void callSageReplaceOutputListener(CommandOutput output) {
-		//			listener.onSageReplaceOutputListener(output);
-		//	    }
-		//	    
-		//	    protected void callSageInteractListener(Interact interact) {
-		//			listener.onSageInteractListener(interact);
-		//	    }
 
 		protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
 			Log.i(TAG, "SageSingleCell.downloadFileURI called for " + filename);
 			String fileurl = kernel_url.replace("ws", "http") + "files/" + filename;
-			//StringBuilder query = new StringBuilder();
-			//query.append("/"+reply.session.toString());
-			//query.append("/"+filename);
 			Log.i(TAG, "Final URI is: " + fileurl);
 			return new URI(fileurl);
 		}
@@ -593,21 +491,8 @@ public class SageSingleCell {
 			//super.run();
 			Log.i(TAG, "SageSingleCell run() called");
 			log(request);
-			// JUST Initialize sockets and send message if 
-			// we're only updating the interact --
-			// don't get new kernel_url
-			/*
-			if (sageInput.contains("update_interact")) {
-				Log.i(TAG, "Running an update_interact...");
-				initializeSockets();
-				sendInitialMessage(request.toString());
-				//removeThread(this);
-				return;
-			} */
-			
 			request.sendRequest(this);
 			return;
-			//listener.onSageFinishedListener(result.getLast());
 		}
 	}
 
@@ -636,32 +521,14 @@ public class SageSingleCell {
 	public void interact(Interact interact, String name, Object value) {
 		Log.i(TAG, "UPDATING INTERACT VARIABLE: " + name);
 		Log.i(TAG, "UPDATED INTERACT VALUE: " + value.toString());
-		/*
-		String sageInput = 
-				"sys._sage_.update_interact(\"" + interact.getID() + 
-				"\",{\"" + name + 
-				"\":" + value.toString() + "})";
-		*/
 		
 		String sageInput = 
 				"sys._sage_.update_interact(\"" + interact.getID() + 
 				"\",\"" + name + 
 				"\"," + value.toString() + ")";
-		
-		/*String sageInput = 
-				"sys._sage_.update_interact(\"" + interact.getID() + 
-				"\"," + name + 
-				"," + value.toString() + ")";
-		*/
-				
-		// ServerTask task = new ServerTask(sageInput, interact.session, kernel_url);
-		// Pass the kernel_url so that we can open a new session without an HTTP post that
-		// gets an entirely different set of sockets.
-		//ServerTask task = new ServerTask(sageInput, interact.session);
+
 		task.currentRequest = task.request = new ExecuteRequest(sageInput, true, interact.session);
-		//task.sageInput = sageInput;
-		//task.session = interact.session;
-		//task.initializeSockets();
+
 		String message = "";
 		
 		try {
@@ -672,18 +539,6 @@ public class SageSingleCell {
 		
 		Log.i(TAG, "SageSingleCell.interact() trying to send message...");
 		task.shellclient.send(message);
-		
-		/*
-		synchronized (threads) {
-			for (ServerTask thread: threads)
-				if (thread.interact == interact) {
-					thread.currentRequest = task.request;
-					thread.outputBlocks.clear();
-				}
-		}
-		*/
-		//task.setSendOnly(true);
-		//task.start();
 	}
 
 	/**
@@ -710,175 +565,5 @@ public class SageSingleCell {
 		}
 		return false;
 	}
+	
 }
-
-
-/*
-
-=== Send request === 
-
-POST /eval HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 506
-Cache-Control: max-age=0
-Origin: http://localhost:8001
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryh9NcFTBy2FksKYpN
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,* / *;q=0.8
-Referer: http://localhost:8001/
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: en-US,en;q=0.8,de;q=0.6,ja;q=0.4,fr-FR;q=0.2,he;q=0.2,ga;q=0.2,ko;q=0.2
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
-Cookie: DWd8c32a438995fbf98bd158172221d77e=dmJyYXVu%7C1%7CWHhzTnc5M0NXZDZyekQzcjlVL1lNZz09; DOKU_PREFS=sizeCtl%23679px
-
-------WebKitFormBoundaryh9NcFTBy2FksKYpN
-Content-Disposition: form-data; name="commands"
-
-"1+1"
-------WebKitFormBoundaryh9NcFTBy2FksKYpN
-Content-Disposition: form-data; name="session_id"
-
-87013257-7c34-4c83-b7ed-2ec7e7480935
-------WebKitFormBoundaryh9NcFTBy2FksKYpN
-Content-Disposition: form-data; name="msg_id"
-
-489696dc-ed8d-4cb6-a140-4282a43eda95
-------WebKitFormBoundaryh9NcFTBy2FksKYpN
-Content-Disposition: form-data; name="sage_mode"
-
-True
-------WebKitFormBoundaryh9NcFTBy2FksKYpN--
-HTTP/1.1 200 OK
-Server: nginx/1.0.4
-Date: Mon, 12 Dec 2011 19:12:14 GMT
-Content-Type: text/html; charset=utf-8
-Connection: keep-alive
-Content-Length: 0
-
-
-=== Poll for reply (unsuccessfully, try again) ===
-
-GET /output_poll?callback=jQuery15015045171417295933_1323715011672&computation_id=25508880-6a6a-4353-9439-689468ec679e&sequence=0&_=1323718075839 HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-x-requested-with: XMLHttpRequest
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2
-accept: text/javascript, application/javascript, * / *; q=0.01
-Referer: http://localhost:8001/
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: en-US,en;q=0.8,de;q=0.6,ja;q=0.4,fr-FR;q=0.2,he;q=0.2,ga;q=0.2,ko;q=0.2
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
-Cookie: DWd8c32a438995fbf98bd158172221d77e=dmJyYXVu%7C1%7CWHhzTnc5M0NXZDZyekQzcjlVL1lNZz09; DOKU_PREFS=sizeCtl%23679px
-
-HTTP/1.1 200 OK
-Server: nginx/1.0.4
-Date: Mon, 12 Dec 2011 19:27:55 GMT
-Content-Type: text/javascript; charset=utf-8
-Connection: keep-alive
-Content-Length: 44
-
-jQuery15015045171417295933_1323715011672({})
-
-
-
-=== Poll for reply (success) ===
-
-GET /output_poll?callback=jQuery15015045171417295933_1323715011662&computation_id=87013257-7c34-4c83-b7ed-2ec7e7480935&sequence=0&_=1323717134406 HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-x-requested-with: XMLHttpRequest
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2
-accept: text/javascript, application/javascript, * / *; q=0.01
-Referer: http://localhost:8001/
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: en-US,en;q=0.8,de;q=0.6,ja;q=0.4,fr-FR;q=0.2,he;q=0.2,ga;q=0.2,ko;q=0.2
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
-Cookie: DWd8c32a438995fbf98bd158172221d77e=dmJyYXVu%7C1%7CWHhzTnc5M0NXZDZyekQzcjlVL1lNZz09; DOKU_PREFS=sizeCtl%23679px
-
-=== Reply with result from server ===
-
-HTTP/1.1 200 OK
-Server: nginx/1.0.4
-Date: Mon, 12 Dec 2011 19:12:14 GMT
-Content-Type: text/javascript; charset=utf-8
-Connection: keep-alive
-Content-Length: 830
-
-jQuery15015045171417295933_1323715011662(
-{"content": [{
-  "parent_header": 
-  {
-    "username": "", 
-    "msg_id": "489696dc-ed8d-4cb6-a140-4282a43eda95", 
-    "session": "87013257-7c34-4c83-b7ed-2ec7e7480935"}, 
-  "msg_type": "pyout", 
-  "sequence": 0, 
-  "output_block": null, 
-  "content": {
-    "data": {"text/plain": "2"}}, 
-  "header": {"msg_id": "1620524024608841996"}}, 
-  {
-    "parent_header": 
-    {
-      "username": "", 
-      "msg_id": "489696dc-ed8d-4cb6-a140-4282a43eda95", 
-      "session": "87013257-7c34-4c83-b7ed-2ec7e7480935"}, 
-    "msg_type": "execute_reply", 
-    "sequence": 1, 
-    "output_block": null, 
-    "content": {"status": "ok"}, 
-    "header": {"msg_id": "1501182239947896697"}}, 
-    {
-      "parent_header": {"session": "87013257-7c34-4c83-b7ed-2ec7e7480935"}, 
-      "msg_type": "extension", 
-      "sequence": 2, 
-      "content": {"msg_type": "session_end"}, 
-      "header": {"msg_id": "1e6db71f-61a0-47f9-9607-f2054243bb67"}
-}]})
-
-
-
-=== Reply with Syntax Erorr ===
-
-GET /output_poll?callback=jQuery15015045171417295933_1323715011664&computation_id=9b3ed6bb-01e8-4a6e-9076-14c71324daf6&sequence=0&_=1323717902557 HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-x-requested-with: XMLHttpRequest
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2
-accept: text/javascript, application/javascript, * / *; q=0.01
-Referer: http://localhost:8001/
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: en-US,en;q=0.8,de;q=0.6,ja;q=0.4,fr-FR;q=0.2,he;q=0.2,ga;q=0.2,ko;q=0.2
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
-Cookie: DWd8c32a438995fbf98bd158172221d77e=dmJyYXVu%7C1%7CWHhzTnc5M0NXZDZyekQzcjlVL1lNZz09; DOKU_PREFS=sizeCtl%23679px
-
-HTTP/1.1 200 OK
-Server: nginx/1.0.4
-Date: Mon, 12 Dec 2011 19:25:02 GMT
-Content-Type: text/javascript; charset=utf-8
-Connection: keep-alive
-Content-Length: 673
-
-jQuery15015045171417295933_1323715011664({"content": [{"parent_header": {"username": "", "msg_id": "df56f48a-d47f-4267-b228-77f051d7d834", "session": "9b3ed6bb-01e8-4a6e-9076-14c71324daf6"}, "msg_type": "execute_reply", "sequence": 0, "output_block": null, "content": {"status": "error", "ename": "SyntaxError", "evalue": "invalid syntax", "traceback": ["\u001b[1;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m                               Traceback (most recent call last)", "\u001b[1;31mSyntaxError\u001b[0m: invalid syntax (<string>, line 39)"]}, "header": {"msg_id": "2853508955959610959"}}]})GET /output_poll?callback=jQuery15015045171417295933_1323715011665&computation_id=9b3ed6bb-01e8-4a6e-9076-14c71324daf6&sequence=1&_=1323717904769 HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-x-requested-with: XMLHttpRequest
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2
-accept: text/javascript, application/javascript, * / *; q=0.01
-Referer: http://localhost:8001/
-Accept-Encoding: gzip,deflate,sdch
-Accept-Language: en-US,en;q=0.8,de;q=0.6,ja;q=0.4,fr-FR;q=0.2,he;q=0.2,ga;q=0.2,ko;q=0.2
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
-Cookie: DWd8c32a438995fbf98bd158172221d77e=dmJyYXVu%7C1%7CWHhzTnc5M0NXZDZyekQzcjlVL1lNZz09; DOKU_PREFS=sizeCtl%23679px
-
-HTTP/1.1 200 OK
-Server: nginx/1.0.4
-Date: Mon, 12 Dec 2011 19:25:04 GMT
-Content-Type: text/javascript; charset=utf-8
-Connection: keep-alive
-Content-Length: 269
-
-jQuery15015045171417295933_1323715011665({"content": [{"parent_header": {"session": "9b3ed6bb-01e8-4a6e-9076-14c71324daf6"}, "msg_type": "extension", "sequence": 1, "content": {"msg_type": "session_end"}, "header": {"msg_id": "e01180d4-934c-4f12-858c-72d52e0330cd"}}]})
-
- */

@@ -12,7 +12,6 @@ import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.Context;
@@ -75,9 +74,5 @@ public class CellCollectionJSONParser {
 		
 		return cells;
 	}
-	
-
-	
-	
 
 }	

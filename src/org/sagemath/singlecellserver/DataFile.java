@@ -76,5 +76,4 @@ public class DataFile extends DisplayData {
         data = buf.toByteArray();
 	}
 
-
 }

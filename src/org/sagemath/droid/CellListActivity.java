@@ -1,13 +1,10 @@
 package org.sagemath.droid;
 
-import org.sagemath.droid.CellGroupsFragment.OnGroupSelectedListener;
-
-import com.example.android.actionbarcompat.ActionBarActivity;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.example.android.actionbarcompat.ActionBarActivity;
 
 public class CellListActivity 
     	extends ActionBarActivity {

@@ -6,8 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 public class ExecuteRequest extends CommandRequest {
 	private final static String TAG = "ExecuteRequest";
 	
@@ -52,8 +50,6 @@ public class ExecuteRequest extends CommandRequest {
 		content.put("allow_stdin", false);
 		content.put("user_variables", new JSONArray());
 
-		//content.put("sage_mode", sage);
-		
 		result.put("metadata", new JSONObject());
 		result.put("parent_header", new JSONObject());
 		result.put("header", header);
@@ -62,18 +58,5 @@ public class ExecuteRequest extends CommandRequest {
 		
 		return result;
 	}
-	
-	
-	
-//    	{"parent_header":{},
-//    		"header":{
-//    		   "msg_id":"1ec1b4b4-722e-42c7-997d-e4a9605f5056",
-//    		   "session":"c11a0761-910e-4c8c-b94e-803a13e5859a"},
-//    		"msg_type":"execute_request",
-//    		"content":{"code":"code to execute",
-//    		            "sage_mode":true}}
-
-    
-
 	
 }

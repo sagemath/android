@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;

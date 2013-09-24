@@ -5,8 +5,6 @@ import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 /**
  * The base class for a server reply
  * 
@@ -85,7 +83,6 @@ public class CommandReply extends Command {
 		//Log.d(TAG, "msg_type = " + msg_type);
 		JSONObject content = json.getJSONObject("content");
 		//Log.d(TAG, "content = "+content.toString());
-		//	prettyPrint(json);
 		if (msg_type.equals("pyout"))
 			return new PythonOutput(json);
 		else if (msg_type.equals("status")) {
@@ -129,12 +126,6 @@ public class CommandReply extends Command {
 			return "null";
 		JSONWriter writer = new JSONWriter();
 		writer.write(json.toString());
-//		try {
-			// does not work on Android
-//			json.write(writer);
-//		} catch (JSONException e) {
-//			return e.getLocalizedMessage();
-//		}
 		StringBuffer str = writer.getBuffer();
 		return str.toString();
 	}

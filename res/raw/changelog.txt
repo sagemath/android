@@ -20,6 +20,17 @@
     </style>
   </head>
   <body>
+$ 0.9
+  % Version 0.9
+  _ 2013-09-23
+  	* Application revamped as part of the Google Summer of Code:
+    * UI updated.
+    * Now works with new server protocol.
+    * Interacts, graphics, and more are functional.
+    * History and favorites added.
+    * Ability to share calculations added.
+    * Ability to add and edit calculations added.
+    * Report any crashes and leave a review in the Play Store with feedback on issues or feature requests!
 $ 0.3
   % Version 0.3
   _ 2012-02-07

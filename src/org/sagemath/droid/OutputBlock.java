@@ -126,10 +126,6 @@ public class OutputBlock extends WebView {
 		divs.add(div);
 	}
 	
-	//private void addDivPythonInput(PythonInput pythonInput) {
-	//	String div = htmlify(pythonInput.get());
-	//	divs.add(div);
-	//}
 	
 	private void addDivResultStream(ResultStream resultStream) {
 		Log.i(TAG, "addDivResultStream");

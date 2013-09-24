@@ -1,13 +1,9 @@
 package org.sagemath.singlecellserver;
 
-import java.util.UUID;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-
-
 
 /**
  *

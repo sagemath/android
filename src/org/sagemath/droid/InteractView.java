@@ -2,7 +2,6 @@ package org.sagemath.droid;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,14 +50,7 @@ public class InteractView extends TableLayout {
 		this.interact = interact;
 		removeAllViews();
 		JSONArray layout = interact.getLayout();
-		//JSONArray vars = new JSONArray();
-		/*
-		try {
-			vars = layout.getJSONArray(0);
-		} catch (JSONException e) {
-			Log.e(TAG, "Error parsing layout.vars" + e.getLocalizedMessage());
-		}*/
-		//ListIterator<String> iter = layoutPositions.listIterator();
+
 		int i = 0;
 		while (i < layout.length()) {
 			JSONArray variables;
@@ -95,29 +87,6 @@ public class InteractView extends TableLayout {
 			Log.e(TAG, e.getLocalizedMessage());
 		}
 	}
-			
-//		String variable = "n";
-//		JSONObject control = interact.getControls();
-//		try {
-//			control = new JSONObject(
-//"		{"+
-//"            \"raw\":true,"+
-//"            \"control_type\":\"slider\","+
-//"            \"display_value\":true,"+
-//"            \"default\":0,"+
-//"            \"range\":["+
-//"               0,"+
-//"              100"+
-//"            ],"+
-//"            \"subtype\":\"continuous\","+
-//"            \"label\":null,"+
-//"            \"step\":0.4"+
-//"         }");
-//			addSlider(variable, control);
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//			return;
-//		}
 
 	protected void addContinuousSlider(String variable, JSONObject control) throws JSONException {
 		InteractContinuousSlider slider = new InteractContinuousSlider(this, variable, context);

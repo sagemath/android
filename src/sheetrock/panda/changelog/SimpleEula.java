@@ -72,10 +72,12 @@ public class SimpleEula {
 			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 			URI tosRelative = new URI("/tos.html");
 			URI tosURI = absolute.resolve(tosRelative);
+			/*
 			int port = 10080;
 			URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
 					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
 			Log.i(TAG, "Terms URI: " + termsURI.toString());
+			*/
 			HttpGet termsGet = new HttpGet();
 			termsGet.setURI(tosURI);
 

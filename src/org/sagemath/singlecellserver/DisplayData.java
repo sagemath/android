@@ -18,7 +18,6 @@ public class DisplayData extends CommandOutput {
 		mime = data.keys().next().toString();
 		value = data.getString(mime);
 		Log.i(TAG, "DisplayData value is: " + value);
-		// prettyPrint(json);
 	}
 
 	public String toString() {
@@ -38,9 +37,6 @@ public class DisplayData extends CommandOutput {
 			return value;
 		if (mime.equals("text/plain"))
 			return "<pre>"+value+"</pre>";
-		//return null;
-		//TODO Fix the mime values.
-		//return "Failed to handle mime in DisplayData (FIX THIS!)";
 		return "";
 	}
 	

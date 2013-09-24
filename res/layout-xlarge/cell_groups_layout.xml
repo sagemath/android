@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="fill_parent"
@@ -25,16 +25,6 @@
                android:layout_weight="1"
                android:layout_marginLeft="10dp"
                android:drawSelectorOnTop="false"/>
-     <!--  
-     <TextView
-         android:id="@+id/ad"
-         android:layout_width="468px"
-         android:layout_height="60px"
-         android:layout_weight="0"
-         android:text="place ad here (468x60)?"
-         android:background="@drawable/advertising"
-         android:textAppearance="?android:attr/textAppearanceLarge" />
-         -->
 
  </LinearLayout>
 

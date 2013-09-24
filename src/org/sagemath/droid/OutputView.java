@@ -9,15 +9,12 @@ import org.sagemath.singlecellserver.CommandOutput;
 import org.sagemath.singlecellserver.CommandReply;
 import org.sagemath.singlecellserver.Interact;
 import org.sagemath.singlecellserver.SageSingleCell;
-import org.sagemath.singlecellserver.SageSingleCell.ServerTask;
 
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.webkit.WebSettings;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 
 public class OutputView 
 		extends LinearLayout 
@@ -138,15 +135,6 @@ public class OutputView
 		private CommandReply finished;
 		@Override
 		public void run() {
-			/*
-			if (interact != null){
-				OutputBlock block = getOutputBlock(output);
-				block.numberDivs();
-				//if (block.numberDivs()) {
-				//	block.clearBlocks();
-				//}
-			}
-			*/
 			
 			if (output != null) {
 				// Log.d(TAG, "set "+output.toShortString());
@@ -161,10 +149,7 @@ public class OutputView
 				block.add(additionalOutput);
 			}
 			if (interact != null) {
-				
-				//OutputBlock block = getOutputBlock(output);
-				//block.numberDivs();
-				
+
 				InteractView interactView = new InteractView(context);
 				interactView.set(interact);
 				interactView.setOnInteractListener(OutputView.this);
@@ -191,13 +176,8 @@ public class OutputView
 				OutputBlock outputBlock = newOutputBlock();
 				outputBlock.set(block);
 			}
-		}
-			
-		//block.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-		// displayResult();
-		//block.getSettings().setCacheMode(WebSettings.LOAD_NORMAL);			
+		}			
 	}
-
 
 	public void clear() {
 		removeAllViews();
@@ -208,16 +188,6 @@ public class OutputView
 			Log.e(TAG, "Error clearing output blocks " + e.getLocalizedMessage());
 		}
 		cell.clearCache();
-	}
-	
-	public void interactClear() {
-		//removeAllViews();
-		//blocks.clear();
-		//cell.clearCache();
-	}
-	
-	public void displayHistory() {
-		
 	}
 
 	@Override

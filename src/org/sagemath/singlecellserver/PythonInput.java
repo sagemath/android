@@ -3,8 +3,6 @@ package org.sagemath.singlecellserver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 
 /**
  *

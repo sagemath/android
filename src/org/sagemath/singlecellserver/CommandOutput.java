@@ -3,8 +3,6 @@ package org.sagemath.singlecellserver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 /**
  * Roughly, a CommandOutput is any JSON object that has a "output_block" field. These are intended 
  * to be displayed on the screen.
@@ -21,9 +19,8 @@ public class CommandOutput extends CommandReply {
 		super(json);
 		// TODO: FIX THIS -- output_block is no longer a part of 
 		// the sage server's messages!
-		output_block = "Why does this even exist anymore?";
-//		prettyPrint();
-//		System.out.println("block = " + output_block);
+		output_block = "";
+ 		//System.out.println("block = " + output_block);
 	}
 
 	public boolean containsOutput() {
@@ -34,6 +31,5 @@ public class CommandOutput extends CommandReply {
 	public String outputBlock() {
 		return output_block;
 	}
-	
 	
 }

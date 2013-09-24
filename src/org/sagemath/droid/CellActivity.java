@@ -18,7 +18,6 @@ public class CellActivity
 
 	private ChangeLog changeLog;
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -146,12 +146,16 @@ OnItemSelectedListener
 			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.menu_share:
-			Toast.makeText(this, "Tapped share", Toast.LENGTH_SHORT).show();
-			String shareURL = server.getShareURI().toString();
-			Intent share = new Intent(android.content.Intent.ACTION_SEND);
-			share.setType("text/plain");
-			share.putExtra(Intent.EXTRA_TEXT, shareURL);
-			startActivity(share);
+			try {
+				String shareURL = server.getShareURI().toString();
+				Intent share = new Intent(android.content.Intent.ACTION_SEND);
+				share.setType("text/plain");
+				share.putExtra(Intent.EXTRA_TEXT, shareURL);
+				startActivity(share);
+			} catch (Exception e) {
+				runButton();
+				Toast.makeText(this, "You must run the calculation first! Try sharing again.", Toast.LENGTH_SHORT).show();
+			}
 			return true;
 		case R.id.menu_changelog:
 			changeLog.getFullLogDialog().show();
@@ -167,7 +171,7 @@ OnItemSelectedListener
 			startActivity(intent); 
 			return true;
 		case R.id.menu_manual_dev:
-			uri = Uri.parse("http://http://www.sagemath.org/doc/reference/");
+			uri = Uri.parse("http://www.sagemath.org/doc/reference/");
 			intent = new Intent(Intent.ACTION_VIEW, uri); 
 			startActivity(intent); 
 			return true;
@@ -175,11 +179,6 @@ OnItemSelectedListener
 		return super.onOptionsItemSelected(item);
 	}
 
-
-	//    public void setTitle(String title) {
-	//    	this.title.setText(title);
-	//    }
-	//
 	@Override
 	public void onClick(View v) {
 		int cursor = input.getSelectionStart();
@@ -230,8 +229,7 @@ OnItemSelectedListener
 	@Override
 	public void onSageInteractListener(Interact interact, String name, Object value) {
 		Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
-		//outputView.interactClear();
-		//Log.i(TAG, "Interact output view cleared!");
+
 		server.interact(interact, name, value);
 		Log.i(TAG, "onSageInteractListener() called!");
 	}

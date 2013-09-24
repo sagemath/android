@@ -14,7 +14,6 @@ public class HttpError extends CommandReply {
 		return "HTTP error "+message;
 	}
 	
-	
 	@Override
 	public boolean terminateServerConnection() {
 		return true;
