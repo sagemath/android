@@ -2,31 +2,40 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sagemath.droid"
     android:versionCode="5"
-    android:versionName="0.9" >
+    android:versionName="0.9"
+    android:installLocation="auto">
 
-    <uses-sdk android:minSdkVersion="4" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="18" />
+
+    <uses-permission
+        android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
         <activity
-            android:label="@string/app_name"
-            android:name="SageActivity"
-   		    android:theme="@style/AppTheme">
+            android:name="SageActivity">
         </activity>
+
         <activity 
-            android:name="CellActivity"
-            android:theme="@style/AppTheme">
+            android:name="CellActivity">
+
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
         <activity 
-            android:name="CellListActivity" 
-            android:theme="@style/AppTheme">
+            android:name="CellListActivity">
         </activity>
+
     </application>
 
 </manifest>
