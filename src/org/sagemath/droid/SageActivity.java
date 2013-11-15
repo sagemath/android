@@ -62,8 +62,6 @@ OnItemSelectedListener
 		cell = CellCollection.getInstance().getCurrentCell();
 
 
-		server.setServer("http://aleph.sagemath.org", "/eval", "/output_poll", "/files");
-
 		setContentView(R.layout.main);
 
 		changeLog = new ChangeLog(this);
@@ -153,6 +151,7 @@ OnItemSelectedListener
 				share.putExtra(Intent.EXTRA_TEXT, shareURL);
 				startActivity(share);
 			} catch (Exception e) {
+				Log.e(TAG, "Couldn't share for some reason... " + e.getLocalizedMessage());
 				runButton();
 				Toast.makeText(this, "You must run the calculation first! Try sharing again.", Toast.LENGTH_SHORT).show();
 			}

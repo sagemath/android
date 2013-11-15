@@ -26,6 +26,7 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.codebutler.android_websockets.WebSocketClient;
@@ -41,13 +42,7 @@ public class SageSingleCell {
 	private final static String TAG = "SageSingleCell";
 
 	private long timeout  = 30*1000;
-
-	// private String server = "http://localhost:8001";
-	private String server = "https://sagecell.sagemath.org/kernel";
-	private String server_path_eval = "/eval";
-	private String server_path_output_poll = "/output_poll";
-	private String server_path_files = "/files";
-	private URI shareURI;
+	private URI activityShareURI;
 	ServerTask task;
 
 	protected boolean downloadDataFiles = true;
@@ -69,12 +64,6 @@ public class SageSingleCell {
 	 * @param eval The path on the server for the eval post, for example "/eval"
 	 * @param poll The path on the server for the output polling, for example "/output_poll"
 	 */
-	public void setServer(String server, String eval, String poll, String files) {
-		this.server = server;
-		this.server_path_eval = eval;
-		this.server_path_output_poll = poll;
-		this.server_path_files = files;
-	}
 
 	public interface OnSageListener {
 
@@ -153,7 +142,7 @@ public class SageSingleCell {
 	}
 
 	LinkedList<ServerTask> threads = new LinkedList<ServerTask>();
-	
+
 	public enum LogLevel { NONE, BRIEF, VERBOSE };
 
 	private LogLevel logLevel = LogLevel.NONE;
@@ -175,8 +164,8 @@ public class SageSingleCell {
 		private CommandRequest request, currentRequest;
 		private LinkedList<String> outputBlocks = new LinkedList<String>();
 		private long initialTime = System.currentTimeMillis();
-		private WebSocketClient shellclient;
-		private WebSocketClient iopubclient;
+		protected WebSocketClient shellclient;
+		protected WebSocketClient iopubclient;
 		private String kernel_url;
 		private String shell_url;
 		private String iopub_url;
@@ -218,7 +207,7 @@ public class SageSingleCell {
 			log(reply);
 			if (reply instanceof DataFile) {
 				try {
-				((DataFile) reply).downloadFile(this);
+					((DataFile) reply).downloadFile(this);
 				} catch (Exception e) {
 					Log.e(TAG, "Error download file:");
 					e.printStackTrace();
@@ -255,15 +244,15 @@ public class SageSingleCell {
 
 		private void init() {
 			Log.i(TAG, "SageSingleCell.init() called");
-			
+
 			HttpParams params = new BasicHttpParams();
 			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 			httpClient = new DefaultHttpClient(params);
-			
+
 			currentRequest = request = new ExecuteRequest(sageInput, sageMode, session);
-			
+
 			try {
-				shareURI = getShareURI(sageInput);
+				new shareTask().execute(new String[] {sageInput});
 			} catch (Exception e) {
 				Log.e(TAG, "Error getting Share URI" + e.getLocalizedMessage());
 			}
@@ -284,10 +273,10 @@ public class SageSingleCell {
 		public ServerTask(String sageInput, UUID session) {
 			this.sageInput = sageInput;
 			this.session = session;		
-			
+
 			init();
 		}
-		
+
 		public ServerTask(String sageInput, UUID session, String kernel_url) {
 			// Same as the other ServerTask method for updating interacts,
 			// except without running a new postEval -- just initializeSockets
@@ -306,103 +295,128 @@ public class SageSingleCell {
 			return interrupt;
 		}
 		
-		public URI getShareURI(String sageInput) throws 
-				JSONException, URISyntaxException, ClientProtocolException, IOException {
-			URI shareURI = new URI("https://sagecell.sagemath.org");
-			URI absolute = new URI("https://sagecell.sagemath.org");
-			URI permalinkRelative = new URI("/permalink");
-			URI permalinkURI = absolute.resolve(permalinkRelative);
-			
-			HttpPost permalinkPost = new HttpPost();
-			permalinkPost.setURI(permalinkURI);
-			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-			postParameters.add(new BasicNameValuePair("code", sageInput));
-		    permalinkPost.setEntity(new UrlEncodedFormEntity(postParameters));
-		    
-		    HttpParams params = new BasicHttpParams();
-			params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-			
-		    HttpClient shareHttpClient = new DefaultHttpClient(params);
-		    HttpResponse httpResponse = shareHttpClient.execute(permalinkPost);
-			InputStream outputStream = httpResponse.getEntity().getContent();
-			String output = SageSingleCell.streamToString(outputStream);
-			outputStream.close();
-			
-			Log.i(TAG, "output = " + output);
-			JSONObject outputJSON = new JSONObject(output);
+		protected class shareTask extends AsyncTask<String, Void, Void> {
+			@Override
+			protected Void doInBackground(String...strings) {
+				Log.i(TAG, "SageSingleCell: postTask() called\n");
+				try {
+					URI shareURI = new URI("https://sagecell.sagemath.org");
+					URI absolute = new URI("https://sagecell.sagemath.org");
+					URI permalinkRelative = new URI("/permalink");
+					URI permalinkURI = absolute.resolve(permalinkRelative);
 
-			if (outputJSON.has("query")) {
-				String query_id = outputJSON.getString("query");
-				URI shareURIRelative = new URI("/?q=" + query_id);
-				shareURI = shareURI.resolve(shareURIRelative);
+					HttpPost permalinkPost = new HttpPost();
+					permalinkPost.setURI(permalinkURI);
+					ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+					postParameters.add(new BasicNameValuePair("code", strings[0]));
+					permalinkPost.setEntity(new UrlEncodedFormEntity(postParameters));
+
+					HttpParams params = new BasicHttpParams();
+					params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+					HttpClient shareHttpClient = new DefaultHttpClient(params);
+					HttpResponse httpResponse = shareHttpClient.execute(permalinkPost);
+					InputStream outputStream = httpResponse.getEntity().getContent();
+					String output = SageSingleCell.streamToString(outputStream);
+					outputStream.close();
+
+					Log.i(TAG, "output = " + output);
+					JSONObject outputJSON = new JSONObject(output);
+
+					if (outputJSON.has("query")) {
+						String query_id = outputJSON.getString("query");
+						URI shareURIRelative = new URI("/?q=" + query_id);
+						shareURI = shareURI.resolve(shareURIRelative);
+						activityShareURI = shareURI;
+						Log.i(TAG, "Share URI: " + activityShareURI);
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "Error creating ShareURI");
+				}
+				
+				return null;
 			}
-			Log.i(TAG, "Share URI: " + shareURI);
 			
-			return shareURI;
+		}
+		
+
+		protected class postTask extends AsyncTask<String, Void, Void> {
+			@Override
+			protected Void doInBackground(String...strings) {
+				Log.i(TAG, "SageSingleCell: postTask() called\n");
+				String output = "";
+				try {
+					/*
+					// To construct a URI with a port (for testing on http://sagecell.sagemath.org:10080):
+					//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
+					int port = 10080;
+					URI testURI = new URI(sageURI.getScheme(), sageURI.getUserInfo(), sageURI.getHost(), port, 
+							sageURI.getPath(), sageURI.getQuery(), sageURI.getFragment());
+					Log.i(TAG, "Test URI: " + testURI.toString());
+					//httpPost.setURI(testURI);
+					 */
+					
+					URI absolute = new URI("https://sagecell.sagemath.org");
+					//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
+					URI kernelRelative = new URI("/kernel");
+					URI sageURI = absolute.resolve(kernelRelative);
+
+					HttpPost httpPost = new HttpPost();
+
+					Log.i(TAG, "Sage URI: " + sageURI.toString());
+					httpPost.setURI(sageURI);
+
+					ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+					postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
+					postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
+					httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
+
+
+					HttpResponse httpResponse = httpClient.execute(httpPost);
+					InputStream outputStream = httpResponse.getEntity().getContent();
+					output = SageSingleCell.streamToString(outputStream);
+					outputStream.close();
+					
+					Log.i(TAG, "output = " + output);
+					JSONObject outputJSON = new JSONObject(output);
+
+					if (outputJSON.has("id") & outputJSON.has("ws_url")) {
+						Log.i(TAG, "JSON has kernel_id and ws_url");
+						String kernel_id = outputJSON.getString("id");
+						String ws_url = outputJSON.getString("ws_url"); 
+						kernel_url = ws_url + "kernel/" + kernel_id.toString() + "/";
+						shell_url = kernel_url + "shell";
+						iopub_url = kernel_url + "iopub";
+						
+						Log.i(TAG, "Kernel URL: " + kernel_url);
+						Log.i(TAG, "Shell URL: " + shell_url);
+						Log.i(TAG, "iopub URL: " + iopub_url);
+						
+						initializeSockets(strings[0]);
+					}
+					
+				
+					
+				} catch (Exception e) {
+					Log.e(TAG, "Error while executing initial POST request." + e.getLocalizedMessage());
+				}
+				return null;
+			}
+		}
+		
+		protected void sendInitialMessage(String initialMessage) {
+			shellclient.send(initialMessage);
 		}
 
-		protected HttpResponse postEval(JSONObject request)
-				throws ClientProtocolException, IOException, SageInterruptedException, JSONException, URISyntaxException {
-			if (interrupt) throw new SageInterruptedException(); 
-			Log.i(TAG, "SageSingleCell: postEval() called\n");
-			HttpPost httpPost = new HttpPost();
-			URI absolute = new URI("https://sagecell.sagemath.org");
-			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
-			URI kernelRelative = new URI("/kernel");
-			URI sageURI = absolute.resolve(kernelRelative);
-			
-			/*
-			// To construct a URI with a port (for testing on http://sagecell.sagemath.org:10080):
-			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
-			int port = 10080;
-			URI testURI = new URI(sageURI.getScheme(), sageURI.getUserInfo(), sageURI.getHost(), port, 
-					sageURI.getPath(), sageURI.getQuery(), sageURI.getFragment());
-			Log.i(TAG, "Test URI: " + testURI.toString());
-			//httpPost.setURI(testURI);
-			*/
-			
-			Log.i(TAG, "Sage URI: " + sageURI.toString());
-			httpPost.setURI(sageURI);
-			
-			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-		    postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
-		    postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
-		    httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 
-
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			InputStream outputStream = httpResponse.getEntity().getContent();
-			String output = SageSingleCell.streamToString(outputStream);
-			outputStream.close();
-
-			Log.i(TAG, "output = " + output);
-			JSONObject outputJSON = new JSONObject(output);
-
-			if (outputJSON.has("kernel_id") & outputJSON.has("ws_url")) {
-				String kernel_id = outputJSON.getString("kernel_id");
-				String ws_url = outputJSON.getString("ws_url"); 
-				kernel_url = ws_url + "kernel/" + kernel_id.toString() + "/";
-				shell_url = kernel_url + "shell";
-				iopub_url = kernel_url + "iopub";
-				//Log.i(TAG, "Kernel URL: " + kernel_url);
-				//Log.i(TAG, "Shell URL: " + shell_url);
-				//Log.i(TAG, "iopub URL: " + iopub_url);
-			}
-
-			initializeSockets();
-			
-			//Log.i(TAG, "shellclient sending request.toString(): " + request.toString());
-			shellclient.send(request.toString());
-
-			return httpResponse;
-		}
-
-		protected void initializeSockets() {
-			//Log.i(TAG, "Initializing socket with shell_url: " + shell_url);
+		protected void initializeSockets(String initialRequest) {
+			final String initialRequestString = initialRequest;
+			Log.i(TAG, "Initializing socket with shell_url: " + shell_url);
 			shellclient = new WebSocketClient(URI.create(shell_url), new WebSocketClient.Listener() {
 				@Override
 				public void onConnect() {
 					Log.d(TAG, "shell socket connected!");
+					sendInitialMessage(initialRequestString);
 				}
 				@Override
 				public void onMessage(String message) {
@@ -422,7 +436,7 @@ public class SageSingleCell {
 					Log.e(TAG, "Error!", error);
 				}
 			}, null);
-			
+
 			iopubclient = new WebSocketClient(URI.create(iopub_url), new WebSocketClient.Listener() {
 				@Override
 				public void onConnect() {
@@ -458,13 +472,13 @@ public class SageSingleCell {
 
 			shellclient.connect();
 			iopubclient.connect();
-			
+
 			try {
 				Thread.sleep(1000);
 			} catch (Exception e) {
 				Log.i(TAG, "Couldn't sleep in initializeSockets");
 			}
-			
+
 		}
 
 		protected URI downloadFileURI(CommandReply reply, String filename) throws URISyntaxException {
@@ -507,9 +521,9 @@ public class SageSingleCell {
 		task = new ServerTask(sageInput);
 		task.start();
 	}
-	
+
 	public URI getShareURI() {
-		return shareURI;
+		return activityShareURI;
 	}
 
 	/**
@@ -521,7 +535,7 @@ public class SageSingleCell {
 	public void interact(Interact interact, String name, Object value) {
 		Log.i(TAG, "UPDATING INTERACT VARIABLE: " + name);
 		Log.i(TAG, "UPDATED INTERACT VALUE: " + value.toString());
-		
+
 		String sageInput = 
 				"sys._sage_.update_interact(\"" + interact.getID() + 
 				"\",\"" + name + 
@@ -530,13 +544,13 @@ public class SageSingleCell {
 		task.currentRequest = task.request = new ExecuteRequest(sageInput, true, interact.session);
 
 		String message = "";
-		
+
 		try {
 			message = task.request.toJSON().toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		Log.i(TAG, "SageSingleCell.interact() trying to send message...");
 		task.shellclient.send(message);
 	}
@@ -565,5 +579,5 @@ public class SageSingleCell {
 		}
 		return false;
 	}
-	
+
 }

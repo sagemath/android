@@ -1,14 +1,10 @@
 package org.sagemath.singlecellserver;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sagemath.singlecellserver.SageSingleCell.SageInterruptedException;
+import org.sagemath.singlecellserver.SageSingleCell.ServerTask.postTask;
 
 import android.util.Log;
 
@@ -44,20 +40,14 @@ public class CommandRequest extends Command {
 	
 	protected void sendRequest(SageSingleCell.ServerTask server) {
 		CommandReply reply;
+		
+		postTask initialPostTask = server.new postTask();
 		try {
 			Log.i(TAG, "CommandRequest.sendRequest() called");
-			HttpResponse httpResponse = server.postEval(toJSON());
+			initialPostTask.execute(new String[] {toJSON().toString()});
 			//processInitialReply(httpResponse);
 			return;
 		} catch (JSONException e) {
-			reply = new HttpError(this, e.getLocalizedMessage());
-		} catch (ClientProtocolException e) {
-			reply = new HttpError(this, e.getLocalizedMessage());
-		} catch (IOException e) {
-			reply = new HttpError(this, e.getLocalizedMessage());
-		} catch (SageInterruptedException e) {
-			reply = new HttpError(this, "Interrupted on user request");
-		} catch (URISyntaxException e) {
 			reply = new HttpError(this, e.getLocalizedMessage());
 		}
 		error = true;
