@@ -20,6 +20,10 @@
     </style>
   </head>
   <body>
+$ 0.9.1
+  % Version 0.9.1
+  _ 2013-11-16
+  	* Bug fixes to address crashing when running calculations.
 $ 0.9
   % Version 0.9
   _ 2013-09-23

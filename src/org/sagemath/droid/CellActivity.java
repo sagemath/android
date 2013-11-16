@@ -23,9 +23,8 @@ public class CellActivity
 		super.onCreate(savedInstanceState);
 		CellCollection.initialize(getApplicationContext());
 		setContentView(R.layout.cell_activity);
-		
 		try {
-			new SimpleEula(this).show();
+			new SimpleEula(this).new EulaTask().execute();
 		} catch (Exception e) {
 			Log.e(TAG, "Error showing EULA: " + e.toString());
 			e.printStackTrace();

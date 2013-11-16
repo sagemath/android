@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -52,8 +53,47 @@ public class SimpleEula {
 		}
 		return pi; 
 	}
+	
+	public class EulaTask extends AsyncTask<Void, Void, String> {
+		@Override
+		protected String doInBackground(Void...voids) {
+			String termsString = "";
+			try {
+				URI absolute = new URI("https://sagecell.sagemath.org");
+				//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
+				URI tosRelative = new URI("/tos.html");
+				URI tosURI = absolute.resolve(tosRelative);
+				/*
+				int port = 10080;
+				URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
+						tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
+				Log.i(TAG, "Terms URI: " + termsURI.toString());
+				*/
+				HttpGet termsGet = new HttpGet();
+				termsGet.setURI(tosURI);
 
-	public void show() throws ClientProtocolException, IOException, SageInterruptedException, JSONException, URISyntaxException {
+				DefaultHttpClient termsHttpClient = new DefaultHttpClient();
+				HttpResponse termsResponse = termsHttpClient.execute(termsGet);
+				InputStream termsStream = termsResponse.getEntity().getContent();
+
+				termsString = SageSingleCell.streamToString(termsStream);
+			} catch (Exception e) {
+				Log.e(TAG, "Error while getting EULA text." + e.getLocalizedMessage());
+			}
+			return termsString;
+		}
+		
+		protected void onPostExecute(String html) {
+			try {
+				show(html);
+			} catch (Exception e) {
+				Log.e(TAG, "Error showing terms: " + e.getLocalizedMessage());
+			}
+			
+		}
+	}
+
+	public void show(String termsHTML) throws ClientProtocolException, IOException, SageInterruptedException, JSONException, URISyntaxException {
 		PackageInfo versionInfo = getPackageInfo();
 
 		// the eulaKey changes every time you increment the version number in the AndroidManifest.xml
@@ -68,24 +108,7 @@ public class SimpleEula {
 			//Includes the updates as well so users know what changed. 
 			//String message = CellActivity.getString(R.string.updates) + "\n\n" + CellActivity.getString(R.string.eula);
 
-			URI absolute = new URI("https://sagecell.sagemath.org");
-			//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
-			URI tosRelative = new URI("/tos.html");
-			URI tosURI = absolute.resolve(tosRelative);
-			/*
-			int port = 10080;
-			URI termsURI = new URI(tosURI.getScheme(), tosURI.getUserInfo(), tosURI.getHost(), port, 
-					tosURI.getPath(), tosURI.getQuery(), tosURI.getFragment());
-			Log.i(TAG, "Terms URI: " + termsURI.toString());
-			*/
-			HttpGet termsGet = new HttpGet();
-			termsGet.setURI(tosURI);
-
-			DefaultHttpClient termsHttpClient = new DefaultHttpClient();
-			HttpResponse termsResponse = termsHttpClient.execute(termsGet);
-			InputStream termsStream = termsResponse.getEntity().getContent();
-
-			String termsHTML = SageSingleCell.streamToString(termsStream);
+			
 			Log.i(TAG, "Terms: " + termsHTML);
 			String warning = "<p>By continuing, you indicate that you have read and agree to the <a href=\"http://sagecell.sagemath.org:10080/tos.html\">Sage Cell Server Terms of Usage</a>:</p>";
 			
