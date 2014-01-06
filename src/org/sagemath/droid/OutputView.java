@@ -188,7 +188,8 @@ public class OutputView
 		} catch (Exception e) {
 			Log.e(TAG, "Error clearing output blocks " + e.getLocalizedMessage());
 		}
-		cell.clearCache();
+		if (cell != null)
+			cell.clearCache();
 	}
 
 	@Override
