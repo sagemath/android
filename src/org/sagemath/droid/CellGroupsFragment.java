@@ -41,7 +41,9 @@ public class CellGroupsFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		adapter.notifyDataSetChanged();
+		groups = CellCollection.getInstance().groups();
+		adapter = new CellGroupsAdapter(getActivity().getApplicationContext(), groups);
+		setListAdapter(adapter);
 	}
 	
 	
