@@ -20,7 +20,7 @@ public class CellListFragment
 	@Override
 	public void onResume() {
 		super.onResume();
-		adapter.notifyDataSetChanged();
+		switchToGroup(null);
 	}
 	
 	@Override
