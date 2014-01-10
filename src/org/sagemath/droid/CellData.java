@@ -70,11 +70,16 @@ public class CellData {
 		uuid = UUID.fromString(json.getString(JSON_UUID));
 		group = json.getString(JSON_GROUP);
 		title = json.getString(JSON_TITLE);
-		description = json.getString(JSON_DESCRIPTION);
+		description = json.optString(JSON_DESCRIPTION);
 		input = json.getString(JSON_INPUT);
 		rank = json.getInt(JSON_RANK);
 		favorite = json.getBoolean(JSON_FAVORITE);
 		htmlData = json.getString(JSON_HTML);
+		
+		if (description == null) {
+			Log.e(TAG, "Null description in CellData. Fixed.");
+			description = "";
+		}
 	}
 
 	public String getGroup() {
