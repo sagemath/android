@@ -26,7 +26,7 @@ public class CellListActivity
 			listFragment.switchToGroup(group);		
 		}
 		
-		setTitle(CellCollection.getInstance().getCurrentCell().getGroup());
+		setTitle(CellCollection.getInstance().getCurrentGroupName());
 	}
 
 	

@@ -16,7 +16,7 @@ public class CellCollection {
 	
 	private static CellCollection instance = new CellCollection();
 	private LinkedList<CellData> data;
-	private CellData current;
+	private CellData currentCell;
 	private Context context;
 	private CellCollectionJSONParser JSONParser;
 	private CellCollection() {}
@@ -47,7 +47,7 @@ public class CellCollection {
 	        instance.data.addAll(parser.parse(ins));
 		}
 		
-		instance.current = instance.getGroup("My Worksheets").getFirst();
+		instance.currentCell = null;
 
 	}
 	
@@ -64,15 +64,23 @@ public class CellCollection {
 	}
 	
 	public CellData getCurrentCell() {
-		return current;
+		return currentCell;
 	}
 	
 	public void setCurrentCell(CellData cell) {
-		current = cell;
+		currentCell = cell;
 	}
 	
 	public LinkedList<CellData> getCurrentGroup() {
-		return getGroup(current.group);
+		if (currentCell == null)
+			return null;
+		return getGroup(currentCell.group);
+	}
+	
+	public String getCurrentGroupName() {
+		if (currentCell == null)
+			return "";
+		return currentCell.group;
 	}
 	
 	private LinkedList<String> groupsCache;

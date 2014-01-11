@@ -1,5 +1,7 @@
 package org.sagemath.droid;
 
+import junit.framework.Assert;
+
 import org.sagemath.singlecellserver.Interact;
 import org.sagemath.singlecellserver.SageSingleCell;
 
@@ -60,7 +62,7 @@ OnItemSelectedListener
 
 		CellCollection.initialize(getApplicationContext());
 		cell = CellCollection.getInstance().getCurrentCell();
-
+		Assert.assertNotNull(cell);	
 
 		setContentView(R.layout.main);
 

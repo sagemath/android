@@ -18,7 +18,8 @@ public class CellGroupsAdapter extends ArrayAdapter<String>  {
 		super(context, R.layout.cell_groups_item, groups);
 		this.context = context;
 		this.groups = groups;
-		selected = groups.indexOf(CellCollection.getInstance().getCurrentCell().getGroup());
+		
+		selected = groups.indexOf(CellCollection.getInstance().getCurrentGroupName());
 	}
 	
 	private int selected;

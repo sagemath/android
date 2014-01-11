@@ -34,8 +34,13 @@ public class CellListFragment
 	public void switchToGroup(String group) {
 		CellCollection cellCollection = CellCollection.getInstance();
 		cells.clear();
-		if (group == null)
-			cells.addAll(cellCollection.getCurrentGroup());
+		if (group == null) {
+			LinkedList<CellData> data = cellCollection.getCurrentGroup();
+			if (data != null)
+				cells.addAll(data);
+			else
+				return;
+		}
 		else
 			cells.addAll(cellCollection.getGroup(group));		
 		cellCollection.setCurrentCell(cells.getFirst());
