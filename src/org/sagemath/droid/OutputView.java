@@ -183,11 +183,13 @@ public class OutputView
 		removeAllViews();
 		blocks.clear();
 		try {
-			blocks.getFirst().clearBlocks();
+			if (!blocks.isEmpty())
+				blocks.getFirst().clearBlocks();
 		} catch (Exception e) {
 			Log.e(TAG, "Error clearing output blocks " + e.getLocalizedMessage());
 		}
-		cell.clearCache();
+		if (cell != null)
+			cell.clearCache();
 	}
 
 	@Override
