@@ -47,7 +47,7 @@ public class NewCellDialog extends DialogFragment {
 							newCell.title = title.getText().toString();
 						}
 						if (group.getText().toString().equals("")) {
-							newCell.group = "Uncategorized";
+							newCell.group = "My Worksheets";
 						} else {
 							newCell.group = group.getText().toString();
 						}
