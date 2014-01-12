@@ -123,6 +123,19 @@ public class CellCollection {
 			groupsCache = null;
 	}
 	
+	public void removeCurrentCell() {
+		int loc = data.indexOf(current);
+		data.remove(current);
+		if (data.isEmpty())
+			current = null;
+		else
+			if (loc > data.size())
+				current = data.get(loc-1);
+			else
+				current = data.get(loc);
+		groupsCache = null; 
+	}	
+	
 	public boolean saveCells () {
 		try {
 			JSONParser.saveCellData(data);

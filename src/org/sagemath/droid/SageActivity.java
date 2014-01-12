@@ -6,10 +6,14 @@ import org.sagemath.singlecellserver.Interact;
 import org.sagemath.singlecellserver.SageSingleCell;
 
 import sheetrock.panda.changelog.ChangeLog;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +47,8 @@ OnItemSelectedListener
 {
 	private static final String TAG = "SageActivity";
 	private static final String DIALOG_NEW_CELL = "newCell";
+	private static final String DIALOG_DISCARD_CELL = "discardCell";
+	private static final String INTENT_SWITCH_GROUP = "intent_switch_group";
 
 	private ChangeLog changeLog;
 
@@ -137,11 +143,43 @@ OnItemSelectedListener
 		case R.id.menu_refresh:
 			runButton();
 			return true;
-		case R.id.menu_add:
+		case R.id.menu_add: {
 			FragmentManager fm = this.getSupportFragmentManager();
 			NewCellDialog dialog = new NewCellDialog();
 			dialog.show(fm, DIALOG_NEW_CELL);
 			return true;
+		}
+		case R.id.menu_discard: {
+			FragmentManager fm = this.getSupportFragmentManager();
+			DialogFragment dialog = new DialogFragment() {
+				@Override
+				public Dialog onCreateDialog(Bundle savedInstanceState) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
+					builder.setMessage(R.string.dialog_confirm_discard)
+							.setPositiveButton(R.string.discard,
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int id) {
+											CellCollection.getInstance()
+													.removeCurrentCell();
+											SageActivity.this.onBackPressed();
+										}
+									})
+							.setNegativeButton(R.string.cancel,
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int id) {
+											// User cancelled the dialog
+										}
+									});
+					// Create the AlertDialog object and return it
+					return builder.create();
+				}
+			};
+			dialog.show(fm, DIALOG_DISCARD_CELL);
+			return true;
+		}
 		case R.id.menu_search:
 			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
 			return true;
