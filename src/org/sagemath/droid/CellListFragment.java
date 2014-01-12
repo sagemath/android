@@ -48,7 +48,7 @@ public class CellListFragment
 		if (cells.size()>0)
 			cellCollection.setCurrentCell(cells.getFirst());
 		else
-			getActivity().onBackPressed();
+			getActivity().getSupportFragmentManager().popBackStack();
 		if (adapter != null)
 			adapter.notifyDataSetChanged();
 	}
