@@ -124,15 +124,7 @@ public class CellCollection {
 	}
 	
 	public void removeCurrentCell() {
-		int loc = data.indexOf(current);
-		data.remove(current);
-		if (data.isEmpty())
-			current = null;
-		else
-			if (loc > data.size())
-				current = data.get(loc-1);
-			else
-				current = data.get(loc);
+		data.remove(currentCell);
 		groupsCache = null; 
 	}	
 	

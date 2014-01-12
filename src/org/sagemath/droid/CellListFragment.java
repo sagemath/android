@@ -21,6 +21,8 @@ public class CellListFragment
 	public void onResume() {
 		super.onResume();
 		switchToGroup(null);
+		adapter = new CellListAdapter(getActivity(), cells);
+		setListAdapter(adapter);
 	}
 	
 	@Override
@@ -42,8 +44,11 @@ public class CellListFragment
 				return;
 		}
 		else
-			cells.addAll(cellCollection.getGroup(group));		
-		cellCollection.setCurrentCell(cells.getFirst());
+			cells.addAll(cellCollection.getGroup(group));
+		if (cells.size()>0)
+			cellCollection.setCurrentCell(cells.getFirst());
+		else
+			getActivity().onBackPressed();
 		if (adapter != null)
 			adapter.notifyDataSetChanged();
 	}
