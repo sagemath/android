@@ -1,14 +1,22 @@
 package org.sagemath.droid;
 
+import sheetrock.panda.changelog.ChangeLog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.android.actionbarcompat.ActionBarActivity;
 
 public class CellListActivity 
     	extends ActionBarActivity {
-	
+	private static final String DIALOG_NEW_CELL = "newCell";
+	private ChangeLog changeLog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,18 +35,58 @@ public class CellListActivity
 		}
 		
 		setTitle(CellCollection.getInstance().getCurrentGroupName());
-	}
+
+		changeLog = new ChangeLog(this);
+        if (changeLog.firstRun())
+            changeLog.getLogDialog().show();
+		
+}
 
 	
-	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-    	case android.R.id.home:
-    		finish();
-    		return true;
-    	}
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.sparse, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Uri uri;
+		Intent intent;
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		case R.id.menu_add: {
+			FragmentManager fm = this.getSupportFragmentManager();
+			NewCellDialog dialog = new NewCellDialog();
+			dialog.show(fm, DIALOG_NEW_CELL);
+			return true;
+		}
+		case R.id.menu_search:
+			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.menu_changelog:
+			changeLog.getFullLogDialog().show();
+			return true;
+		case R.id.menu_about_sage:
+			uri = Uri.parse("http://www.sagemath.org");
+			intent = new Intent(Intent.ACTION_VIEW, uri); 
+			startActivity(intent); 
+			return true;
+		case R.id.menu_manual_user:
+			uri = Uri.parse("http://www.sagemath.org/doc/tutorial/");
+			intent = new Intent(Intent.ACTION_VIEW, uri); 
+			startActivity(intent); 
+			return true;
+		case R.id.menu_manual_dev:
+			uri = Uri.parse("http://www.sagemath.org/doc/reference/");
+			intent = new Intent(Intent.ACTION_VIEW, uri); 
+			startActivity(intent); 
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 }
