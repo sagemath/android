@@ -60,6 +60,7 @@ public class CellListFragment
 		CellData cell = cells.get(position);
 		CellCollection.getInstance().setCurrentCell(cell);
 		Intent i = new Intent(getActivity().getApplicationContext(), SageActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(i);
 	}
 
