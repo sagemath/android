@@ -119,7 +119,8 @@ public class CellCollection {
 	
 	public void addCell(CellData cell) {
 		data.add(cell);
-		if (!groupsCache.contains(cell.group))
+		if (groupsCache != null
+				&& !groupsCache.contains(cell.group))
 			groupsCache = null;
 	}
 	
