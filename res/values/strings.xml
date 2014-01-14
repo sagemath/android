@@ -7,6 +7,8 @@
     <string name="add_new_title">Add New Cell</string>
     <string name="insert_title_label">Title</string>
     <string name="insert_title_hint">Name this Cell.</string>
+    <string name="insert_desc_label">Description</string>
+    <string name="insert_desc_hint">Enter a description.</string>
     <string name="insert_group_label">Group</string>
     <string name="insert_group_hint">Select a Group.</string>
     <string name="insert_input_label">Input</string>

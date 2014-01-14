@@ -10,6 +10,13 @@ import java.util.ListIterator;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * CellCollection - Container of cells, singleton.
+ * 
+ * @author Rasmi Elasmar
+ * @author Ralf Stephan
+ *
+ */
 public class CellCollection {
 	private static final String TAG = "CellCollection";
 	private static final String JSONfilename = "celldata.json";
