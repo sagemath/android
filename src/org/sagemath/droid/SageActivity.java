@@ -35,6 +35,7 @@ import com.example.android.actionbarcompat.ActionBarActivity;
  * The main activity of the Sage app
  * 
  * @author vbraun
+ * @author rwst
  *
  */
 public class SageActivity 
@@ -48,7 +49,6 @@ OnItemSelectedListener
 	private static final String TAG = "SageActivity";
 	private static final String DIALOG_NEW_CELL = "newCell";
 	private static final String DIALOG_DISCARD_CELL = "discardCell";
-	private static final String INTENT_SWITCH_GROUP = "intent_switch_group";
 
 	private ChangeLog changeLog;
 
@@ -290,6 +290,7 @@ OnItemSelectedListener
 			}
 		} catch (RuntimeException RE) {
 			Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
+			RE.printStackTrace();
 		}
 		CellCollection.getInstance().saveCells();
 	}
