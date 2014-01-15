@@ -83,7 +83,7 @@ public class CellListFragment
 	        				
 	        				return new AlertDialog.Builder(getActivity())
 	        				.setView(dialogView)
-	        				.setTitle(R.string.add_new_title)
+	        				.setTitle(R.string.edit_title)
 	        				.setPositiveButton(android.R.string.ok, 
 	        						new DialogInterface.OnClickListener() {
 	        							@Override

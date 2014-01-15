@@ -16,5 +16,6 @@
     <string name="dialog_confirm_discard">Really discard this cell?</string>
     <string name="discard">Discard</string>
     <string name="cancel">Cancel</string>
+    <string name="edit_title">Edit title/description</string>
 
 </resources>
