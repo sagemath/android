@@ -23,6 +23,15 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.TextView;
 
+
+/**
+ * CellListFragment - fragment containing list of cells in current group
+ *                    shown in CellActivity (tablets) or CellListActivity (phones)
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf Stephan
+ *
+ */
 public class CellListFragment 
 		extends ListFragment {
 	private static final String TAG = "CellListFragment";
