@@ -112,7 +112,7 @@ OnItemSelectedListener
 
 
 		server.setDownloadDataFiles(false);
-		setTitle(cell.getTitle());
+		setTitle(cell.getGroup() + " • " + cell.getTitle());
 		if (server.isRunning())
 			getActionBarHelper().setRefreshActionItemState(true);    
 
