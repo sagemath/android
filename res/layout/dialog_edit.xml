@@ -28,4 +28,16 @@
         android:layout_height="wrap_content"
         android:hint="@string/insert_desc_hint" />
 
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/insert_group_label" />
+
+    <EditText
+        android:id="@+id/insert_cell_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/insert_group_hint" />
+
 </LinearLayout>

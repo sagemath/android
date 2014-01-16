@@ -71,8 +71,7 @@ public class CellListFragment
 	        		longClickedCell = cells.get(pos);
 	        	    FragmentManager fm = getActivity().getSupportFragmentManager();
 	        		DialogFragment dialog = new DialogFragment() {
-	        			private EditText titleView;
-	        			private EditText descView;
+	        			private EditText titleView, descView, groupView;
 	        			
 	        			@Override
 	        			public View onCreateView (LayoutInflater inflater,
@@ -89,7 +88,9 @@ public class CellListFragment
 	        				titleView.setText(longClickedCell.getTitle(), TextView.BufferType.EDITABLE);
 	        				descView = (EditText)dialogView.findViewById(R.id.insert_cell_desc);
 	        				descView.setText(longClickedCell.getDescription(), TextView.BufferType.EDITABLE);
-	        				
+	        				groupView = (EditText)dialogView.findViewById(R.id.insert_cell_group);
+	        				groupView.setText(longClickedCell.getGroup(), TextView.BufferType.EDITABLE);
+	
 	        				return new AlertDialog.Builder(getActivity())
 	        				.setView(dialogView)
 	        				.setTitle(R.string.edit_title)
@@ -97,7 +98,6 @@ public class CellListFragment
 	        						new DialogInterface.OnClickListener() {
 	        							@Override
 	        							public void onClick(DialogInterface dialog, int which) {
-	        								String titleStr, descStr;
 	        								if (titleView.getText().toString().equals("")) {
 	        									Date date = new Date();
 	        									DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa",Locale.US);
@@ -106,6 +106,12 @@ public class CellListFragment
 	        									longClickedCell.setTitle(titleView.getText().toString());
 	        								}
 	        								longClickedCell.setDescription(descView.getText().toString());
+	        								if (groupView.getText().toString().equals("")) {
+	        									longClickedCell.setGroup("My Worksheets");
+	        								} else {
+	        									longClickedCell.setGroup(groupView.getText().toString());
+	        								}
+	        								switchToGroup(longClickedCell.getGroup());
 	        				    			adapter = new CellListAdapter(getActivity(), cells);
 	        				    			setListAdapter(adapter);
 	        							}
@@ -126,17 +132,15 @@ public class CellListFragment
 	public void switchToGroup(String group) {
 		CellCollection cellCollection = CellCollection.getInstance();
 		cells.clear();
-		if (group == null) {
-			LinkedList<CellData> data = cellCollection.getCurrentGroup();
-			if (data != null)
-				cells.addAll(data);
-			else
-				return;
-		}
-		else
-			cells.addAll(cellCollection.getGroup(group));
-		if (cells.size()>0)
+		if (group == null)
+			group = cellCollection.getCurrentGroupName();
+		if (group == null)
+			group = "History";
+		cells.addAll(cellCollection.getGroup(group));
+		if (cells.size()>0) {
 			cellCollection.setCurrentCell(cells.getFirst());
+			getActivity().setTitle(cells.getFirst().group);
+		}
 		else
 			getActivity().getSupportFragmentManager().popBackStack();
 		if (adapter != null)

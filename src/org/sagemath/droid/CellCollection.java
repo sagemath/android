@@ -86,11 +86,11 @@ public class CellCollection {
 	
 	public String getCurrentGroupName() {
 		if (currentCell == null)
-			return "";
+			return null;
 		return currentCell.group;
 	}
 	
-	private LinkedList<String> groupsCache;
+	private static LinkedList<String> groupsCache;
 	
 	public LinkedList<String> groups() {
 		if (groupsCache != null)
@@ -124,16 +124,20 @@ public class CellCollection {
 		}
 	}
 	
+	public static void notifyGroupsChanged() {
+		groupsCache = null; 
+	}	
+	
 	public void addCell(CellData cell) {
 		data.add(cell);
 		if (groupsCache != null
 				&& !groupsCache.contains(cell.group))
-			groupsCache = null;
+			notifyGroupsChanged();
 	}
 	
 	public void removeCurrentCell() {
 		data.remove(currentCell);
-		groupsCache = null; 
+		notifyGroupsChanged(); 
 	}	
 	
 	public boolean saveCells () {

@@ -86,6 +86,13 @@ public class CellData {
 		return group;
 	}
 
+	public void setGroup(String group) {
+		if (!this.group.equals(group)) {
+			CellCollection.notifyGroupsChanged();
+			this.group = group;
+		}
+	}
+
 	public String getTitle() {
 		return title;
 	}
