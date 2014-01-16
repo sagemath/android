@@ -29,7 +29,7 @@ import android.widget.TextView;
  *                    shown in CellActivity (tablets) or CellListActivity (phones)
  * 
  * @author Rasmi.Elasmar
- * @author Ralf Stephan
+ * @author Ralf.Stephan
  *
  */
 public class CellListFragment 
@@ -137,6 +137,7 @@ public class CellListFragment
 		if (group == null)
 			group = "History";
 		cells.addAll(cellCollection.getGroup(group));
+		getActivity().sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));
 		if (cells.size()>0) {
 			cellCollection.setCurrentCell(cells.getFirst());
 			getActivity().setTitle(cells.getFirst().group);
