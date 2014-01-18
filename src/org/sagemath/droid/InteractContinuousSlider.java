@@ -69,7 +69,6 @@ public class InteractContinuousSlider
 			this.range_min = range.getDouble(0);
 			this.range_max = range.getDouble(1);
 			this.step = control.getDouble("step");
-			String s = control.getString("step");
 			int digits = Math.max(
 					countDigitsAfterComma(control.getString("step")),
 					countDigitsAfterComma(range.getString(0)));

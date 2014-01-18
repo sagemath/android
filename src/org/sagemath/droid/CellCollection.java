@@ -8,8 +8,16 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
+/**
+ * CellCollection - Container of cells, singleton.
+ * 
+ * @author Rasmi Elasmar
+ * @author Ralf Stephan
+ *
+ */
 public class CellCollection {
 	private static final String TAG = "CellCollection";
 	private static final String JSONfilename = "celldata.json";
@@ -48,7 +56,6 @@ public class CellCollection {
 		}
 		
 		instance.currentCell = null;
-
 	}
 	
 	public void setData(LinkedList<CellData> cellData) {
@@ -79,7 +86,7 @@ public class CellCollection {
 	
 	public String getCurrentGroupName() {
 		if (currentCell == null)
-			return "";
+			return null;
 		return currentCell.group;
 	}
 	
@@ -117,15 +124,24 @@ public class CellCollection {
 		}
 	}
 	
+	public static void notifyGroupsChanged() {
+		instance.groupsCache = null; 
+		instance.context.sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));
+	}	
+	
 	public void addCell(CellData cell) {
 		data.add(cell);
-		if (!groupsCache.contains(cell.group))
-			groupsCache = null;
+		saveCells();
+		if (groupsCache == null || !groupsCache.contains(cell.group))
+			notifyGroupsChanged();
 	}
 	
 	public void removeCurrentCell() {
+		String group = currentCell.group;
 		data.remove(currentCell);
-		groupsCache = null; 
+		saveCells();
+		if (!groupsCache.contains(group))
+			notifyGroupsChanged();
 	}	
 	
 	public boolean saveCells () {

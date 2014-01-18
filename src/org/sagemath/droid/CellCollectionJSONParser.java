@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 
@@ -23,33 +24,52 @@ public class CellCollectionJSONParser {
 
 	private Context context;
 	private String JSONfilename;
-	
+	private class SaveFileTask extends AsyncTask<JSONArray,Integer,Long> {
+		protected Long doInBackground(JSONArray...arrays) {
+			JSONArray array = arrays[arrays.length-1];
+			Writer writer = null;
+			try {
+				OutputStream OS = context.openFileOutput(JSONfilename, Context.MODE_PRIVATE);
+				writer = new OutputStreamWriter(OS);
+				writer.write(array.toString());
+				Log.i(TAG, "Cell data in JSON: " + array.toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (writer != null) {
+					try {
+						writer.flush();
+						writer.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			return 0L;
+		}
+	}
+
 	public CellCollectionJSONParser(Context c, String filename) {
 		context = c;
 		JSONfilename = filename;
 	}
 	
 	public void saveCellData(LinkedList<CellData> cells) 
-			throws JSONException, IOException {
+			throws Exception {
+		if (cells == null || cells.isEmpty())
+			throw new Exception();
 		JSONArray array = new JSONArray();
 		for (CellData c : cells) {
 			array.put(c.toJSON());
 		}
-			
-		Writer writer = null;
-		try {
-			OutputStream OS = context.openFileOutput(JSONfilename, Context.MODE_PRIVATE);
-			writer = new OutputStreamWriter(OS);
-			writer.write(array.toString());
-			Log.i(TAG, "Cell data in JSON: " + array.toString());
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-		}
+		//Log.e(TAG, "+++ saveCellData(): " + array.length() + ":" + array);
+		
+		new SaveFileTask().execute(array);			
 	}
 	
-	public LinkedList<CellData> loadCells() throws IOException, JSONException {
+	public LinkedList<CellData> loadCells() throws Exception {
 		LinkedList<CellData> cells = new LinkedList<CellData>();
 		BufferedReader reader = null;
 		try {

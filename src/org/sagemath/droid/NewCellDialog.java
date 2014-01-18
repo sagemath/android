@@ -63,8 +63,10 @@ public class NewCellDialog extends DialogFragment {
 						CellCollection.getInstance().setCurrentCell(newCell);
 					
 						
-						Intent i = new Intent(getActivity().getApplicationContext(), SageActivity.class);
+						Intent i = new Intent(getActivity().getApplicationContext(),
+								SageActivity.class);
 						i.putExtra("NEWCELL", true);
+						i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						startActivity(i);
 						
 					}

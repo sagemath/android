@@ -7,6 +7,8 @@
     <string name="add_new_title">Add New Cell</string>
     <string name="insert_title_label">Title</string>
     <string name="insert_title_hint">Name this Cell.</string>
+    <string name="insert_desc_label">Description</string>
+    <string name="insert_desc_hint">Enter a description.</string>
     <string name="insert_group_label">Group</string>
     <string name="insert_group_hint">Select a Group.</string>
     <string name="insert_input_label">Input</string>
@@ -14,5 +16,6 @@
     <string name="dialog_confirm_discard">Really discard this cell?</string>
     <string name="discard">Discard</string>
     <string name="cancel">Cancel</string>
+    <string name="edit_title">Edit title/description</string>
 
 </resources>
