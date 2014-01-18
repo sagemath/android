@@ -121,6 +121,7 @@ public class CellListFragment
 	        			}
 	        		};
 	    			dialog.show(fm, DIALOG_EDIT_CELL);
+	    			CellCollection.getInstance().saveCells();
 	                return true;
 	            }
 	    });
@@ -137,7 +138,6 @@ public class CellListFragment
 		if (group == null)
 			group = "History";
 		cells.addAll(cellCollection.getGroup(group));
-		getActivity().sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));
 		if (cells.size()>0) {
 			cellCollection.setCurrentCell(cells.getFirst());
 			getActivity().setTitle(cells.getFirst().group);

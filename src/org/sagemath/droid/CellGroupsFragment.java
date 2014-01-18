@@ -59,6 +59,8 @@ public class CellGroupsFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		if (CellCollection.getInstance() == null || CellCollection.getInstance().groups() == null)
+			Log.e(TAG, "+++ null in CellGroupsFragment.onResume()");
 		groups = CellCollection.getInstance().groups();
 		adapter = new CellGroupsAdapter(getActivity().getApplicationContext(), groups);
 		setListAdapter(adapter);
@@ -77,6 +79,7 @@ public class CellGroupsFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		CellCollection.getInstance().saveCells();
 		return inflater.inflate(R.layout.cell_groups_layout, container);
 	}
 	
@@ -85,11 +88,6 @@ public class CellGroupsFragment extends ListFragment {
 	    super.onAttach(activity);
 	    Window window = activity.getWindow();
 	    window.setFormat(PixelFormat.RGBA_8888);
-	}
-	@Override
-	public void onDestroy(){
-		super.onDestroy();
-		CellCollection.getInstance().saveCells();
 	}
 	
 }

@@ -257,6 +257,7 @@ OnItemSelectedListener
 		server.query(input.getText().toString());
 		getActionBarHelper().setRefreshActionItemState(true);
 		outputView.requestFocus();
+		CellCollection.getInstance().saveCells();
 	}
 
 	@Override
@@ -292,7 +293,6 @@ OnItemSelectedListener
 			Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
 			RE.printStackTrace();
 		}
-		CellCollection.getInstance().saveCells();
 	}
 
 	@Override
