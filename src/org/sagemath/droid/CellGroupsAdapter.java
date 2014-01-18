@@ -9,6 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * CellGroupsAdapter
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
+ *
+ */
 public class CellGroupsAdapter extends ArrayAdapter<String>  {
 	private final Context context;
 	

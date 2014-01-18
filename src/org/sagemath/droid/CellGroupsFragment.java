@@ -18,6 +18,13 @@ import android.view.Window;
 import android.widget.ListView;
 
 
+/**
+ * CellGroupsFragment - fragment showing the group list
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
+ *
+ */
 public class CellGroupsFragment extends ListFragment {
 	private static final String TAG = "CellGroupsFragment";
 

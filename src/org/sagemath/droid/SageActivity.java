@@ -32,10 +32,11 @@ import android.widget.Toast;
 import com.example.android.actionbarcompat.ActionBarActivity;
 
 /**
- * The main activity of the Sage app
+ * SageActivity - handling of single cell display and input
  * 
  * @author vbraun
- * @author rwst
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
  *
  */
 public class SageActivity 

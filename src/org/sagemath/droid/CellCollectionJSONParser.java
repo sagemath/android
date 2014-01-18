@@ -18,7 +18,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
+/**
+ * CellCollectionJSONParser - reads and writes JSON file from/to CellData
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
+ *
+ */
 public class CellCollectionJSONParser {
 	private static final String TAG = "CellCollectionJSONParser";
 

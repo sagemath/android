@@ -11,6 +11,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+/**
+ * @author Rasmi.Elasmar
+ *
+ */
 public class CellListAdapter extends ArrayAdapter<CellData>  {
 	private final Context context;
 

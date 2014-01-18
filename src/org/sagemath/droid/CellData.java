@@ -22,6 +22,13 @@ import org.json.JSONObject;
 import android.net.Uri;
 import android.util.Log;
 
+/**
+ * CellData - one cell
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
+ *
+ */
 public class CellData {
 	private static final String TAG = "CellData";
 	private static final String JSON_UUID = "uuid";

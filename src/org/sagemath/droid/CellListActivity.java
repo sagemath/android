@@ -12,6 +12,13 @@ import android.widget.Toast;
 
 import com.example.android.actionbarcompat.ActionBarActivity;
 
+/**
+ * CellListActivity - when the CellListFragment has its own activity (phones)
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
+ *
+ */
 public class CellListActivity 
     	extends ActionBarActivity {
 	private static final String DIALOG_NEW_CELL = "newCell";

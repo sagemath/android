@@ -16,6 +16,13 @@ import android.widget.Toast;
 
 import com.example.android.actionbarcompat.ActionBarActivity;
 
+/**
+ * CellActivity - main activity, first screen
+ * 
+ * @author Rasmi.Elasmar
+ * @author Ralf.Stephan
+ *
+ */
 public class CellActivity
 		extends ActionBarActivity 
 		implements OnGroupSelectedListener{
