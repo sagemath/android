@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 /**
@@ -55,7 +56,6 @@ public class CellCollection {
 		}
 		
 		instance.currentCell = null;
-
 	}
 	
 	public void setData(LinkedList<CellData> cellData) {
@@ -90,7 +90,7 @@ public class CellCollection {
 		return currentCell.group;
 	}
 	
-	private static LinkedList<String> groupsCache;
+	private LinkedList<String> groupsCache;
 	
 	public LinkedList<String> groups() {
 		if (groupsCache != null)
@@ -125,19 +125,23 @@ public class CellCollection {
 	}
 	
 	public static void notifyGroupsChanged() {
-		groupsCache = null; 
+		instance.groupsCache = null; 
+		instance.context.sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));
 	}	
 	
 	public void addCell(CellData cell) {
 		data.add(cell);
-		if (groupsCache != null
-				&& !groupsCache.contains(cell.group))
+		saveCells();
+		if (groupsCache == null || !groupsCache.contains(cell.group))
 			notifyGroupsChanged();
 	}
 	
 	public void removeCurrentCell() {
+		String group = currentCell.group;
 		data.remove(currentCell);
-		notifyGroupsChanged(); 
+		saveCells();
+		if (!groupsCache.contains(group))
+			notifyGroupsChanged();
 	}	
 	
 	public boolean saveCells () {
