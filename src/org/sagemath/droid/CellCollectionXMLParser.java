@@ -19,6 +19,10 @@ import org.xml.sax.SAXException;
 import android.util.Log;
 
 
+/**
+ * @author Rasmi.Elasmar
+ *
+ */
 public class CellCollectionXMLParser {
 	private static final String TAG = "CellCollectionXMLParser";
 
