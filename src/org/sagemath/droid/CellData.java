@@ -120,6 +120,10 @@ public class CellData {
 		return input;
 	}
 
+	public void setInput(String str) {
+		this.input = str;
+	}
+
 	public Boolean isFavorite() {
 		return favorite;
 	}

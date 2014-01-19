@@ -255,9 +255,11 @@ OnItemSelectedListener
 			Log.e(TAG, "Error clearing output...");
 		}
 
-		server.query(input.getText().toString());
+		String currentInput = input.getText().toString();
+		server.query(currentInput);
 		getActionBarHelper().setRefreshActionItemState(true);
 		outputView.requestFocus();
+		cell.setInput(currentInput);
 		CellCollection.getInstance().saveCells();
 	}
 
