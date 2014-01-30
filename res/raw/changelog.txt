@@ -20,6 +20,12 @@
     </style>
   </head>
   <body>
+$ 0.9.2
+  % Version 0.9.2
+  _ 2014-01-30
+    * Fixed all reported crashes
+    * UI: full task bar (add, share, del), long click on cells
+    * Many bug fixes
 $ 0.9.1
   % Version 0.9.1
   _ 2013-11-16
