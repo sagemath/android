@@ -66,9 +66,11 @@ public class CellGroupsFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (CellCollection.getInstance() == null || CellCollection.getInstance().groups() == null)
+		if (CellCollection.getInstance() == null)
 			Log.e(TAG, "+++ null in CellGroupsFragment.onResume()");
 		groups = CellCollection.getInstance().groups();
+		if (groups == null || getActivity() == null)
+			return;
 		adapter = new CellGroupsAdapter(getActivity().getApplicationContext(), groups);
 		setListAdapter(adapter);
 	}
