@@ -35,6 +35,11 @@ public class NewCellDialog extends DialogFragment {
 		group = (EditText)dialogView.findViewById(R.id.insert_cell_group);
 		input = (EditText)dialogView.findViewById(R.id.insert_cell_input);
 		
+		String g = CellCollection.getInstance().getCurrentGroupName();
+		if (g.equals("History"))
+			g = "";
+		group.setText(g);		
+		
 		return new AlertDialog.Builder(getActivity())
 		.setView(dialogView)
 		.setTitle(R.string.add_new_title)
