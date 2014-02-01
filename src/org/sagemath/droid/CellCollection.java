@@ -157,6 +157,18 @@ public class CellCollection {
 		}
 	}
 	
+	public void cleanHistory () {
+		ListIterator<CellData> it = data.listIterator();
+		while (it.hasNext()) {
+			CellData cell = it.next();
+			if (cell.group.equals("History"))
+				it.remove();			
+		}
+		saveCells();
+		if (groupsCache.contains("History"))
+			notifyGroupsChanged();
+	}
+	
 	protected File getCacheDirBase() {
 		return context.getCacheDir();
 	}
