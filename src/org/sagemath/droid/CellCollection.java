@@ -117,7 +117,10 @@ public class CellCollection {
 	public static class CellComparator implements Comparator<CellData> {
 		@Override
 		public int compare(CellData c1, CellData c2) {
-			int cmp = c2.rank.compareTo(c1.rank);
+			int cmp = c2.favorite.compareTo(c1.favorite);
+			if (cmp != 0)
+				return cmp;
+			cmp = c2.rank.compareTo(c1.rank);
 			if (cmp != 0) 
 				return cmp;
 			return c1.title.compareToIgnoreCase(c2.title);
