@@ -51,6 +51,13 @@ public class CellListActivity
 
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		if (CellCollection.getInstance().getCurrentGroup().isEmpty())
+			this.onBackPressed();
+	}
+		
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.sparse, menu);
