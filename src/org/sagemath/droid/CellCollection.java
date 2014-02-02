@@ -143,8 +143,7 @@ public class CellCollection {
 		String group = currentCell.group;
 		data.remove(currentCell);
 		saveCells();
-		if (!groupsCache.contains(group))
-			notifyGroupsChanged();
+		notifyGroupsChanged();
 	}	
 	
 	public boolean saveCells () {
