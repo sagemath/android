@@ -58,7 +58,7 @@ public class CellData {
 
 	public CellData(CellData originalCell) {
 		uuid = UUID.randomUUID(); 
-		group = "History";
+		group = originalCell.group;
 		title = originalCell.title;
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa",Locale.US);

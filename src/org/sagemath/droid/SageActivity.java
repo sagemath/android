@@ -270,6 +270,7 @@ OnItemSelectedListener
 	private void saveCurrentToHistory()  {
 		if (!cell.getGroup().equals("History")) {
 			CellData HistoryCell = new CellData(cell);
+			HistoryCell.group = "History";
 			HistoryCell.input = input.getText().toString();
 			String shortenedInput = HistoryCell.input;
 			if (HistoryCell.input.length() > 16)
