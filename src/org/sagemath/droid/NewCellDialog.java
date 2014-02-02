@@ -68,7 +68,7 @@ public class NewCellDialog extends DialogFragment {
 							newCell.input = input.getText().toString();
 						}
 						
-						newCell.rank = (int) Math.random()*30;
+						newCell.rank = 0;
 						CellCollection.getInstance().addCell(newCell);
 						CellCollection.getInstance().setCurrentCell(newCell);
 					
