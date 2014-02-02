@@ -86,7 +86,7 @@ public class CellCollection {
 	
 	public String getCurrentGroupName() {
 		if (currentCell == null)
-			return null;
+			return "";
 		return currentCell.group;
 	}
 	
