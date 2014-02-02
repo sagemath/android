@@ -135,8 +135,6 @@ public class CellListFragment
 		cells.clear();
 		if (group == null)
 			group = cellCollection.getCurrentGroupName();
-		if (group == null)
-			group = "History";
 		cells.addAll(cellCollection.getGroup(group));
 		if (cells.size()>0) {
 			cellCollection.setCurrentCell(cells.getFirst());
