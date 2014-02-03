@@ -111,6 +111,7 @@ public class CellListFragment
 	        								} else {
 	        									longClickedCell.setGroup(groupView.getText().toString());
 	        								}
+	        				    			CellCollection.getInstance().saveCells();
 	        								switchToGroup(longClickedCell.getGroup());
 	        				    			adapter = new CellListAdapter(getActivity(), cells);
 	        				    			setListAdapter(adapter);
