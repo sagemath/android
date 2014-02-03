@@ -25,6 +25,7 @@
     <string name="menu_discard">Remove</string>
     <string name="menu_about_sage">Sage website</string>
     <string name="menu_changelog">Changelog</string>
+    <string name="menu_clean_history">Clean history</string>
     <string name="menu_manual_user">Tutorial</string>
     <string name="menu_manual_dev">Reference manual</string>
 

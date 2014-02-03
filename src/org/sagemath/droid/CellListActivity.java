@@ -51,6 +51,13 @@ public class CellListActivity
 
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		if (CellCollection.getInstance().getCurrentGroup().isEmpty())
+			this.onBackPressed();
+	}
+		
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.sparse, menu);
@@ -91,6 +98,9 @@ public class CellListActivity
 			uri = Uri.parse("http://www.sagemath.org/doc/reference/");
 			intent = new Intent(Intent.ACTION_VIEW, uri); 
 			startActivity(intent); 
+			return true;
+		case R.id.menu_clean_history:
+			CellCollection.getInstance().cleanHistory();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

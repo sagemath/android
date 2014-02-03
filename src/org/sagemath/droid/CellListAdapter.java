@@ -3,6 +3,7 @@ package org.sagemath.droid;
 import java.util.LinkedList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,8 @@ public class CellListAdapter extends ArrayAdapter<CellData>  {
 		View item;
 		TextView titleView;
 		TextView descriptionView;
-		CheckBox favorite;
-		final CellData cell = cells.get(position);
+		final CheckBox favorite;
+		final int my_position = position;
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,10 +48,13 @@ public class CellListAdapter extends ArrayAdapter<CellData>  {
 			titleView = (TextView) item.findViewById(R.id.cell_title);
 			descriptionView = (TextView) item.findViewById(R.id.cell_description);
 			favorite = (CheckBox) item.findViewById(R.id.favorite);
-			favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			favorite.setOnClickListener(new CompoundButton.OnClickListener() {
 				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					cell.favorite = isChecked;
+				public void onClick(View arg0) {
+					CellData cell = cells.get(my_position);
+					cell.favorite = !cell.favorite;
+					cells = CellCollection.getInstance().getGroup(cell.group);
+					notifyDataSetChanged();
 				}
 			} );
 			final ViewHolder viewHolder = new ViewHolder();
@@ -66,6 +70,7 @@ public class CellListAdapter extends ArrayAdapter<CellData>  {
 			favorite = viewHolder.favorite;
 		}
 
+		CellData cell = cells.get(my_position);
 		titleView.setText(cell.title);
 		descriptionView.setText(cell.description);
 		favorite.setChecked(cell.isFavorite());

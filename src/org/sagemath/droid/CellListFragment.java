@@ -111,6 +111,7 @@ public class CellListFragment
 	        								} else {
 	        									longClickedCell.setGroup(groupView.getText().toString());
 	        								}
+	        				    			CellCollection.getInstance().saveCells();
 	        								switchToGroup(longClickedCell.getGroup());
 	        				    			adapter = new CellListAdapter(getActivity(), cells);
 	        				    			setListAdapter(adapter);
@@ -135,8 +136,6 @@ public class CellListFragment
 		cells.clear();
 		if (group == null)
 			group = cellCollection.getCurrentGroupName();
-		if (group == null)
-			group = "History";
 		cells.addAll(cellCollection.getGroup(group));
 		if (cells.size()>0) {
 			cellCollection.setCurrentCell(cells.getFirst());

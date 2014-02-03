@@ -86,7 +86,7 @@ public class CellCollection {
 	
 	public String getCurrentGroupName() {
 		if (currentCell == null)
-			return null;
+			return "";
 		return currentCell.group;
 	}
 	
@@ -117,7 +117,10 @@ public class CellCollection {
 	public static class CellComparator implements Comparator<CellData> {
 		@Override
 		public int compare(CellData c1, CellData c2) {
-			int cmp = c2.rank.compareTo(c1.rank);
+			int cmp = c2.favorite.compareTo(c1.favorite);
+			if (cmp != 0)
+				return cmp;
+			cmp = c2.rank.compareTo(c1.rank);
 			if (cmp != 0) 
 				return cmp;
 			return c1.title.compareToIgnoreCase(c2.title);
@@ -126,7 +129,7 @@ public class CellCollection {
 	
 	public static void notifyGroupsChanged() {
 		instance.groupsCache = null; 
-		instance.context.sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));
+/*		instance.context.sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));*/
 	}	
 	
 	public void addCell(CellData cell) {
@@ -140,8 +143,7 @@ public class CellCollection {
 		String group = currentCell.group;
 		data.remove(currentCell);
 		saveCells();
-		if (!groupsCache.contains(group))
-			notifyGroupsChanged();
+		notifyGroupsChanged();
 	}	
 	
 	public boolean saveCells () {
@@ -152,6 +154,18 @@ public class CellCollection {
 			Log.e(TAG, "Error saving cells to JSON. " + e.getLocalizedMessage());
 			return false;
 		}
+	}
+	
+	public void cleanHistory () {
+		ListIterator<CellData> it = data.listIterator();
+		while (it.hasNext()) {
+			CellData cell = it.next();
+			if (cell.group.equals("History"))
+				it.remove();			
+		}
+		saveCells();
+		if (groupsCache.contains("History"))
+			notifyGroupsChanged();
 	}
 	
 	protected File getCacheDirBase() {

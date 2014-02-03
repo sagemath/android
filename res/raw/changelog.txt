@@ -20,6 +20,11 @@
     </style>
   </head>
   <body>
+$ 0.9.3
+  % Version 0.9.3
+  _ 2014-02-03
+    * New features: favored cells float up, clean history menu item
+    * Bug fixes
 $ 0.9.2
   % Version 0.9.2
   _ 2014-01-30

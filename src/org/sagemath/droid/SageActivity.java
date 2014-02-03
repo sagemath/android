@@ -215,6 +215,9 @@ OnItemSelectedListener
 			intent = new Intent(Intent.ACTION_VIEW, uri); 
 			startActivity(intent); 
 			return true;
+		case R.id.menu_clean_history:
+			CellCollection.getInstance().cleanHistory();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -261,6 +264,20 @@ OnItemSelectedListener
 		outputView.requestFocus();
 		cell.setInput(currentInput);
 		CellCollection.getInstance().saveCells();
+		saveCurrentToHistory();
+	}
+	
+	private void saveCurrentToHistory()  {
+		if (!cell.getGroup().equals("History")) {
+			CellData HistoryCell = new CellData(cell);
+			HistoryCell.group = "History";
+			HistoryCell.input = input.getText().toString();
+			String shortenedInput = HistoryCell.input;
+			if (HistoryCell.input.length() > 16)
+				shortenedInput = shortenedInput.substring(0,16);
+			HistoryCell.title = shortenedInput;
+			CellCollection.getInstance().addCell(HistoryCell);
+		}
 	}
 
 	@Override
@@ -281,17 +298,8 @@ OnItemSelectedListener
 	protected void onPause() {
 		try {
 			super.onPause();
-			if (!cell.getGroup().equals("History")) {
-				CellData HistoryCell = new CellData(cell);
-				HistoryCell.input = input.getText().toString();
-				String shortenedInput = HistoryCell.input;
-				if (HistoryCell.input.length() > 16)
-					shortenedInput = shortenedInput.substring(0,16);
-				HistoryCell.title = shortenedInput;
-				CellCollection.getInstance().addCell(HistoryCell);
-			} else {
+			if (cell.getGroup().equals("History"))
 				outputView.clear();
-			}
 		} catch (RuntimeException RE) {
 			Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
 			RE.printStackTrace();
