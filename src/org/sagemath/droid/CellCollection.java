@@ -129,7 +129,7 @@ public class CellCollection {
 	
 	public static void notifyGroupsChanged() {
 		instance.groupsCache = null; 
-		instance.context.sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));
+/*		instance.context.sendBroadcast(new Intent().setAction("GROUPS_CHANGED"));*/
 	}	
 	
 	public void addCell(CellData cell) {
