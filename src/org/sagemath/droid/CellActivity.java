@@ -1,9 +1,5 @@
 package org.sagemath.droid;
 
-import org.sagemath.droid.CellGroupsFragment.OnGroupSelectedListener;
-
-import sheetrock.panda.changelog.ChangeLog;
-import sheetrock.panda.changelog.SimpleEula;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +11,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.android.actionbarcompat.ActionBarActivity;
+
+import org.sagemath.droid.CellGroupsFragment.OnGroupSelectedListener;
+
+import sheetrock.panda.changelog.ChangeLog;
+import sheetrock.panda.changelog.SimpleEula;
 
 /**
  * CellActivity - main activity, first screen
@@ -30,12 +31,13 @@ public class CellActivity
 	private static final String DIALOG_NEW_CELL = "newCell";
 
 	private ChangeLog changeLog;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		CellCollection.initialize(getApplicationContext());
 		setContentView(R.layout.cell_activity);
+
 		try {
 			new SimpleEula(this).new EulaTask().execute();
 		} catch (Exception e) {
@@ -47,7 +49,6 @@ public class CellActivity
 		changeLog = new ChangeLog(this);
         if (changeLog.firstRun())
             changeLog.getLogDialog().show();
-		
 		CellGroupsFragment groupsFragment = (CellGroupsFragment) 
 				getSupportFragmentManager().findFragmentById(R.id.cell_groups_fragment);
 		groupsFragment.setOnGroupSelected(this);
@@ -56,6 +57,7 @@ public class CellActivity
 				getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
 		if (listFragment != null && listFragment.isInLayout()) 
 			listFragment.switchToGroup(null);
+        CellActivity.this.startActivity(new Intent(CellActivity.this, Welcome.class));
 	}
 	
 	public static final String INTENT_SWITCH_GROUP = "intent_switch_group";
@@ -121,5 +123,4 @@ public class CellActivity
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 }

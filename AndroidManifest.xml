@@ -36,6 +36,10 @@
             android:name="CellListActivity">
         </activity>
 
+        <activity
+            android:name="Welcome">
+        </activity>
+
     </application>
 
 </manifest>
