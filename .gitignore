@@ -25,6 +25,8 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+release.properties
+ant.properties
 
 # Eclipse project files
 .classpath
@@ -38,3 +40,16 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+#gradle
+.gradle
+build
+gradle.properties
+
+#IntelliJ IDEA
+.idea
+*.iml
+
+#Maven
+target
+pom.xml.*
