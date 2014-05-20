@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.interacts;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,13 +28,13 @@ public class InteractView extends TableLayout {
         		LayoutParams.WRAP_CONTENT));
 	}
 
-	interface OnInteractListener {
+	public interface OnInteractListener {
 		public void onInteractListener(Interact interact, String name, Object value);
 	}
 	
 	private OnInteractListener listener;
 	
-	protected void setOnInteractListener(OnInteractListener listener) {
+	public void setOnInteractListener(OnInteractListener listener) {
 		this.listener = listener;
 	}
 	

@@ -18,11 +18,11 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="SageActivity">
+            android:name=".activities.SageActivity">
         </activity>
 
         <activity 
-            android:name="CellActivity">
+            android:name=".activities.CellActivity">
 
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
         </activity>
 
         <activity 
-            android:name="CellListActivity">
+            android:name=".activities.CellListActivity">
         </activity>
 
     </application>

@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.cells;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -29,6 +29,7 @@ import android.util.Log;
  * @author Ralf.Stephan
  *
  */
+
 public class CellData {
 	private static final String TAG = "CellData";
 	private static final String JSON_UUID = "uuid";
@@ -40,6 +41,7 @@ public class CellData {
 	private static final String JSON_FAVORITE = "favorite";
 	private static final String JSON_HTML = "htmlData";
 
+    //TODO Make all of this private so we can use the getter and setter methods everywhere now that everything is in packages
 	protected UUID uuid;
 	protected String group;
 	protected String title;
@@ -128,7 +130,27 @@ public class CellData {
 		return favorite;
 	}
 
-	private File cache;
+    public void setFavorite(Boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    public String getHtmlData() {
+        return htmlData;
+    }
+
+    private File cache;
 
 	public File cacheDir() {
 		if (cache != null)
@@ -265,5 +287,6 @@ public class CellData {
 
 		return json;
 	}
+
 
 }

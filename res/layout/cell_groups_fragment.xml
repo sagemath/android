@@ -2,6 +2,6 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="org.sagemath.droid.CellGroupsFragment"
+    android:name="org.sagemath.droid.fragments.CellGroupsFragment"
     android:id="@+id/cell_groups_fragment">
 </fragment>

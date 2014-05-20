@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.cells;
 
 
 import java.io.BufferedReader;
@@ -11,7 +11,6 @@ import java.io.Writer;
 import java.util.LinkedList;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONTokener;
 
 import android.content.Context;

@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.interacts;
 
 import java.util.LinkedList;
 

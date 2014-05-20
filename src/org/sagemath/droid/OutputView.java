@@ -5,6 +5,9 @@ import java.util.ListIterator;
 
 import junit.framework.Assert;
 
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.interacts.InteractView;
 import org.sagemath.singlecellserver.CommandOutput;
 import org.sagemath.singlecellserver.CommandReply;
 import org.sagemath.singlecellserver.Interact;
@@ -21,7 +24,7 @@ public class OutputView
 		implements SageSingleCell.OnSageListener, InteractView.OnInteractListener {
 	private final static String TAG = "OutputView";
 	
-	interface onSageListener {
+	public interface onSageListener {
 		public void onSageInteractListener(Interact interact, String name, Object value);
 		public void onSageFinishedListener();
 	}
@@ -166,7 +169,7 @@ public class OutputView
 	/**
 	 * Called during onResume. Reloads the embedded web views from cache.  
 	 */
-	protected void onResume() {
+	public void onResume() {
 		removeAllViews();
 		blocks.clear();
 		cell = CellCollection.getInstance().getCurrentCell();

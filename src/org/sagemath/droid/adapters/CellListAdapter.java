@@ -1,9 +1,8 @@
-package org.sagemath.droid;
+package org.sagemath.droid.adapters;
 
 import java.util.LinkedList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import org.sagemath.droid.R;
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.cells.CellData;
 
 /**
  * @author Rasmi.Elasmar
@@ -52,8 +54,8 @@ public class CellListAdapter extends ArrayAdapter<CellData>  {
 				@Override
 				public void onClick(View arg0) {
 					CellData cell = cells.get(my_position);
-					cell.favorite = !cell.favorite;
-					cells = CellCollection.getInstance().getGroup(cell.group);
+					cell.setFavorite(!cell.isFavorite());
+					cells = CellCollection.getInstance().getGroup(cell.getGroup());
 					notifyDataSetChanged();
 				}
 			} );
@@ -71,8 +73,8 @@ public class CellListAdapter extends ArrayAdapter<CellData>  {
 		}
 
 		CellData cell = cells.get(my_position);
-		titleView.setText(cell.title);
-		descriptionView.setText(cell.description);
+		titleView.setText(cell.getTitle());
+		descriptionView.setText(cell.getDescription());
 		favorite.setChecked(cell.isFavorite());
 
 		return item;

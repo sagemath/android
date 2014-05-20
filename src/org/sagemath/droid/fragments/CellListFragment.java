@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.fragments;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,6 +22,11 @@ import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.TextView;
+import org.sagemath.droid.R;
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.adapters.CellListAdapter;
+import org.sagemath.droid.activities.SageActivity;
 
 
 /**
@@ -139,7 +144,7 @@ public class CellListFragment
 		cells.addAll(cellCollection.getGroup(group));
 		if (cells.size()>0) {
 			cellCollection.setCurrentCell(cells.getFirst());
-			getActivity().setTitle(cells.getFirst().group);
+			getActivity().setTitle(cells.getFirst().getGroup());
 		}
 		else
 			getActivity().getSupportFragmentManager().popBackStack();

@@ -1,7 +1,12 @@
-package org.sagemath.droid;
+package org.sagemath.droid.activities;
 
 import junit.framework.Assert;
 
+import org.sagemath.droid.R;
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.dialogs.NewCellDialog;
+import org.sagemath.droid.OutputView;
 import org.sagemath.singlecellserver.Interact;
 import org.sagemath.singlecellserver.SageSingleCell;
 
@@ -44,7 +49,7 @@ extends
 ActionBarActivity 
 implements
 Button.OnClickListener,
-OutputView.onSageListener,
+        OutputView.onSageListener,
 OnItemSelectedListener
 {
 	private static final String TAG = "SageActivity";
@@ -93,16 +98,16 @@ OnItemSelectedListener
 		curlyBracket.setOnClickListener(this);
 		runButton.setOnClickListener(this);
 		try {
-			Log.i(TAG, "Cell group is: " + cell.group);
-			Log.i(TAG, "Cell title is: " + cell.title);
-			Log.i(TAG, "Cell uuid is: " + cell.uuid.toString());
-			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
+			Log.i(TAG, "Cell group is: " + cell.getGroup());
+			Log.i(TAG, "Cell title is: " + cell.getTitle());
+			Log.i(TAG, "Cell uuid is: " + cell.getUUID().toString());
+			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
 		} catch (Exception e) {}
 
-		if (cell.group.equals("History")) {
-			outputView.setOutputBlocks(cell.htmlData);
+		if (cell.getGroup().equals("History")) {
+			outputView.setOutputBlocks(cell.getHtmlData());
 
-			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.htmlData);
+			Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
 		} else {
 			try {
 				outputView.clear();
@@ -270,12 +275,13 @@ OnItemSelectedListener
 	private void saveCurrentToHistory()  {
 		if (!cell.getGroup().equals("History")) {
 			CellData HistoryCell = new CellData(cell);
-			HistoryCell.group = "History";
-			HistoryCell.input = input.getText().toString();
-			String shortenedInput = HistoryCell.input;
-			if (HistoryCell.input.length() > 16)
+			HistoryCell.setGroup("History");
+            String currentInput = input.getText().toString();
+			HistoryCell.setInput(currentInput);
+			String shortenedInput = HistoryCell.getInput();
+			if (HistoryCell.getInput().length() > 16)
 				shortenedInput = shortenedInput.substring(0,16);
-			HistoryCell.title = shortenedInput;
+			HistoryCell.setTitle(shortenedInput);
 			CellCollection.getInstance().addCell(HistoryCell);
 		}
 	}

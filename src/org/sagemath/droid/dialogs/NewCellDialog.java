@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.dialogs;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,6 +14,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import org.sagemath.droid.R;
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.activities.SageActivity;
 
 /**
  * @author Rasmi.Elasmar
@@ -52,23 +56,26 @@ public class NewCellDialog extends DialogFragment {
 						if (title.getText().toString().equals("")) {
 							Date date = new Date();
 							DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa",Locale.US);
-							newCell.title = dateFormat.format(date);
+							newCell.setTitle(dateFormat.format(date));
 						} else {
-							newCell.title = title.getText().toString();
+                            String currentTitle = title.getText().toString();
+							newCell.setTitle(currentTitle);
 						}
 						if (group.getText().toString().equals("")) {
-							newCell.group = "My Worksheets";
+							newCell.setGroup("My Worksheets");
 						} else {
-							newCell.group = group.getText().toString();
+                            String currentGroup= group.getText().toString();
+							newCell.setGroup(currentGroup);
 						}
 						if (input.getText().toString().equals("")) {
 							Toast.makeText(getActivity(), "Enter an input to calculate!", Toast.LENGTH_SHORT).show();
 							return;
 						} else {
-							newCell.input = input.getText().toString();
+                            String currentInput=input.getText().toString();
+							newCell.setInput(currentInput);
 						}
 						
-						newCell.rank = 0;
+						newCell.setRank(0);
 						CellCollection.getInstance().addCell(newCell);
 						CellCollection.getInstance().setCurrentCell(newCell);
 					

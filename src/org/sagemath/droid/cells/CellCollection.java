@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.cells;
 
 import java.io.File;
 import java.io.InputStream;
@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
+import org.sagemath.droid.R;
 
 /**
  * CellCollection - Container of cells, singleton.

@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.fragments;
 
 import java.util.LinkedList;
 
@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ListView;
+import org.sagemath.droid.R;
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.adapters.CellGroupsAdapter;
 
 
 /**
@@ -24,7 +27,7 @@ import android.widget.ListView;
 public class CellGroupsFragment extends ListFragment {
 	private static final String TAG = "CellGroupsFragment";
 
-	interface OnGroupSelectedListener {
+	public interface OnGroupSelectedListener {
 		public void onGroupSelected(String group);
 	}
 	

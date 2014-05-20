@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.interacts;
 
 import android.content.Context;
 import android.widget.LinearLayout;

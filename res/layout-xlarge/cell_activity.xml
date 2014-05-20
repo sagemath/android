@@ -6,14 +6,14 @@
     android:background="@drawable/white"
     android:orientation="horizontal">
     <fragment
-		android:name="org.sagemath.droid.CellGroupsFragment"
+		android:name="org.sagemath.droid.fragments.CellGroupsFragment"
 		android:layout_width="468dp"
 		android:layout_height="match_parent"
 		android:id="@+id/cell_groups_fragment"
 		android:layout_marginRight="20dp" >
     </fragment>
     <fragment
-		android:name="org.sagemath.droid.CellListFragment"
+		android:name="org.sagemath.droid.fragments.CellListFragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/cell_list_fragment" >

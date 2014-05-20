@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.cells;
 
 
 import java.io.IOException;

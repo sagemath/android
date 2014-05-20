@@ -3,6 +3,7 @@ package org.sagemath.droid;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.sagemath.droid.cells.CellData;
 import org.sagemath.singlecellserver.CommandOutput;
 import org.sagemath.singlecellserver.DataFile;
 import org.sagemath.singlecellserver.DisplayData;
@@ -36,7 +37,7 @@ public class OutputBlock extends WebView {
 		divs.clear();
 		divs.add(htmlData);
 		try {
-		Log.i(TAG, "outputblock created: " + " " + cell.title + " " + cell.uuid.toString() + " " + " ");
+		Log.i(TAG, "outputblock created: " + " " + cell.getTitle() + " " + cell.getUUID().toString() + " " + " ");
 		} catch (Exception e){
 			Log.i(TAG, "outputblock exception: " + e.getMessage());
 		}
@@ -202,7 +203,7 @@ public class OutputBlock extends WebView {
 	}
 	
 	public void setHistoryHTML() {
-		loadUrl(cell.getUrlString(cell.uuid.toString()));
+		loadUrl(cell.getUrlString(cell.getUUID().toString()));
 	}
 	
 	public String getHTML() {
