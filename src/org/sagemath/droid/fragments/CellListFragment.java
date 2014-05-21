@@ -112,9 +112,9 @@ public class CellListFragment
 	        								}
 	        								longClickedCell.setDescription(descView.getText().toString());
 	        								if (groupView.getText().toString().equals("")) {
-	        									longClickedCell.setGroup("My Worksheets");
+	        									longClickedCell.updateGroup("My Worksheets");
 	        								} else {
-	        									longClickedCell.setGroup(groupView.getText().toString());
+	        									longClickedCell.updateGroup(groupView.getText().toString());
 	        								}
 	        				    			CellCollection.getInstance().saveCells();
 	        								switchToGroup(longClickedCell.getGroup());

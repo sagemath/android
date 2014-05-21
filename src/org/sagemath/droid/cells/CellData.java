@@ -91,11 +91,15 @@ public class CellData {
 		}
 	}
 
-	public String getGroup() {
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getGroup() {
 		return group;
 	}
 
-	public void setGroup(String group) {
+	public void updateGroup(String group) {
 		if (!this.group.equals(group)) {
 			CellCollection.notifyGroupsChanged();
 			this.group = group;
