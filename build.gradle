@@ -12,7 +12,7 @@ apply plugin: "android"
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.1"
+    buildToolsVersion "19.0.3"
 
     sourceSets {
         main {
@@ -28,5 +28,9 @@ dependencies {
         mavenCentral()
     }
 
-    compile "com.android.support:support-v4:19.0.+"
+    compile 'com.android.support:support-v4:19.1.+'
+    compile 'com.android.support:appcompat-v7:19.1.+'
+    compile 'com.google.code.gson:gson:2.2.4'
+
+
 }

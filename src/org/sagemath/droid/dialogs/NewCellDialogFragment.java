@@ -23,7 +23,7 @@ import org.sagemath.droid.activities.SageActivity;
  * @author Ralf.Stephan
  *
  */
-public class NewCellDialog extends DialogFragment {
+public class NewCellDialogFragment extends DialogFragment {
 
     private static final String TAG="DialogFragment";
 
