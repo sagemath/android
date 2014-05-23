@@ -18,10 +18,12 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:theme="@style/Theme.AppCompat.Light"
             android:name=".activities.SageActivity">
         </activity>
 
-        <activity 
+        <activity
+            android:theme="@style/Theme.AppCompat.Light"
             android:name=".activities.CellActivity">
 
             <intent-filter >
@@ -32,7 +34,8 @@
 
         </activity>
 
-        <activity 
+        <activity
+            android:theme="@style/Theme.AppCompat.Light"
             android:name=".activities.CellListActivity">
         </activity>
 

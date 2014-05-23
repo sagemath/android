@@ -1,5 +1,6 @@
 package org.sagemath.droid.activities;
 
+import android.support.v7.app.ActionBarActivity;
 import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
@@ -14,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.android.actionbarcompat.ActionBarActivity;
+
 
 /**
  * CellListActivity - when the CellListFragment has its own activity (phones)
