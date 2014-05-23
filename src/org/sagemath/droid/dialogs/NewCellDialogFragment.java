@@ -39,6 +39,12 @@ public class NewCellDialogFragment extends DialogFragment {
     private ArrayAdapter<String> adapter;
     private String[] groupChoices;
 
+    public static NewCellDialogFragment newInstance(){
+        NewCellDialogFragment frag = new NewCellDialogFragment();
+
+        return frag;
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

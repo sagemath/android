@@ -151,7 +151,7 @@ OnItemSelectedListener
 			return true;
 		case R.id.menu_add: {
 			FragmentManager fm = this.getSupportFragmentManager();
-			NewCellDialogFragment dialog = new NewCellDialogFragment();
+			NewCellDialogFragment dialog = NewCellDialogFragment.newInstance();
 			dialog.show(fm, DIALOG_NEW_CELL);
 			return true;
 		}
