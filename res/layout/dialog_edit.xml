@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:text="@string/insert_group_label" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/insert_cell_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

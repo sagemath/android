@@ -2,11 +2,11 @@ package org.sagemath.droid.activities;
 
 import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment.OnGroupSelectedListener;
 
 import org.sagemath.droid.fragments.CellListFragment;
-import org.sagemath.droid.dialogs.NewCellDialog;
 import sheetrock.panda.changelog.ChangeLog;
 import sheetrock.panda.changelog.SimpleEula;
 import android.content.Intent;
@@ -95,7 +95,7 @@ public class CellActivity
 			return true;
 		case R.id.menu_add: {
 			FragmentManager fm = this.getSupportFragmentManager();
-			NewCellDialog dialog = new NewCellDialog();
+			NewCellDialogFragment dialog = new NewCellDialogFragment();
 			dialog.show(fm, DIALOG_NEW_CELL);
 			return true;
 		}

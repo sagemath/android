@@ -1,7 +1,5 @@
 package org.sagemath.droid.adapters;
 
-import java.util.LinkedList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,8 @@ import android.widget.TextView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
+
+import java.util.LinkedList;
 
 /**
  * @author Rasmi.Elasmar
@@ -34,6 +34,12 @@ public class CellListAdapter extends ArrayAdapter<CellData>  {
 		protected TextView descriptionView;
 		protected CheckBox favorite;
 	}
+
+    public void updateCellList(LinkedList<CellData> cells)
+    {
+        this.cells=cells;
+        notifyDataSetChanged();
+    }
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {

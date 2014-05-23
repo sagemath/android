@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
-import org.sagemath.droid.dialogs.NewCellDialog;
+import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.OutputView;
 import org.sagemath.singlecellserver.Interact;
 import org.sagemath.singlecellserver.SageSingleCell;
@@ -151,7 +151,7 @@ OnItemSelectedListener
 			return true;
 		case R.id.menu_add: {
 			FragmentManager fm = this.getSupportFragmentManager();
-			NewCellDialog dialog = new NewCellDialog();
+			NewCellDialogFragment dialog = new NewCellDialogFragment();
 			dialog.show(fm, DIALOG_NEW_CELL);
 			return true;
 		}
