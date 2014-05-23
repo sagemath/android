@@ -1,10 +1,5 @@
 package org.sagemath.droid.dialogs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Locale;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -12,11 +7,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.Toast;
 import org.sagemath.droid.R;
+import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
-import org.sagemath.droid.activities.SageActivity;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Locale;
 
 /**
  * @author Rasmi.Elasmar
