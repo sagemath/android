@@ -50,6 +50,7 @@ public class SageActivity
     private ImageButton runButton;
     private Spinner insertSpinner;
     private OutputView outputView;
+    private ProgressBar cellProgressBar;
 
     private static SageSingleCell server = new SageSingleCell();
 
@@ -77,6 +78,8 @@ public class SageActivity
         runButton = (ImageButton) findViewById(R.id.button_run);
         outputView = (OutputView) findViewById(R.id.sage_output);
         insertSpinner = (Spinner) findViewById(R.id.insert_text);
+        cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
+        cellProgressBar.setVisibility(View.INVISIBLE);
         server.setOnSageListener(outputView);
 
         outputView.setOnSageListener(this);
@@ -108,11 +111,9 @@ public class SageActivity
 
         server.setDownloadDataFiles(false);
         setTitle(cell.getGroup() + " • " + cell.getTitle());
-        //getActionBarHelper().setRefreshActionItemState(true);
+        //   setSupportProgressBarIndeterminateVisibility(true);
         if (server.isRunning())
-            setSupportProgressBarIndeterminateVisibility(true);
-
-
+            cellProgressBar.setVisibility(View.VISIBLE);
 
         input.setText(cell.getInput());
         Boolean isNewCell = getIntent().getBooleanExtra("NEWCELL", false);
@@ -259,8 +260,8 @@ public class SageActivity
 
         String currentInput = input.getText().toString();
         server.query(currentInput);
-        //getActionBarHelper().setRefreshActionItemState(true);
-        setSupportProgressBarIndeterminateVisibility(true);
+        //setSupportProgressBarIndeterminateVisibility(true);
+        cellProgressBar.setVisibility(View.VISIBLE);
         outputView.requestFocus();
         cell.setInput(currentInput);
         CellCollection.getInstance().saveCells();
@@ -283,8 +284,8 @@ public class SageActivity
 
     @Override
     public void onSageFinishedListener() {
-        //getActionBarHelper().setRefreshActionItemState(false);
-        setSupportProgressBarIndeterminateVisibility(false);
+        //setSupportProgressBarIndeterminateVisibility(false);
+        cellProgressBar.setVisibility(View.INVISIBLE);
     }
 
 
