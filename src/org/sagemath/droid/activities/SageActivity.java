@@ -5,8 +5,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -53,6 +57,7 @@ public class SageActivity
     private ProgressBar cellProgressBar;
 
     private static SageSingleCell server = new SageSingleCell();
+    private boolean isServerRunning = false;
 
     private CellData cell;
 
@@ -112,8 +117,11 @@ public class SageActivity
         server.setDownloadDataFiles(false);
         setTitle(cell.getGroup() + " • " + cell.getTitle());
         //   setSupportProgressBarIndeterminateVisibility(true);
-        if (server.isRunning())
+        if (server.isRunning()) {
             cellProgressBar.setVisibility(View.VISIBLE);
+            isServerRunning = true;
+            ActivityCompat.invalidateOptionsMenu(this);
+        }
 
         input.setText(cell.getInput());
         Boolean isNewCell = getIntent().getBooleanExtra("NEWCELL", false);
@@ -123,6 +131,19 @@ public class SageActivity
 
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem refreshItem = menu.findItem(R.id.menu_refresh);
+        Drawable refreshIcon = getResources().getDrawable(R.drawable.ic_action_refresh);
+        if (isServerRunning)
+            refreshIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+
+        refreshItem.setEnabled(!isServerRunning);
+        refreshItem.setIcon(refreshIcon);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -262,6 +283,8 @@ public class SageActivity
         server.query(currentInput);
         //setSupportProgressBarIndeterminateVisibility(true);
         cellProgressBar.setVisibility(View.VISIBLE);
+        isServerRunning=true;
+        ActivityCompat.invalidateOptionsMenu(this);
         outputView.requestFocus();
         cell.setInput(currentInput);
         CellCollection.getInstance().saveCells();
@@ -286,13 +309,17 @@ public class SageActivity
     public void onSageFinishedListener() {
         //setSupportProgressBarIndeterminateVisibility(false);
         cellProgressBar.setVisibility(View.INVISIBLE);
+        isServerRunning=false;
+        ActivityCompat.invalidateOptionsMenu(this);
     }
 
 
     @Override
     public void onSageInteractListener(Interact interact, String name, Object value) {
         Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
-
+        cellProgressBar.setVisibility(View.VISIBLE);
+        isServerRunning=true;
+        ActivityCompat.invalidateOptionsMenu(this);
         server.interact(interact, name, value);
         Log.i(TAG, "onSageInteractListener() called!");
     }
