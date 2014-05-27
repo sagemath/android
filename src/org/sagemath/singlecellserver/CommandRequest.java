@@ -1,15 +1,14 @@
 package org.sagemath.singlecellserver;
 
-import java.util.UUID;
-
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sagemath.singlecellserver.SageSingleCell.ServerTask.postTask;
 
-import android.util.Log;
+import java.util.UUID;
 
 public class CommandRequest extends Command {
-	private static final String TAG = "CommandRequest";
+	private static final String TAG = "SageDroid:CommandRequest";
 	
 	long time = System.currentTimeMillis();
 
@@ -34,6 +33,9 @@ public class CommandRequest extends Command {
 		header.put("username","");
 		JSONObject result = new JSONObject();
 		result.put("header", header);
+
+        Log.i(TAG,"Returning :"+result.toString(4));
+
 		return result;
 	}
 	
@@ -44,7 +46,8 @@ public class CommandRequest extends Command {
 		postTask initialPostTask = server.new postTask();
 		try {
 			Log.i(TAG, "CommandRequest.sendRequest() called");
-			initialPostTask.execute(new String[] {toJSON().toString()});
+            Log.i(TAG, "Executing Request:" + toJSON().toString(4));
+			initialPostTask.execute(toJSON().toString());
 			//processInitialReply(httpResponse);
 			return;
 		} catch (JSONException e) {

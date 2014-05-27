@@ -1,10 +1,11 @@
 package org.sagemath.droid;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
+import android.content.Context;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.widget.LinearLayout;
 import junit.framework.Assert;
-
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.interacts.InteractView;
@@ -13,16 +14,13 @@ import org.sagemath.singlecellserver.CommandReply;
 import org.sagemath.singlecellserver.Interact;
 import org.sagemath.singlecellserver.SageSingleCell;
 
-import android.content.Context;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.widget.LinearLayout;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class OutputView 
 		extends LinearLayout 
 		implements SageSingleCell.OnSageListener, InteractView.OnInteractListener {
-	private final static String TAG = "OutputView";
+	private final static String TAG = "SageDroid:OutputView";
 	
 	public interface onSageListener {
 		public void onSageInteractListener(Interact interact, String name, Object value);

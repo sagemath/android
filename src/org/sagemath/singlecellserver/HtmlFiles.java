@@ -1,16 +1,16 @@
 package org.sagemath.singlecellserver;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class HtmlFiles extends CommandOutput {
-	private final static String TAG = "HtmlFiles"; 
+	private final static String TAG = "SageDroid:HtmlFiles";
 
 	protected JSONArray files;
 	protected LinkedList<URI> uriList = new LinkedList<URI>();

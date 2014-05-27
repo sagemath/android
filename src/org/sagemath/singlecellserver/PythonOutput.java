@@ -1,9 +1,9 @@
 package org.sagemath.singlecellserver;
 
-import java.util.Iterator;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 
 /**
@@ -51,7 +51,7 @@ import org.json.JSONObject;
  * @author vbraun
  */
 public class PythonOutput extends CommandOutput {
-	private final static String TAG = "PythonOutput";
+	private final static String TAG = "SageDroid:PythonOutput";
 	
 	protected JSONObject content, data;
 	protected String text;

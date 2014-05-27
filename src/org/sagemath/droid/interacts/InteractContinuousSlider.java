@@ -14,7 +14,7 @@ import android.widget.TextView;
 public class InteractContinuousSlider 
 		extends InteractControlBase
 		implements OnSeekBarChangeListener {
-	private final static String TAG = "InteractContinuousSlider";
+	private final static String TAG = "SageDroid:InteractContinuousSlider";
 	
 	protected String format;
 	protected SeekBar seekBar;

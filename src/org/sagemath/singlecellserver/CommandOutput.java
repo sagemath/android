@@ -11,7 +11,7 @@ import org.json.JSONObject;
  *
  */
 public class CommandOutput extends CommandReply {
-	private final static String TAG = "CommandOutput";
+	private final static String TAG = "SageDroid:CommandOutput";
 	
 	private String output_block;
 	

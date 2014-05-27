@@ -1,26 +1,17 @@
 package org.sagemath.droid;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.sagemath.droid.cells.CellData;
-import org.sagemath.singlecellserver.CommandOutput;
-import org.sagemath.singlecellserver.DataFile;
-import org.sagemath.singlecellserver.DisplayData;
-import org.sagemath.singlecellserver.ExecuteReply;
-import org.sagemath.singlecellserver.HtmlFiles;
-import org.sagemath.singlecellserver.PythonInput;
-import org.sagemath.singlecellserver.PythonOutput;
-import org.sagemath.singlecellserver.ResultStream;
-import org.sagemath.singlecellserver.Traceback;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
+import org.sagemath.droid.cells.CellData;
+import org.sagemath.singlecellserver.*;
+
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class OutputBlock extends WebView {
-	private final static String TAG = "OutputBlock";
+	private final static String TAG = "SageDroid:OutputBlock";
 
 	private final CellData cell;
 	private LinkedList<String> divs = new LinkedList<String>();
@@ -47,6 +38,7 @@ public class OutputBlock extends WebView {
 	protected String name;  
 
 	private static String htmlify(String str) {
+        Log.i(TAG,"Converting to HTML: "+str);
 		StringBuilder s = new StringBuilder();
 		s.append("<pre style=\"font-size:130%\">");
 		String[] lines = str.split("\n");

@@ -1,7 +1,7 @@
 package org.sagemath.singlecellserver;
 
 public class HttpError extends CommandReply {
-	private final static String TAG = "HttpError"; 
+	private final static String TAG = "SageDroid:HttpError";
 	
 	protected String message;
 	

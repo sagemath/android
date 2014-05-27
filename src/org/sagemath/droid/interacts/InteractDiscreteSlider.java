@@ -1,22 +1,21 @@
 package org.sagemath.droid.interacts;
 
-import java.util.LinkedList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.LinkedList;
 
 public class InteractDiscreteSlider 
 		extends InteractControlBase
 		implements OnSeekBarChangeListener {
-	private final static String TAG = "InteractDiscreteSlider";
+	private final static String TAG = "SageDroid:InteractDiscreteSlider";
 	
 	protected SeekBar seekBar;
 	protected TextView nameValueText;

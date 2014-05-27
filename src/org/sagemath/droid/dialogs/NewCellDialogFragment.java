@@ -29,7 +29,7 @@ import java.util.Locale;
  */
 public class NewCellDialogFragment extends DialogFragment {
 
-    private static final String TAG="DialogFragment";
+    private static final String TAG="SageDroid:DialogFragment";
 
     private EditText title;
     private AutoCompleteTextView group;

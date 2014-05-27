@@ -27,7 +27,7 @@ import org.json.JSONObject;
  *
  */
 public class ResultStream extends CommandOutput {
-	private final static String TAG = "ResultStream";
+	private final static String TAG = "SageDroid:ResultStream";
 	
 	protected JSONObject content;	
 	protected String data;

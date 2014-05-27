@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * List the input of any pyin messages
  */
 public class PythonInput extends CommandOutput {
-	private final static String TAG = "PythonOutput";
+	private final static String TAG = "SageDroid:PythonInput";
 	
 	protected JSONObject content;
 	protected String pyinput;

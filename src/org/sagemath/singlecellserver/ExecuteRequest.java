@@ -1,20 +1,21 @@
 package org.sagemath.singlecellserver;
 
-import java.util.UUID;
-
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.UUID;
+
 public class ExecuteRequest extends CommandRequest {
-	private final static String TAG = "ExecuteRequest";
+	private final static String TAG = "SageDroid:ExecuteRequest";
 	
 	String input;
 	boolean sage;
 	
 	public ExecuteRequest(String input, boolean sage, UUID session) {
 		super(session);
-		//Log.i(TAG, "ExecuteRequest called with input " + input);
+		Log.i(TAG, "ExecuteRequest called with input " + input);
 		this.input = input;
 		this.sage = sage;
 	}
@@ -55,6 +56,7 @@ public class ExecuteRequest extends CommandRequest {
 		result.put("header", header);
 		result.put("content", content);
 
+        Log.i(TAG,"ExecuteRequest Returning:" + result.toString(4));
 		
 		return result;
 	}

@@ -5,7 +5,7 @@ import android.widget.LinearLayout;
 
 public abstract class InteractControlBase 
     	extends LinearLayout {
-	private final static String TAG = "InteractControlBase";
+	private final static String TAG = "SageDroid:InteractControlBase";
 
 	protected final String variable;
 	protected final InteractView interactView;

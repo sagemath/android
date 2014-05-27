@@ -1,21 +1,14 @@
 package org.sagemath.droid.cells;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.LinkedList;
-
-import org.json.JSONArray;
-import org.json.JSONTokener;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import org.json.JSONArray;
+import org.json.JSONTokener;
+
+import java.io.*;
+import java.util.LinkedList;
 
 /**
  * CellCollectionJSONParser - reads and writes JSON file from/to CellData
@@ -25,7 +18,7 @@ import android.util.Log;
  *
  */
 public class CellCollectionJSONParser {
-	private static final String TAG = "CellCollectionJSONParser";
+	private static final String TAG = "SageDroid:CellCollectionJSONParser";
 
 	private Context context;
 	private String JSONfilename;

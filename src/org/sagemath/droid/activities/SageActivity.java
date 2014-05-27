@@ -43,7 +43,7 @@ public class SageActivity
         Button.OnClickListener,
         OutputView.onSageListener,
         OnItemSelectedListener {
-    private static final String TAG = "SageActivity";
+    private static final String TAG = "SageDroid:SageActivity";
     private static final String DIALOG_NEW_CELL = "newCell";
     private static final String DIALOG_DISCARD_CELL = "discardCell";
 
@@ -280,6 +280,7 @@ public class SageActivity
         }
 
         String currentInput = input.getText().toString();
+        Assert.assertNotNull(currentInput);
         server.query(currentInput);
         //setSupportProgressBarIndeterminateVisibility(true);
         cellProgressBar.setVisibility(View.VISIBLE);

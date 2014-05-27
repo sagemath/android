@@ -1,11 +1,6 @@
 package org.sagemath.singlecellserver;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-
+import android.util.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -13,10 +8,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sagemath.singlecellserver.SageSingleCell.SageInterruptedException;
 
-import android.util.Log;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class DataFile extends DisplayData {
-	private final static String TAG = "DataFile"; 
+	private final static String TAG = "SageDroid:DataFile";
 	protected byte[] data;
 	protected URI uri;
 	

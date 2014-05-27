@@ -1,15 +1,8 @@
 package org.sagemath.singlecellserver;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.UUID;
-
+import android.os.AsyncTask;
+import android.util.Log;
+import com.codebutler.android_websockets.WebSocketClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
@@ -26,10 +19,15 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.codebutler.android_websockets.WebSocketClient;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.UUID;
 
 
 /**
@@ -39,7 +37,7 @@ import com.codebutler.android_websockets.WebSocketClient;
  *
  */
 public class SageSingleCell {
-	private final static String TAG = "SageSingleCell";
+	private final static String TAG = "SageDroid:SageSingleCell";
 
 	private long timeout  = 30*1000;
 	private URI activityShareURI;
@@ -56,14 +54,6 @@ public class SageSingleCell {
 		Log.i(TAG, "Tried to setDownloadDataFiles set to " + String.valueOf(value));
 		downloadDataFiles = value;
 	}
-
-	/**
-	 * Set the server
-	 * 
-	 * @param server The server, for example "http://sagemath.org:5467"
-	 * @param eval The path on the server for the eval post, for example "/eval"
-	 * @param poll The path on the server for the output polling, for example "/output_poll"
-	 */
 
 	public interface OnSageListener {
 
@@ -145,7 +135,7 @@ public class SageSingleCell {
 
 	public enum LogLevel { NONE, BRIEF, VERBOSE };
 
-	private LogLevel logLevel = LogLevel.NONE;
+	private LogLevel logLevel = LogLevel.VERBOSE;
 
 	public void setLogLevel(LogLevel logLevel) {
 		this.logLevel = logLevel;
@@ -367,7 +357,7 @@ public class SageSingleCell {
 					httpPost.setURI(sageURI);
 
 					ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-					postParameters.add(new BasicNameValuePair("Accept-Econding", "identity"));
+					postParameters.add(new BasicNameValuePair("Accept-Encoding", "identity"));
 					postParameters.add(new BasicNameValuePair("accepted_tos", "true"));
 					httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 
@@ -547,11 +537,11 @@ public class SageSingleCell {
 
 		try {
 			message = task.request.toJSON().toString();
+            Log.i(TAG, "Sending Interact Update "+ task.request.toJSON().toString(2));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		Log.i(TAG, "SageSingleCell.interact() trying to send message...");
 		task.shellclient.send(message);
 	}
 

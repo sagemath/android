@@ -25,7 +25,7 @@ import java.util.Locale;
  */
 public class EditCellDialogFragment extends DialogFragment {
 
-    private static final String TAG = "EditCellDialogFragment";
+    private static final String TAG = "SageDroid:EditCellDialogFragment";
     private static final String ARG_CELL = "Cell";
 
     public interface onGroupSwitchListener{

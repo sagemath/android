@@ -1,22 +1,20 @@
 package org.sagemath.droid.cells;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.UUID;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import android.util.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import android.util.Log;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.UUID;
 
 
 /**
@@ -24,7 +22,7 @@ import android.util.Log;
  *
  */
 public class CellCollectionXMLParser {
-	private static final String TAG = "CellCollectionXMLParser";
+	private static final String TAG = "SageDroid:CellCollectionXMLParser";
 
 	private Document dom;
 	private LinkedList<CellData> data;

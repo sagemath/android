@@ -11,7 +11,7 @@ import android.util.Log;
  *
  */
 public class Status extends CommandOutput {
-	private final static String TAG = "Status";
+	private final static String TAG = "SageDroid:Status";
 	
 	protected JSONObject content;	
 	protected String execution_state;

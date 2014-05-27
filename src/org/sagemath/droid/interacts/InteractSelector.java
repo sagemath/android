@@ -1,11 +1,5 @@
 package org.sagemath.droid.interacts;
 
-import java.util.LinkedList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +8,16 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.LinkedList;
 
 public class InteractSelector 
 		extends InteractControlBase
 		implements OnItemSelectedListener {
-	private final static String TAG = "InteractSelector";
+	private final static String TAG = "SageDroid:InteractSelector";
 	
 	protected Spinner spinner;
 	protected ArrayAdapter<String> adapter;

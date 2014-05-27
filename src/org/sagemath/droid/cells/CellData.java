@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 
 public class CellData implements Parcelable {
-    private static final String TAG = "CellData";
+    private static final String TAG = "SageDroid:CellData";
     private static final String JSON_UUID = "uuid";
     private static final String JSON_GROUP = "group";
     private static final String JSON_TITLE = "title";

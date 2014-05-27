@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Traceback extends CommandOutput {
-	private final static String TAG = "Traceback";
+	private final static String TAG = "SageDroid:Traceback";
 
 	JSONObject content;
 	String ename;

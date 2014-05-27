@@ -30,7 +30,7 @@ import android.widget.Toast;
 public class CellActivity
 		extends ActionBarActivity
 		implements OnGroupSelectedListener{
-	private final static String TAG = "CellActivity";
+	private final static String TAG = "SageDroid:CellActivity";
 	private static final String DIALOG_NEW_CELL = "newCell";
 
 	private ChangeLog changeLog;

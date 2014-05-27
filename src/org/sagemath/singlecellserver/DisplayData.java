@@ -6,14 +6,13 @@ import org.json.JSONObject;
 import android.util.Log;
 
 public class DisplayData extends CommandOutput {
-	private final static String TAG = "DisplayData";
+	private final static String TAG = "SageDroid:DisplayData";
 	
 	private JSONObject data;
 	protected String value, mime;
 	
 	protected DisplayData(JSONObject json) throws JSONException {
 		super(json);
-		//Log.i(TAG, "Created new DisplayData!");
 		data = json.getJSONObject("content").getJSONObject("data");
 		mime = data.keys().next().toString();
 		value = data.getString(mime);

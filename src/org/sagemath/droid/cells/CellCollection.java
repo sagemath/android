@@ -1,15 +1,15 @@
 package org.sagemath.droid.cells;
 
+import android.content.Context;
+import android.util.Log;
+import org.sagemath.droid.R;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-
-import android.content.Context;
-import android.util.Log;
-import org.sagemath.droid.R;
 
 /**
  * CellCollection - Container of cells, singleton.
@@ -19,7 +19,7 @@ import org.sagemath.droid.R;
  *
  */
 public class CellCollection {
-	private static final String TAG = "CellCollection";
+	private static final String TAG = "SageDroid:CellCollection";
 	private static final String JSONfilename = "celldata.json";
 	
 	private static CellCollection instance = new CellCollection();
