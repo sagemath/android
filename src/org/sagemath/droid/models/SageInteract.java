@@ -1,7 +1,13 @@
 package org.sagemath.droid.models;
 
-/**
- * Created by Haven on 27-05-2014.
- */
+import java.util.ArrayList;
+
 public class SageInteract {
+
+    private String new_interact_id;
+    private Controls controls;
+    private boolean readonly;
+    private String locations;
+    private ArrayList<ArrayList<ArrayList<String>>> layout;
+
 }

@@ -1,7 +1,7 @@
 package org.sagemath.droid.models;
 
-/**
- * Created by Haven on 26-05-2014.
- */
+
 public class UserExpressions {
+
+    private String _sagecell_files="sys._sage_.new_files()";
 }

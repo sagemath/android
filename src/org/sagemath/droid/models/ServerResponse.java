@@ -1,7 +1,17 @@
 package org.sagemath.droid.models;
 
+
 /**
- * Created by Haven on 27-05-2014.
+ * Generic Server Response Model
+ * @author Haven
  */
 public class ServerResponse {
+
+    private Header parent_header;
+    private Header header;
+    private String msg_type;
+    private String msg_id;
+    private MetaData metadata;
+
+
 }
