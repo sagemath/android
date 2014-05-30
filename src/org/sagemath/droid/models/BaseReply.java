@@ -2,6 +2,8 @@ package org.sagemath.droid.models;
 
 /**
  * Base Reply from the Server
+ * All *Reply classes should extend this
+ * @author Haven
  */
 public class BaseReply {
 

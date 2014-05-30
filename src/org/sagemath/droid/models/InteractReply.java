@@ -81,4 +81,10 @@ package org.sagemath.droid.models;
 
  */
 public class InteractReply extends BaseReply {
+
+    private InteractContent content;
+
+    public InteractContent getContent() {
+        return content;
+    }
 }
