@@ -1,8 +1,8 @@
 package org.sagemath.droid.deserialisers;
 
 import com.google.gson.*;
-import org.sagemath.droid.models.InteractData;
-import org.sagemath.droid.models.SageInteract;
+import org.sagemath.droid.models.InteractReply.InteractData;
+import org.sagemath.droid.models.InteractReply.SageInteract;
 
 import java.lang.reflect.Type;
 

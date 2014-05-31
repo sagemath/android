@@ -1,7 +1,9 @@
 package org.sagemath.droid.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
- * Created by Haven on 29-05-2014.
+ * @author Haven
  */
 public class PythonOutputReply extends BaseReply {
     private PythonOutputContent content;
@@ -9,4 +11,35 @@ public class PythonOutputReply extends BaseReply {
     public PythonOutputContent getContent() {
         return content;
     }
+
+    public static class PythonOutputContent {
+
+        private PythonOutputData data;
+        private int execution_count;
+        private MetaData metadata;
+
+        public PythonOutputData getData() {
+            return data;
+        }
+
+        public int getExecutionCount() {
+            return execution_count;
+        }
+    }
+
+    public static class PythonOutputData {
+
+        @SerializedName("text/plain")
+        private int outputValue;
+
+        public int getOutputValue() {
+            return outputValue;
+        }
+    }
+
+    public static class MetaData{
+
+    }
+
+
 }

@@ -52,4 +52,8 @@ public class BaseReply {
     public void setMessageID(String msg_id) {
         this.msg_id = msg_id;
     }
+
+    public static class MetaData{
+
+    }
 }

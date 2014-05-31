@@ -10,4 +10,9 @@ public class PythonInputReply extends BaseReply {
     public PythonInputContent getContent() {
         return content;
     }
+
+    public static class PythonInputContent {
+        private int execution_count;
+        private String code;
+    }
 }

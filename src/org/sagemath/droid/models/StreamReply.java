@@ -9,4 +9,17 @@ public class StreamReply extends BaseReply {
     public StreamContent getContent() {
         return content;
     }
+
+    public static class StreamContent {
+        private String data;
+        private String name;
+
+        public String getData() {
+            return data;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 }

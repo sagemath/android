@@ -2,8 +2,9 @@ package org.sagemath.droid.deserialisers;
 
 import android.util.Log;
 import com.google.gson.*;
-import org.sagemath.droid.models.InteractControl;
-import org.sagemath.droid.models.SageInteract;
+
+import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.InteractReply.SageInteract;
 
 import java.lang.reflect.Type;
 import java.util.Map;
