@@ -3,6 +3,7 @@ package org.sagemath.singlecellserver;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.codebutler.android_websockets.WebSocketClient;
+import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
@@ -18,6 +19,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sagemath.droid.models.PermalinkResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -142,7 +144,7 @@ public class SageSingleCell {
 	}
 
 	public class ServerTask {
-		private final static String TAG = "ServerTask";
+		private final static String TAG = "SageDroid:ServerTask";
 
 		private UUID session;
 		private String sageInput;
@@ -159,6 +161,8 @@ public class SageSingleCell {
 		private String kernel_url;
 		private String shell_url;
 		private String iopub_url;
+
+        private Gson gson = new Gson();
 
 		protected LinkedList<CommandReply> result = new LinkedList<CommandReply>();
 
@@ -242,7 +246,7 @@ public class SageSingleCell {
 			currentRequest = request = new ExecuteRequest(sageInput, sageMode, session);
 
 			try {
-				new shareTask().execute(new String[] {sageInput});
+				new shareTask().execute(sageInput);
 			} catch (Exception e) {
 				Log.e(TAG, "Error getting Share URI" + e.getLocalizedMessage());
 			}
@@ -311,7 +315,10 @@ public class SageSingleCell {
 					outputStream.close();
 
 					Log.i(TAG, "output = " + output);
-					JSONObject outputJSON = new JSONObject(output);
+                    PermalinkResponse permalinkResponse = gson.fromJson(output,PermalinkResponse.class);
+                    String queryID=permalinkResponse.getQueryID();
+
+                    JSONObject outputJSON = new JSONObject(output);
 
 					if (outputJSON.has("query")) {
 						String query_id = outputJSON.getString("query");
@@ -322,6 +329,7 @@ public class SageSingleCell {
 					}
 				} catch (Exception e) {
 					Log.e(TAG, "Error creating ShareURI");
+
 				}
 				
 				return null;
@@ -341,7 +349,7 @@ public class SageSingleCell {
 					//URI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
 					int port = 10080;
 					URI testURI = new URI(sageURI.getScheme(), sageURI.getUserInfo(), sageURI.getHost(), port, 
-							sageURI.getPath(), sageURI.getQuery(), sageURI.getFragment());
+							sageURI.getPath(), sageURI.getQueryID(), sageURI.getFragment());
 					Log.i(TAG, "Test URI: " + testURI.toString());
 					//httpPost.setURI(testURI);
 					 */
@@ -491,8 +499,6 @@ public class SageSingleCell {
 		}
 
 		public void start() {
-			//Previously a thread's runnable.
-			//super.run();
 			Log.i(TAG, "SageSingleCell run() called");
 			log(request);
 			request.sendRequest(this);

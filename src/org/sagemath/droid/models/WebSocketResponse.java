@@ -1,7 +1,7 @@
 package org.sagemath.droid.models;
 
 /**
- * Created by Haven on 27-05-2014.
+ * @author Haven
  */
 public class WebSocketResponse {
 
@@ -15,4 +15,5 @@ public class WebSocketResponse {
     public String getWebSocketURL() {
         return ws_url;
     }
+
 }

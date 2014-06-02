@@ -63,7 +63,6 @@ public class SageActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
 
         CellCollection.initialize(getApplicationContext());
@@ -116,7 +115,6 @@ public class SageActivity
 
         server.setDownloadDataFiles(false);
         setTitle(cell.getGroup() + " • " + cell.getTitle());
-        //   setSupportProgressBarIndeterminateVisibility(true);
         if (server.isRunning()) {
             cellProgressBar.setVisibility(View.VISIBLE);
             isServerRunning = true;

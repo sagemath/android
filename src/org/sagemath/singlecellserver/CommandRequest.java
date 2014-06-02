@@ -48,7 +48,6 @@ public class CommandRequest extends Command {
 			Log.i(TAG, "CommandRequest.sendRequest() called");
             Log.i(TAG, "Executing Request:" + toJSON().toString(4));
 			initialPostTask.execute(toJSON().toString());
-			//processInitialReply(httpResponse);
 			return;
 		} catch (JSONException e) {
 			reply = new HttpError(this, e.getLocalizedMessage());
