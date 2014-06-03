@@ -1,17 +1,18 @@
 package org.sagemath.droid.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
-import static org.sagemath.droid.constants.StringConstants.BASE_SERVER_URL;
-import static org.sagemath.droid.constants.StringConstants.PATH_KERNEL;
-import static org.sagemath.droid.constants.StringConstants.SCHEME_HTTP;
+import static org.sagemath.droid.constants.StringConstants.*;
 
 /**
  * @author Haven
  */
 public class UrlUtils {
 
-    public static String getKernelURL() {
+    private static final String TAG = "SageDroid:UrlUtils";
+
+    public static String getInitialKernelURL() {
         Uri.Builder builder = new Uri.Builder();
         builder
                 .scheme(SCHEME_HTTP)
@@ -19,7 +20,33 @@ public class UrlUtils {
                 .appendPath(PATH_KERNEL)
                 .build();
 
+        Log.i(TAG, "Initial Kernal URL: " + builder.toString());
+
         return builder.toString();
+    }
+
+    public static String getShellURL(String kernel_id, String webSocketUrl) {
+        Uri shellURL = Uri.parse(webSocketUrl).buildUpon()
+                .appendPath(PATH_KERNEL)
+                .appendPath(kernel_id)
+                .appendPath(PATH_SHELL)
+                .build();
+
+        Log.i(TAG, "Shell URL: " + shellURL.toString());
+
+        return shellURL.toString();
+    }
+
+    public static String getIoPubURL(String kernel_id, String webSocketUrl) {
+        Uri ioPubURL = Uri.parse(webSocketUrl).buildUpon()
+                .appendPath(PATH_KERNEL)
+                .appendPath(kernel_id)
+                .appendPath(PATH_SHELL)
+                .build();
+
+        Log.i(TAG, "IOPub URL: " + ioPubURL.toString());
+
+        return ioPubURL.toString();
     }
 
 }

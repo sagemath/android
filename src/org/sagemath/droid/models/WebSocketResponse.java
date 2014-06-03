@@ -16,4 +16,12 @@ public class WebSocketResponse {
         return ws_url;
     }
 
+    public boolean isValidResponse() {
+        //Some ugly sanity checking, for flavor
+        if ((kernel_id != null || kernel_id != "") && (ws_url != null || ws_url != "")) {
+            return true;
+        }
+        return false;
+    }
+
 }

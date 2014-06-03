@@ -17,4 +17,7 @@ public class StringConstants {
     public static final String SCHEME_WS="ws";
     public static final String SCHEME_HTTP="http";
 
+    //Global tag for all requests.
+    public static final String TAG_REQUEST="tag";
+
 }

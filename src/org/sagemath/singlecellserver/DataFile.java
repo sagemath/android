@@ -21,7 +21,7 @@ public class DataFile extends DisplayData {
 	
 	protected DataFile(JSONObject json) throws JSONException {
 		super(json);
-		Log.i(TAG, "Created new DataFile!");
+		Log.i(TAG, "Created new DataFile! "+json.toString());
 	}
 
 

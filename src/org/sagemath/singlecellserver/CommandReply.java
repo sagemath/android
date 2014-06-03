@@ -44,7 +44,7 @@ public class CommandReply extends Command {
     }
 
     public String toString() {
-        return "Command reply base class";
+        return json.toString();
     }
 
     public void prettyPrint() {
