@@ -1,4 +1,4 @@
-package org.sagemath.droid.deserialisers;
+package org.sagemath.droid.deserializers;
 
 import android.util.Log;
 import com.google.gson.*;

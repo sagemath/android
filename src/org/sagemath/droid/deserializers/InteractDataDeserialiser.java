@@ -1,4 +1,4 @@
-package org.sagemath.droid.deserialisers;
+package org.sagemath.droid.deserializers;
 
 import com.google.gson.*;
 import org.sagemath.droid.models.InteractReply.InteractData;
