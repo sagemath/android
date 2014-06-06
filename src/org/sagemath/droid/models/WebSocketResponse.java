@@ -5,11 +5,11 @@ package org.sagemath.droid.models;
  */
 public class WebSocketResponse {
 
-    private String kernel_id;
+    private String id;
     private String ws_url;
 
     public String getKernelID() {
-        return kernel_id;
+        return id;
     }
 
     public String getWebSocketURL() {
@@ -18,7 +18,7 @@ public class WebSocketResponse {
 
     public boolean isValidResponse() {
         //Some ugly sanity checking, for flavor
-        if ((kernel_id != null || kernel_id != "") && (ws_url != null || ws_url != "")) {
+        if ((id != null || id != "") && (ws_url != null || ws_url != "")) {
             return true;
         }
         return false;

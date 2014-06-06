@@ -279,7 +279,7 @@ public class SageActivity
 
         String currentInput = input.getText().toString();
         Assert.assertNotNull(currentInput);
-        server.query(currentInput,this);
+        server.query(currentInput);
         //setSupportProgressBarIndeterminateVisibility(true);
         cellProgressBar.setVisibility(View.VISIBLE);
         isServerRunning=true;

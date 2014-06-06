@@ -36,7 +36,6 @@ dependencies {
     compile 'com.koushikdutta.async:androidasync:1.2.6'
     compile 'com.squareup.okhttp:okhttp:2.0.0-RC1'
     compile 'com.koushikdutta.ion:ion:1.2.7'
+    compile 'com.squareup.mimecraft:mimecraft:1.1.1'
     compile 'com.squareup.okio:okio:1.0.0'
-
-
 }

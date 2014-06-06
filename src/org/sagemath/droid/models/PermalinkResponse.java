@@ -1,6 +1,7 @@
 package org.sagemath.droid.models;
 
 import android.net.Uri;
+import org.sagemath.droid.utils.UrlUtils;
 
 /**
  * @author Haven
@@ -18,13 +19,16 @@ public class PermalinkResponse {
         return zip;
     }
 
-    public Uri getQueryUri(Uri serverUri) {
-        return serverUri.buildUpon()
+    public String getQueryURL() {
+        Uri queryUri = Uri.parse(UrlUtils.getPermalinkURL())
+                .buildUpon()
                 .appendQueryParameter("q", getQueryID())
                 .build();
+
+        return queryUri.toString();
     }
 
-    public Uri getZipUri(Uri serverUri) {
+    public Uri getZipURL(Uri serverUri) {
         return serverUri.buildUpon()
                 .appendQueryParameter("z", getQueryID())
                 .build();

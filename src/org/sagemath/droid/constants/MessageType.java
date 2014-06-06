@@ -13,4 +13,7 @@ public class MessageType {
     public static final int HTML_FILES = 0x000109;
     public static final int INTERACT_PREPARE = 0x000110;
     public static final int EXTENSION = 0x000111;
+    public static final int TEXT_FILENAME=0x000112;
+    public static final int TEXT_IMAGE_FILENAME=0x000113;
+    public static final int INTERACT=0x000114;
 }

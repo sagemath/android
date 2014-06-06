@@ -6,18 +6,17 @@ package org.sagemath.droid.constants;
 public class StringConstants {
 
     //--BASE URLS--
-    public static final String BASE_SERVER_URL="sagecell.sagemath.org";
+    public static final String BASE_SERVER_URL = "sagecell.sagemath.org";
 
     //--PATHS--
-    public static final String PATH_KERNEL="kernel";
-    public static final String PATH_IOPUB="iopub";
-    public static final String PATH_SHELL="shell";
+    public static final String PATH_KERNEL = "kernel";
+    public static final String PATH_IOPUB = "iopub";
+    public static final String PATH_SHELL = "shell";
+    public static final String PATH_PERMALINK = "permalink";
 
     //--SCHEMES--
-    public static final String SCHEME_WS="ws";
-    public static final String SCHEME_HTTP="http";
-
-    //Global tag for all requests.
-    public static final String TAG_REQUEST="tag";
+    public static final String SCHEME_WS = "ws";
+    public static final String SCHEME_HTTPS = "https";
+    public static final String SCHEME_HTTP = "http";
 
 }
