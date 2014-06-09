@@ -1,6 +1,5 @@
 package org.sagemath.droid.models;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -95,7 +94,6 @@ public class InteractReply extends BaseReply {
 
     public static class InteractContent {
 
-        @Expose
         private InteractData data;
         private String source;
 
@@ -144,7 +142,7 @@ public class InteractReply extends BaseReply {
     public static class SageInteract {
 
         private String new_interact_id;
-        private InteractControl controls;
+        private ArrayList<InteractControl> controls;
         private boolean readonly;
         private String locations;
         private ArrayList<ArrayList<ArrayList<String>>> layout;
@@ -157,11 +155,11 @@ public class InteractReply extends BaseReply {
             this.new_interact_id = new_interact_id;
         }
 
-        public InteractControl getControls() {
+        public ArrayList<InteractControl> getControls() {
             return controls;
         }
 
-        public void setControls(InteractControl controls) {
+        public void setControls(ArrayList<InteractControl> controls) {
             this.controls = controls;
         }
 
@@ -291,11 +289,11 @@ public class InteractReply extends BaseReply {
             this.step = step;
         }
 
-        public String getVarName() {
+        public String getVarNames() {
             return varName;
         }
 
-        public void setVarName(String varName) {
+        public void setVarNames(String varName) {
             this.varName = varName;
         }
     }
