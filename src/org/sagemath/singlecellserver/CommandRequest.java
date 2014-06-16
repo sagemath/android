@@ -3,6 +3,7 @@ package org.sagemath.singlecellserver;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sagemath.droid.models.Header;
 import org.sagemath.singlecellserver.SageSingleCell.ServerTask.postTask;
 
 import java.util.UUID;
@@ -38,6 +39,16 @@ public class CommandRequest extends Command {
 
 		return result;
 	}
+
+    public Header getBaseHeader(){
+
+        Header header = new Header();
+        header.setSession(session.toString());
+        header.setMessageID(msg_id.toString());
+
+        return header;
+
+    }
 	
 	
 	protected void sendRequest(SageSingleCell.ServerTask server) {

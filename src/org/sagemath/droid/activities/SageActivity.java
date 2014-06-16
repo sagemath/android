@@ -2,9 +2,7 @@ package org.sagemath.droid.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -13,9 +11,13 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -24,9 +26,10 @@ import org.sagemath.droid.OutputView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
-import org.sagemath.singlecellserver.Interact;
-import org.sagemath.singlecellserver.SageSingleCell;
+import org.sagemath.droid.models.InteractReply;
+import org.sagemath.singlecellserver.SageSingleCell2;
 import sheetrock.panda.changelog.ChangeLog;
 
 /**
@@ -56,7 +59,7 @@ public class SageActivity
     private OutputView outputView;
     private ProgressBar cellProgressBar;
 
-    private static SageSingleCell server = new SageSingleCell();
+    private static SageSingleCell2 server;
     private boolean isServerRunning = false;
 
     private CellData cell;
@@ -64,6 +67,10 @@ public class SageActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(progressBroadcastReceiver, new IntentFilter(StringConstants.PROGRESS_INTENT));
+
+        server = new SageSingleCell2(this);
 
         CellCollection.initialize(getApplicationContext());
         cell = CellCollection.getInstance().getCurrentCell();
@@ -113,14 +120,8 @@ public class SageActivity
         }
 
 
-        server.setDownloadDataFiles(false);
+        //server.setDownloadDataFiles(false);
         setTitle(cell.getGroup() + " • " + cell.getTitle());
-        if (server.isRunning()) {
-            cellProgressBar.setVisibility(View.VISIBLE);
-            isServerRunning = true;
-            ActivityCompat.invalidateOptionsMenu(this);
-        }
-
         input.setText(cell.getInput());
         Boolean isNewCell = getIntent().getBooleanExtra("NEWCELL", false);
         if (isNewCell) {
@@ -267,7 +268,6 @@ public class SageActivity
     private void runButton() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-        server.interrupt();
         try {
             if (!cell.getGroup().equals("History")) {
                 outputView.clear();
@@ -282,7 +282,7 @@ public class SageActivity
         server.query(currentInput);
         //setSupportProgressBarIndeterminateVisibility(true);
         cellProgressBar.setVisibility(View.VISIBLE);
-        isServerRunning=true;
+        isServerRunning = true;
         ActivityCompat.invalidateOptionsMenu(this);
         outputView.requestFocus();
         cell.setInput(currentInput);
@@ -306,18 +306,14 @@ public class SageActivity
 
     @Override
     public void onSageFinishedListener() {
-        //setSupportProgressBarIndeterminateVisibility(false);
-        cellProgressBar.setVisibility(View.INVISIBLE);
-        isServerRunning=false;
-        ActivityCompat.invalidateOptionsMenu(this);
+        hideProgress();
     }
 
-
     @Override
-    public void onSageInteractListener(Interact interact, String name, Object value) {
+    public void onSageInteractListener(InteractReply interact, String name, Object value) {
         Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
         cellProgressBar.setVisibility(View.VISIBLE);
-        isServerRunning=true;
+        isServerRunning = true;
         ActivityCompat.invalidateOptionsMenu(this);
         server.interact(interact, name, value);
         Log.i(TAG, "onSageInteractListener() called!");
@@ -368,5 +364,33 @@ public class SageActivity
         // TODO Auto-generated method stub
 
     }
+
+    public void showProgress() {
+        cellProgressBar.setVisibility(View.VISIBLE);
+        isServerRunning = true;
+        ActivityCompat.invalidateOptionsMenu(this);
+    }
+
+    public void hideProgress() {
+        cellProgressBar.setVisibility(View.INVISIBLE);
+        isServerRunning = false;
+        ActivityCompat.invalidateOptionsMenu(this);
+    }
+
+    private BroadcastReceiver progressBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean progressStart = intent.getBooleanExtra(StringConstants.ARG_PROGRESS_START, false);
+            boolean progressEnd = intent.getBooleanExtra(StringConstants.ARG_PROGRESS_END, false);
+
+            Log.i(TAG, "Received Broadcast");
+
+            if (progressStart) {
+                showProgress();
+            } else if (progressEnd) {
+                hideProgress();
+            }
+        }
+    };
 
 }

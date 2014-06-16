@@ -19,4 +19,8 @@ public class StringConstants {
     public static final String SCHEME_HTTPS = "https";
     public static final String SCHEME_HTTP = "http";
 
+    public static final String PROGRESS_INTENT = "progress-intent";
+    public static final String ARG_PROGRESS_START = "progress-start";
+    public static final String ARG_PROGRESS_END = "progress-end";
+
 }

@@ -7,6 +7,10 @@ import android.widget.TableRow;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sagemath.droid.constants.ControlType;
+import org.sagemath.droid.models.InteractReply;
+import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.InteractReply.SageInteract;
 import org.sagemath.singlecellserver.Interact;
 
 import java.util.Arrays;
@@ -28,7 +32,7 @@ public class InteractView extends TableLayout {
     }
 
     public interface OnInteractListener {
-        public void onInteractListener(Interact interact, String name, Object value);
+        public void onInteractListener(InteractReply interact, String name, Object value);
     }
 
     private OnInteractListener listener;
@@ -38,6 +42,7 @@ public class InteractView extends TableLayout {
     }
 
     private Interact interact;
+    private InteractReply interactReply;
     private JSONArray layout;
 
     private List<String> layoutPositions = Arrays.asList(
@@ -67,6 +72,18 @@ public class InteractView extends TableLayout {
         }
     }
 
+    public void set(InteractReply interactReply) {
+        this.interactReply=interactReply;
+        removeAllViews();
+
+        SageInteract sageInteract=interactReply.getContent().getData().getInteract();
+
+        //For each control present, add the corresponding type.
+        for(InteractControl control:sageInteract.getControls()){
+            addInteract(control);
+        }
+    }
+
     public void addInteract(Interact interact, String variable) {
         JSONObject controls = interact.getControls();
         try {
@@ -92,11 +109,40 @@ public class InteractView extends TableLayout {
         }
     }
 
+    /**
+     * Add an Interact Control to the output
+     *
+     * @param control
+     */
+    public void addInteract(InteractControl control) {
+        switch (control.getControlType()) {
+            case ControlType.CONTROL_SLIDER:
+                if (control.getSubtype() == ControlType.SLIDER_CONTINUOUS) {
+                    addContinuousSlider(control);
+                } else if (control.getSubtype() == ControlType.SLIDER_DISCRETE) {
+                    //Add discrete slider
+                    addDiscreteSlider(control);
+                }
+                break;
+
+            case ControlType.CONTROL_SELECTOR:
+                //Add a selector
+                addSelector(control);
+                break;
+        }
+    }
+
     protected void addContinuousSlider(String variable, JSONObject control) throws JSONException {
         InteractContinuousSlider slider = new InteractContinuousSlider(this, variable, context);
         slider.setRange(control);
         addView(slider);
         //Log.i(TAG, "Added Continuous Slider view!");
+    }
+
+    protected void addContinuousSlider(InteractControl control) {
+        InteractContinuousSlider slider = new InteractContinuousSlider(this, control.getVarName(), context);
+        slider.setRange(control);
+        addView(slider);
     }
 
     protected void addDiscreteSlider(String variable, JSONObject control) throws JSONException {
@@ -106,6 +152,12 @@ public class InteractView extends TableLayout {
         //Log.i(TAG, "Added Discrete Slider view!");
     }
 
+    protected void addDiscreteSlider(InteractControl control) {
+        InteractDiscreteSlider slider = new InteractDiscreteSlider(this, control.getVarName(), context);
+        slider.setValues(control);
+        addView(slider);
+    }
+
     protected void addSelector(String variable, JSONObject control) throws JSONException {
         InteractSelector selector = new InteractSelector(this, variable, context);
         selector.setValues(control);
@@ -113,10 +165,14 @@ public class InteractView extends TableLayout {
         //Log.i(TAG, "Added Selector view!");
     }
 
+    protected void addSelector(InteractControl control) {
+        InteractSelector selector = new InteractSelector(this, control.getVarName(), context);
+        selector.setValues(control);
+    }
 
     protected void notifyChange(InteractControlBase view) {
         //Log.i(TAG, "InteractView value: " + view.getVariableName() + " = " + view.getValue());
-        listener.onInteractListener(interact, view.getVariableName(), view.getValue());
+        listener.onInteractListener(interactReply, view.getVariableName(), view.getValue());
     }
 
 }

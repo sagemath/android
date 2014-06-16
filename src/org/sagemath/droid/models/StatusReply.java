@@ -9,6 +9,14 @@ public class StatusReply extends BaseReply {
 
     private StatusContent content;
 
+    public StatusReply() {
+        super();
+    }
+
+    public String toString() {
+        return gson.toJson(this);
+    }
+
     public StatusContent getContent() {
         return content;
     }
@@ -21,6 +29,10 @@ public class StatusReply extends BaseReply {
         public static final String STR_OK = "ok"; //Not sure if this status exists
 
         private String execution_state;
+
+        public String getStringExecutionState() {
+            return execution_state;
+        }
 
         public int getExecutionState() {
             if (execution_state.equalsIgnoreCase(STR_BUSY))

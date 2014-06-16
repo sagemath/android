@@ -1,6 +1,9 @@
 package org.sagemath.droid.models;
 
 import org.sagemath.droid.constants.MessageType;
+
+import java.util.UUID;
+
 public class Header {
 
     //---STATIC VARIABLES---
@@ -48,6 +51,7 @@ public class Header {
         this.session = session;
     }
 
+    //Possibly redundant, now that we check from BaseReply directly
     public int getMessageType() {
         if (msg_type.equalsIgnoreCase(STR_EXECUTE_REPLY))
             return MessageType.EXECUTE_REPLY;
@@ -70,6 +74,10 @@ public class Header {
         else return MessageType.ERROR;
     }
 
+    public String getStringMessageType() {
+        return msg_type;
+    }
+
     public void setMessageType(String msg_type) {
         this.msg_type = msg_type;
     }
@@ -84,12 +92,22 @@ public class Header {
 
     //UTILITY METHODS
 
-    public void init(String session,String msg_id){
+    public void init() {
+        setSession(UUID.randomUUID().toString());
+        setMessageID(UUID.randomUUID().toString());
+    }
+
+    public void init(String session) {
+        setSession(session);
+        setMessageID(UUID.randomUUID().toString());
+    }
+
+    public void init(String session, String msg_id) {
         setSession(session);
         setMessageID(msg_id);
     }
 
-    public void init(String session,String msg_id,String username){
+    public void init(String session, String msg_id, String username) {
         setSession(session);
         setMessageID(msg_id);
         setUsername(username);

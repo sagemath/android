@@ -1,6 +1,7 @@
 package org.sagemath.droid.models;
 
 import com.google.gson.annotations.SerializedName;
+import org.sagemath.droid.constants.ControlType;
 
 import java.util.ArrayList;
 
@@ -88,9 +89,18 @@ public class InteractReply extends BaseReply {
 
     private InteractContent content;
 
+    public InteractReply() {
+        super();
+    }
+
+    public String toString() {
+        return gson.toJson(this);
+    }
+
     public InteractContent getContent() {
         return content;
     }
+
 
     public static class InteractContent {
 
@@ -190,6 +200,11 @@ public class InteractReply extends BaseReply {
 
     public static class InteractControl {
 
+        private static final String STR_SLIDER = "slider";
+        private static final String STR_SELECTOR = "selector";
+        private static final String STR_DISCRETE = "discrete";
+        private static final String STR_CONTINUOUS = "continuous";
+
         //The variable name that this control is associated with
         //Not part of the JSON that is received or replied
         //So we mark it transient to prevent GSON from deserialising/serialising it
@@ -199,6 +214,7 @@ public class InteractReply extends BaseReply {
         private boolean raw;
         private String control_type;
         private boolean display_value;
+        private String[] value_labels;
         private String[] values;
 
         @SerializedName("default")
@@ -217,8 +233,16 @@ public class InteractReply extends BaseReply {
             return raw;
         }
 
-        public String getControlType() {
+        public String getStringControlType() {
             return control_type;
+        }
+
+        public int getControlType() {
+            if (control_type.equalsIgnoreCase(STR_SELECTOR))
+                return ControlType.CONTROL_SELECTOR;
+            else if (control_type.equalsIgnoreCase(STR_SLIDER))
+                return ControlType.CONTROL_SLIDER;
+            else return ControlType.CONTROL_ERROR;
         }
 
         public boolean isDisplayValue() {
@@ -237,12 +261,24 @@ public class InteractReply extends BaseReply {
             return range;
         }
 
-        public String getSubtype() {
+        public String getStringSubtype() {
             return subtype;
+        }
+
+        public int getSubtype() {
+            if (subtype.equalsIgnoreCase(STR_DISCRETE))
+                return ControlType.SLIDER_DISCRETE;
+            else if (subtype.equalsIgnoreCase(STR_CONTINUOUS))
+                return ControlType.SLIDER_CONTINUOUS;
+            else return ControlType.CONTROL_ERROR;
         }
 
         public String getLabel() {
             return label;
+        }
+
+        public String[] getValueLabels() {
+            return value_labels;
         }
 
         public int getStep() {
@@ -289,7 +325,7 @@ public class InteractReply extends BaseReply {
             this.step = step;
         }
 
-        public String getVarNames() {
+        public String getVarName() {
             return varName;
         }
 

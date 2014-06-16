@@ -4,10 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * @author Haven
+ * Reply having a String to be displayed as HTML
  */
 public class HtmlReply extends BaseReply {
 
     private HtmlContent content;
+
+    public HtmlReply(){
+        super();
+    }
 
     public static class HtmlContent {
 
@@ -45,5 +50,9 @@ public class HtmlReply extends BaseReply {
 
     public HtmlContent getContent() {
         return content;
+    }
+
+    public String toString(){
+        return gson.toJson(this);
     }
 }

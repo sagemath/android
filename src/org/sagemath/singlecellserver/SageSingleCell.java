@@ -15,7 +15,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.sagemath.droid.ServerTask2;
 import org.sagemath.droid.models.PermalinkResponse;
 import org.sagemath.droid.models.WebSocketResponse;
@@ -45,6 +44,7 @@ public class SageSingleCell {
 
     protected boolean downloadDataFiles = true;
     private String initialRequestString;
+    private WebSocket shellSocket;
 
     /**
      * Whether to immediately download data files or only save their URI
@@ -143,6 +143,7 @@ public class SageSingleCell {
         private String kernel_url;
         private String shell_url;
         private String iopub_url;
+
 
         private Gson gson = new Gson();
         private ServerTask2 myTask;
@@ -291,6 +292,7 @@ public class SageSingleCell {
             @Override
             public void onCompleted(Exception e, WebSocket webSocket) {
                 //Send the execute_request
+                shellSocket = webSocket;
                 Log.i(TAG, "Shell Connected, Sending " + initialRequestString);
                 webSocket.send(initialRequestString);
 
@@ -320,10 +322,11 @@ public class SageSingleCell {
 
                         Log.i(TAG, "IOPub received String" + s);
                         try {
-                            JSONObject JSONreply = new JSONObject(s);
-                            CommandReply reply = CommandReply.parse(JSONreply);
+                            //JSONObject jsonObject = new JSONObject(s);
+                            CommandReply reply = CommandReply.parse(s);
+                            Log.i(TAG, "Parsed CommandReply: " + reply.toLongString());
                             addReply(reply);
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -385,7 +388,8 @@ public class SageSingleCell {
             e.printStackTrace();
         }
 
-        task.shellclient.send(message);
+        //task.shellclient.send(message);
+        shellSocket.send(message);
     }
 
     /**

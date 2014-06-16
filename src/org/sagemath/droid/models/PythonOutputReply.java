@@ -12,6 +12,14 @@ public class PythonOutputReply extends BaseReply {
         return content;
     }
 
+    public PythonOutputReply(){
+        super();
+    }
+
+    public String toString() {
+        return gson.toJson(this);
+    }
+
     public static class PythonOutputContent {
 
         private PythonOutputData data;
@@ -30,14 +38,14 @@ public class PythonOutputReply extends BaseReply {
     public static class PythonOutputData {
 
         @SerializedName("text/plain")
-        private int outputValue;
+        private String outputValue;
 
-        public int getOutputValue() {
+        public String getOutputValue() {
             return outputValue;
         }
     }
 
-    public static class MetaData{
+    public static class MetaData {
 
     }
 

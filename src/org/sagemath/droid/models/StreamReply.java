@@ -10,6 +10,14 @@ public class StreamReply extends BaseReply {
         return content;
     }
 
+    public StreamReply() {
+        super();
+    }
+
+    public String toString() {
+        return gson.toJson(this);
+    }
+
     public static class StreamContent {
         private String data;
         private String name;

@@ -3,11 +3,35 @@ package org.sagemath.droid.models;
 import java.util.ArrayList;
 
 public class Request {
+    private static final String EXECUTE_REQUEST="execute_request";
+    //private static final String
 
     private Header header;
     private Header parent_header;
     private RequestContent content;
     private MetaData metadata;
+
+    public Request() {
+        header = new Header();
+        parent_header= new Header();
+        content = new RequestContent();
+        metadata = new MetaData();
+    }
+
+    public Request(String sageInput) {
+        this();
+        getHeader().init(); // With random UUID
+        getHeader().setMessageType(EXECUTE_REQUEST);
+        getContent().setCode(sageInput);
+    }
+
+    public Request(String sageInput, String session) {
+        this();
+        getHeader().init(session);
+        getHeader().setMessageType(EXECUTE_REQUEST);
+        getContent().setCode(sageInput);
+
+    }
 
     public Header getHeader() {
         return header;
@@ -49,6 +73,13 @@ public class Request {
         private UserExpressions user_expressions;
         private boolean allow_stdin;
 
+        public RequestContent() {
+            user_variables = new ArrayList<String>();
+            user_expressions = new UserExpressions();
+            setSilent(false);
+            setAllowStdin(false);
+        }
+
         public String getCode() {
             return code;
         }
@@ -85,8 +116,6 @@ public class Request {
 
             private String _sagecell_files = "sys._sage_.new_files()";
         }
-
-
     }
 
     public static class MetaData {

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * @author Haven
@@ -48,6 +49,8 @@ public class ServerTask2 {
     private String input;
     private CommandRequest currentRequest;
     private SageSingleCell.OnSageListener listener;
+
+    private LinkedList<String> outputBlocks = new LinkedList<String>();
 
 
     private Gson gson;
@@ -74,6 +77,8 @@ public class ServerTask2 {
     public void addReply(CommandReply reply) {
 
         Log.i(TAG, "Received CommandReply: " + reply);
+        //TODO CommandOutput is redundant
+        CommandOutput output = (CommandOutput) reply;
 
         //If it contains an image file.
         if (reply instanceof DataFile) {
@@ -85,12 +90,16 @@ public class ServerTask2 {
                 e.printStackTrace();
             }
         } else if (reply.containsOutput() && reply.isReplyTo(currentRequest)) {
-            //TODO CommandOutput is redundant
-            CommandOutput output = (CommandOutput) reply;
+
             listener.onSageAdditionalOutputListener(output);
+        } else {
+            outputBlocks.add(output.outputBlock());
+            listener.onSageOutputListener(output);
         }
+    }
 
-
+    public void setCurrentRequest(CommandRequest currentRequest) {
+        this.currentRequest = currentRequest;
     }
 
     public WebSocketResponse sendInitialRequest() throws IOException {
