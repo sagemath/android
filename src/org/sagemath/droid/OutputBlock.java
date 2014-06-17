@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
 import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.models.*;
 import org.sagemath.singlecellserver.*;
 
@@ -93,29 +94,26 @@ public class OutputBlock extends WebView {
         //Log.i(TAG, "Adding Reply: " + reply.toString());
 
         if (reply instanceof ImageReply) {
-            Log.i(TAG,"Adding an ImageReply");
+            Log.i(TAG, "Adding an ImageReply");
             addDivImageReply((ImageReply) reply);
         } else if (reply instanceof HtmlReply) {
             //Having text/html
-            Log.i(TAG,"Adding HTML Reply");
+            Log.i(TAG, "Adding HTML Reply");
             addDivHtmlReply((HtmlReply) reply);
         } else if (reply instanceof PythonOutputReply) {
             //Having pyout
-            Log.i(TAG,"Adding PyOut Reply");
+            Log.i(TAG, "Adding PyOut Reply");
             addDivPythonOutput((PythonOutputReply) reply);
         } else if (reply instanceof PythonErrorReply) {
             //Having pyerr, Traceback
-            Log.i(TAG,"Adding PyErr Reply");
+            Log.i(TAG, "Adding PyErr Reply");
             addDivPythonErrorReply((PythonErrorReply) reply);
         } else if (reply instanceof StreamReply) {
             //Having Stream
-            Log.i(TAG,"Adding Stream Reply");
+            Log.i(TAG, "Adding Stream Reply");
             addDivStreamReply((StreamReply) reply);
-        } else if (reply instanceof StatusReply) {
-            //Do Nothing, it is a Status Message
-            Log.i(TAG,"Status Reply, Skipping");
         } else {
-            divs.add("Unknown Output" + reply.getMsg_type());
+            Log.i(TAG,"Unknown Output");
         }
     }
 
@@ -233,14 +231,15 @@ public class OutputBlock extends WebView {
 
     public void add(BaseReply reply) {
 
-        /*boolean isUpdateInteract = reply.getJsonData().contains("sys._sage_.update_interact");
-
-        if (isUpdateInteract) {
-            clearBlocks();
-        }*/
-        if(reply instanceof StatusReply){
+        //TODO Find a better way to do this
+        if (reply instanceof StatusReply
+                || reply instanceof PythonInputReply
+                || reply.getMessageType() == MessageType.DISPLAY_DATA) {
             //Skip
             return;
+        } else if (reply instanceof SageClearReply) {
+            Log.i(TAG, "Sage Clear Reply");
+            divs.clear();
         }
         addDiv(reply);
         cell.saveOutput("", getHtml());

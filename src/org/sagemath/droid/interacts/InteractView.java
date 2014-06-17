@@ -50,7 +50,7 @@ public class InteractView extends TableLayout {
             "bottom_left", "bottom_center", "bottom_right");
 
     public void set(Interact interact) {
-        // Log.e(TAG, "set "+interact.toShortString());
+        // Log.e(TAG, "set "+updateInteract.toShortString());
         this.interact = interact;
         removeAllViews();
         JSONArray layout = interact.getLayout();
@@ -73,13 +73,14 @@ public class InteractView extends TableLayout {
     }
 
     public void set(InteractReply interactReply) {
-        this.interactReply=interactReply;
+        Log.i(TAG, "Setting InteractReply" + interactReply.toString());
+        this.interactReply = interactReply;
         removeAllViews();
 
-        SageInteract sageInteract=interactReply.getContent().getData().getInteract();
+        SageInteract sageInteract = interactReply.getContent().getData().getInteract();
 
         //For each control present, add the corresponding type.
-        for(InteractControl control:sageInteract.getControls()){
+        for (InteractControl control : sageInteract.getControls()) {
             addInteract(control);
         }
     }
@@ -115,6 +116,7 @@ public class InteractView extends TableLayout {
      * @param control
      */
     public void addInteract(InteractControl control) {
+        Log.i(TAG, "Processing InteractControl" + control.toString());
         switch (control.getControlType()) {
             case ControlType.CONTROL_SLIDER:
                 if (control.getSubtype() == ControlType.SLIDER_CONTINUOUS) {
@@ -140,6 +142,7 @@ public class InteractView extends TableLayout {
     }
 
     protected void addContinuousSlider(InteractControl control) {
+        Log.i(TAG, "Adding Continous Slider");
         InteractContinuousSlider slider = new InteractContinuousSlider(this, control.getVarName(), context);
         slider.setRange(control);
         addView(slider);
@@ -153,6 +156,7 @@ public class InteractView extends TableLayout {
     }
 
     protected void addDiscreteSlider(InteractControl control) {
+        Log.i(TAG, "Adding Discrete Slider");
         InteractDiscreteSlider slider = new InteractDiscreteSlider(this, control.getVarName(), context);
         slider.setValues(control);
         addView(slider);
@@ -166,12 +170,12 @@ public class InteractView extends TableLayout {
     }
 
     protected void addSelector(InteractControl control) {
+        Log.i(TAG, "Adding a selector");
         InteractSelector selector = new InteractSelector(this, control.getVarName(), context);
         selector.setValues(control);
     }
 
     protected void notifyChange(InteractControlBase view) {
-        //Log.i(TAG, "InteractView value: " + view.getVariableName() + " = " + view.getValue());
         listener.onInteractListener(interactReply, view.getVariableName(), view.getValue());
     }
 

@@ -119,7 +119,6 @@ public class SageActivity
             }
         }
 
-
         //server.setDownloadDataFiles(false);
         setTitle(cell.getGroup() + " • " + cell.getTitle());
         input.setText(cell.getInput());
@@ -280,10 +279,7 @@ public class SageActivity
         String currentInput = input.getText().toString();
         Assert.assertNotNull(currentInput);
         server.query(currentInput);
-        //setSupportProgressBarIndeterminateVisibility(true);
-        cellProgressBar.setVisibility(View.VISIBLE);
-        isServerRunning = true;
-        ActivityCompat.invalidateOptionsMenu(this);
+        //showProgress();
         outputView.requestFocus();
         cell.setInput(currentInput);
         CellCollection.getInstance().saveCells();
@@ -312,10 +308,8 @@ public class SageActivity
     @Override
     public void onSageInteractListener(InteractReply interact, String name, Object value) {
         Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
-        cellProgressBar.setVisibility(View.VISIBLE);
-        isServerRunning = true;
-        ActivityCompat.invalidateOptionsMenu(this);
-        server.interact(interact, name, value);
+        showProgress();
+        server.updateInteract(interact, name, value);
         Log.i(TAG, "onSageInteractListener() called!");
     }
 

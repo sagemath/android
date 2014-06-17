@@ -161,7 +161,7 @@ public class OutputView
                 InteractView interactView = new InteractView(context);
                 interactView.set(interact);
                 interactView.setOnInteractListener(OutputView.this);
-                Log.i(TAG, "Adding interact view: " + interact.toString());
+                Log.i(TAG, "Adding updateInteract view: " + interact.toString());
                 addView(interactView, 0);
             }
             if (finished != null)

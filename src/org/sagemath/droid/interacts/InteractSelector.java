@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sagemath.droid.models.InteractReply.InteractControl;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class InteractSelector
@@ -73,6 +74,7 @@ public class InteractSelector
     }
 
     public void setValues(InteractControl control) {
+        Log.i(TAG, "Setting Values: " + Arrays.toString(control.getValueLabels()));
         values.clear();
         for (String i : control.getValueLabels()) {
             values.add(i);

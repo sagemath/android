@@ -9,7 +9,7 @@ import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.BaseReplyDeserializer;
 import org.sagemath.droid.deserializers.InteractContentDeserialiser;
-import org.sagemath.droid.deserializers.InteractDataDeserialiser;
+import org.sagemath.droid.deserializers.InteractDataDeserializer;
 import org.sagemath.droid.deserializers.SageInteractDeserialiser;
 import org.sagemath.droid.models.*;
 import org.sagemath.droid.models.InteractReply.InteractContent;
@@ -143,7 +143,7 @@ public class CommandReply extends Command {
                 return new DataFile(json);
             else if (data.has("text/image-filename"))
                 return new DataFile(json);
-            else if (data.has("application/sage-interact"))
+            else if (data.has("application/sage-updateInteract"))
                 return new Interact(json);
             else
                 return new DisplayData(json);
@@ -169,7 +169,7 @@ public class CommandReply extends Command {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(BaseReply.class, new BaseReplyDeserializer())
                 .registerTypeAdapter(InteractContent.class, new InteractContentDeserialiser())
-                .registerTypeAdapter(InteractData.class, new InteractDataDeserialiser())
+                .registerTypeAdapter(InteractData.class, new InteractDataDeserializer())
                 .registerTypeAdapter(SageInteract.class, new SageInteractDeserialiser())
                 .create();
 

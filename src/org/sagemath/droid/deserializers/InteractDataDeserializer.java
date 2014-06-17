@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 /**
  * Created by Haven on 30-05-2014.
  */
-public class InteractDataDeserialiser implements JsonDeserializer<InteractData> {
+public class InteractDataDeserializer implements JsonDeserializer<InteractData> {
 
     private static final String KEY_INTERACT="application/sage-interact";
     private static final String KEY_DESC_TEXT="text/plain";

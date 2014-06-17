@@ -20,13 +20,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
+import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.models.*;
 import org.sagemath.droid.utils.UrlUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -36,12 +35,13 @@ import java.util.UUID;
  */
 public class SageSingleCell2 {
 
-    private static final String TAG = "SageDroid:SageSingleCell";
+    private static final String TAG = "SageDroid:SageSingleCell2";
 
     private static final String HEADER_ACCEPT_ENCODING = "Accept_Encoding";
     private static final String HEADER_TOS = "accepted_tos";
     private static final String VALUE_IDENTITY = "identity";
     private static final String VALUE_CODE = "code";
+    private static final String FILE_INTERACT = "current_interact";
 
     private String permalinkURL;
     private String initialRequestString;
@@ -62,6 +62,7 @@ public class SageSingleCell2 {
 
     private Gson gson;
     private DefaultHttpClient httpClient;
+    private FileOutputStream tempFile;
 
     //--- INTERFACE RELATED ---
     public interface OnSageListener {
@@ -141,18 +142,26 @@ public class SageSingleCell2 {
 
     public void addReply(BaseReply reply) {
 
-        Log.i(TAG,"Adding Reply:"+reply.toString());
+        Log.i(TAG, "Adding Reply:" + reply.getStringMessageType());
 
         //TODO logic for files having images and scripts
         if (reply instanceof InteractReply) {
-            Log.i(TAG,"Reply is Interact, calling onSageInteractListener");
+            Log.i(TAG, "Reply is Interact, calling onSageInteractListener");
             InteractReply interactReply = (InteractReply) reply;
             listener.onSageInteractListener(interactReply);
+        } else if (reply instanceof StatusReply) {
+            //If the reply is a status with idle/dead execution state, a computation
+            //has finished or terminated, inform the SageActivity
+            StatusReply statusReply = (StatusReply) reply;
+            if (statusReply.getContent().getExecutionState() == ExecutionState.IDLE
+                    || statusReply.getContent().getExecutionState() == ExecutionState.DEAD) {
+                listener.onSageFinishedListener(reply);
+            }
         } else if (reply.isReplyTo(currentExecuteRequest)) {
-            Log.i(TAG,"Reply to current execute request");
+            Log.i(TAG, "Reply to current execute request");
             listener.onSageAdditionalOutputListener(reply);
         } else {
-            Log.i(TAG,"Reply is output");
+            Log.i(TAG, "Reply is output");
             listener.onSageOutputListener(reply);
         }
     }
@@ -221,23 +230,6 @@ public class SageSingleCell2 {
 
         AsyncHttpClient.getDefaultInstance().websocket(shellURL, "ws", shellCallback);
         AsyncHttpClient.getDefaultInstance().websocket(ioPubURL, "ws", ioPubCallback);
-    }
-
-    public void setupWebSockets(String shellURL, String ioPubURL
-            , WebSocketClient.Listener shellListener
-            , WebSocketClient.Listener ioPubListener) {
-
-        Log.i(TAG, "Initializing Websockets");
-
-        Log.i(TAG, "ShellListener" + ((shellListener == null) ? "Null" : "Not Null"));
-        Log.i(TAG, "IoPubListener" + ((shellListener == null) ? "Null" : "Not Null"));
-
-        shellClient = new WebSocketClient(URI.create(shellURL), shellListener, null);
-        ioPubClient = new WebSocketClient(URI.create(ioPubURL), ioPubListener, null);
-
-        shellClient.connect();
-        ioPubClient.connect();
-
     }
 
     private class PostTask extends AsyncTask<Request, Void, Void> {
@@ -321,7 +313,7 @@ public class SageSingleCell2 {
 
     public String formatInteractUpdate(String interactID, String name, String value) {
 
-        String template = "sys._sage_.update_interact(\"%s\",\"%s\",\"%s\")";
+        String template = "sys._sage_.update_interact(\"%s\",\"%s\",%s)";
 
         return String.format(template, interactID, name, value);
 
@@ -331,10 +323,10 @@ public class SageSingleCell2 {
      * Update an interactive element
      *
      * @param interact The InteractReply received
-     * @param varName  The name of the variable in the interact function declaration
+     * @param varName  The name of the variable in the updateInteract function declaration
      * @param newValue The new value
      */
-    public void interact(InteractReply interact, String varName, Object newValue) {
+    public void updateInteract(InteractReply interact, String varName, Object newValue) {
         Log.i(TAG, "UPDATING INTERACT VARIABLE: " + varName);
         Log.i(TAG, "UPDATED INTERACT VALUE: " + newValue);
 
@@ -395,7 +387,7 @@ public class SageSingleCell2 {
                         BaseReply reply = BaseReply.parse(s);
                         addReply(reply);
                     } catch (Exception e) {
-                        Log.i(TAG,e.getMessage());
+                        Log.i(TAG, e.getMessage());
                         e.printStackTrace();
                     }
                 }

@@ -16,6 +16,7 @@ public class SageInteractDeserialiser implements JsonDeserializer<SageInteract> 
     private Gson gson = new Gson();
 
     private static final String KEY_CONTROLS = "controls";
+    private static final String KEY_NEW_INTERACT_ID="new_interact_id";
     private ArrayList<String> varNames;
     private ArrayList<InteractControl> controls;
 
@@ -48,10 +49,11 @@ public class SageInteractDeserialiser implements JsonDeserializer<SageInteract> 
         }
 
 
-        //Log.i(TAG, "Got InteractControl " + gson.toJson(interactControl));
+        //TODO Find way to add the omitted data
 
         final SageInteract interact = new SageInteract();
         interact.setControls(controls);
+        interact.setNewInteractID(jsonObject.getAsJsonPrimitive(KEY_NEW_INTERACT_ID).getAsString());
 
         return interact;
     }

@@ -75,7 +75,7 @@ public class SageSingleCell {
         /**
          * Callback for an interact_prepare message
          *
-         * @param interact The interact
+         * @param interact The updateInteract
          */
         public void onSageInteractListener(Interact interact);
 
@@ -164,7 +164,7 @@ public class SageSingleCell {
             Log.i(TAG, "reply.isReplyTo(currentRequest): " + String.valueOf(reply.isReplyTo(currentRequest)));
             result.add(reply);
             if (reply.isInteract()) {
-                Log.i(TAG, "Reply is an interact.");
+                Log.i(TAG, "Reply is an updateInteract.");
                 interact = (Interact) reply;
                 listener.onSageInteractListener(interact);
             } else if (reply.containsOutput() && reply.isReplyTo(currentRequest)) {
@@ -364,8 +364,8 @@ public class SageSingleCell {
     /**
      * Update an interactive element
      *
-     * @param interact The interact_prepare message we got from the server as we set up the interact
-     * @param name     The name of the variable in the interact function declaration
+     * @param interact The interact_prepare message we got from the server as we set up the updateInteract
+     * @param name     The name of the variable in the updateInteract function declaration
      * @param value    The new value
      */
     public void interact(Interact interact, String name, Object value) {

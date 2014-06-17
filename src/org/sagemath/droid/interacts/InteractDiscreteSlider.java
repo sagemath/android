@@ -9,9 +9,9 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.sagemath.droid.models.InteractReply.InteractControl;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class InteractDiscreteSlider
@@ -74,10 +74,13 @@ public class InteractDiscreteSlider
     }
 
     public void setValues(InteractControl control) {
+        Log.i(TAG, "Setting Values" + Arrays.toString(control.getValues()));
         this.values.clear();
         for (String i : control.getValues()) {
             values.add(i);
         }
+        seekBar.setMax(values.size()-1);
+        updateValueText();
     }
 
     public Integer getValue() {

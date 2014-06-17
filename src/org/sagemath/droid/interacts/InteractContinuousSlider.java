@@ -1,17 +1,17 @@
 package org.sagemath.droid.interacts;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.sagemath.droid.models.InteractReply.InteractControl;
+
+import java.util.Arrays;
 
 public class InteractContinuousSlider
         extends InteractControlBase
@@ -83,6 +83,7 @@ public class InteractContinuousSlider
     }
 
     public void setRange(InteractControl control) {
+        Log.i(TAG,"Setting Range:"+ Arrays.toString(control.getRange()));
         this.range_min = control.getRange()[0];
         this.range_max = control.getRange()[0];
         this.step = (double) control.getStep();

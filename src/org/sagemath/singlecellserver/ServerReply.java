@@ -7,7 +7,7 @@ import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.BaseReplyDeserializer;
 import org.sagemath.droid.deserializers.InteractContentDeserialiser;
-import org.sagemath.droid.deserializers.InteractDataDeserialiser;
+import org.sagemath.droid.deserializers.InteractDataDeserializer;
 import org.sagemath.droid.deserializers.SageInteractDeserialiser;
 import org.sagemath.droid.models.*;
 
@@ -25,7 +25,7 @@ public class ServerReply extends BaseReply {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(BaseReply.class, new BaseReplyDeserializer())
                 .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserialiser())
-                .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserialiser())
+                .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserializer())
                 .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserialiser())
                 .create();
 

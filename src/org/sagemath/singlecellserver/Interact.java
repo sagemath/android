@@ -28,7 +28,7 @@ public class Interact extends CommandOutput {
         Log.i(TAG, "Created a new Interact!" + json.toString(1));
         //InteractReply reply = gson.fromJson(json.toString(), InteractReply.class);
         //Log.i(TAG, "GSON Interact: " + gson.toJson(reply));
-        JSONObject interact = json.getJSONObject("content").getJSONObject("data").getJSONObject("application/sage-interact");
+        JSONObject interact = json.getJSONObject("content").getJSONObject("data").getJSONObject("application/sage-updateInteract");
         id = interact.getString("new_interact_id");
         controls = interact.getJSONObject("controls");
         layout = interact.getJSONArray("layout");
@@ -47,7 +47,7 @@ public class Interact extends CommandOutput {
     }
 
     public String toString() {
-        return "Prepare interact id=" + getID();
+        return "Prepare updateInteract id=" + getID();
     }
 
     public JSONObject getControls() {

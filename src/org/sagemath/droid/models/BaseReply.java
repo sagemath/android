@@ -7,7 +7,7 @@ import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.BaseReplyDeserializer;
 import org.sagemath.droid.deserializers.InteractContentDeserialiser;
-import org.sagemath.droid.deserializers.InteractDataDeserialiser;
+import org.sagemath.droid.deserializers.InteractDataDeserializer;
 import org.sagemath.droid.deserializers.SageInteractDeserialiser;
 import org.sagemath.singlecellserver.ServerReply;
 
@@ -43,6 +43,11 @@ public class BaseReply {
 
     public BaseReply() {
         gson = new GsonBuilder().setPrettyPrinting().create();
+    }
+
+    //For nested classes wishing to use the base class gson
+    protected Gson getGsonInstance(){
+        return gson;
     }
 
     //---GETTERS & SETTERS---
@@ -86,7 +91,7 @@ public class BaseReply {
         this.metadata = metadata;
     }
 
-    public String getMsg_type() {
+    public String getStringMessageType() {
         return msg_type;
     }
 
@@ -132,7 +137,7 @@ public class BaseReply {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(BaseReply.class, new BaseReplyDeserializer())
                 .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserialiser())
-                .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserialiser())
+                .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserializer())
                 .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserialiser())
                 .create();
 
