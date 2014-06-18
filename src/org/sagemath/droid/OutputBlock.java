@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
 import org.sagemath.droid.cells.CellData;
-import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.models.*;
 import org.sagemath.singlecellserver.*;
 
@@ -113,7 +112,7 @@ public class OutputBlock extends WebView {
             Log.i(TAG, "Adding Stream Reply");
             addDivStreamReply((StreamReply) reply);
         } else {
-            Log.i(TAG,"Unknown Output");
+            Log.i(TAG, "Unknown Output");
         }
     }
 
@@ -143,14 +142,22 @@ public class OutputBlock extends WebView {
         String jpgDiv, svgDiv;
 
         if (reply.getImageMimeType().equals(ImageReply.MIME_IMAGE_PNG)) {
+            Log.i(TAG, "Image is in .png format");
             jpgDiv = String.format(jpgDivTemplate, reply.getImageURL());
+            Log.i(TAG, "Adding .png div" + jpgDiv);
             divs.add(jpgDiv);
+            loadSavedUrl();
         } else if (reply.getImageMimeType().equals(ImageReply.MIME_IMAGE_SVG)) {
+            Log.i(TAG, "Image is in .svg format");
             svgDiv = String.format(svgDivTemplate, reply.getImageURL());
+            Log.i(TAG, "Adding .svg div" + svgDiv);
             divs.add(svgDiv);
+            loadSavedUrl();
         } else if (reply.getImageMimeType() == null) {
-            String div = "Unkown MIME type";
+            Log.i(TAG, "Unknown Image Type");
+            String div = "Unknown MIME type";
             divs.add(div);
+            loadSavedUrl();
         }
     }
 
@@ -176,8 +183,13 @@ public class OutputBlock extends WebView {
     }
 
     private void addDivPythonOutput(PythonOutputReply reply) {
-        String div = htmlify(String.valueOf(reply.getContent().getData().getOutputValue()));
-        divs.add(div);
+        String outputValue = reply.getContent().getData().getOutputValue();
+        //If the outputValue is empty, don't add it, might overwrite data which is actually valid.
+        if (!outputValue.equalsIgnoreCase("")) {
+            String div = htmlify(outputValue);
+            divs.add(div);
+            loadSavedUrl();
+        }
     }
 
 
@@ -185,22 +197,26 @@ public class OutputBlock extends WebView {
         Log.i(TAG, "addDivResultStream");
         String div = htmlify(resultStream.get());
         divs.add(div);
+        loadSavedUrl();
     }
 
     private void addDivStreamReply(StreamReply reply) {
         String div = htmlify(reply.getContent().getData());
         divs.add(div);
+        loadSavedUrl();
     }
 
     private void addDivTraceback(Traceback traceback) {
         Log.i(TAG, "addDivTraceback");
         String div = htmlify(traceback.toString());
         divs.add(div);
+        loadSavedUrl();
     }
 
     private void addDivPythonErrorReply(PythonErrorReply reply) {
         String div = htmlify(reply.getContent().getEname() + ":" + reply.getContent().getEvalue());
         divs.add(div);
+        loadSavedUrl();
     }
 
     private void addDivExecuteReply(ExecuteReply reply) {
@@ -209,6 +225,8 @@ public class OutputBlock extends WebView {
             divs.add("<font color=\"green\">ok</font>");
         else
             divs.add(reply.toString());
+
+        loadSavedUrl();
     }
 
     public void add(CommandOutput output) {
@@ -224,24 +242,20 @@ public class OutputBlock extends WebView {
             Log.e(TAG, "Output has wrong output_block field");
 
         addDiv(output);
-        // loadData(getHtml(), "text/html", "UTF-8");
         cell.saveOutput("", getHtml());
         loadUrl(cell.getUrlString(""));
     }
 
     public void add(BaseReply reply) {
 
-        //TODO Find a better way to do this
-        if (reply instanceof StatusReply
-                || reply instanceof PythonInputReply
-                || reply.getMessageType() == MessageType.DISPLAY_DATA) {
-            //Skip
-            return;
-        } else if (reply instanceof SageClearReply) {
+        if (reply instanceof SageClearReply) {
             Log.i(TAG, "Sage Clear Reply");
             divs.clear();
         }
         addDiv(reply);
+    }
+
+    public void loadSavedUrl() {
         cell.saveOutput("", getHtml());
         loadUrl(cell.getUrlString(""));
     }

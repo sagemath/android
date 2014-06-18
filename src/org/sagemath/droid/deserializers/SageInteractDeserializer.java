@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author Haven
  */
-public class SageInteractDeserialiser implements JsonDeserializer<SageInteract> {
+public class SageInteractDeserializer implements JsonDeserializer<SageInteract> {
     private static final String TAG = "SageDroid:Deserialiser";
     private Gson gson = new Gson();
 

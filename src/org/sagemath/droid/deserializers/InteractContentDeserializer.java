@@ -7,7 +7,7 @@ import org.sagemath.droid.models.InteractReply.InteractData;
 
 import java.lang.reflect.Type;
 
-public class InteractContentDeserialiser implements JsonDeserializer<InteractContent> {
+public class InteractContentDeserializer implements JsonDeserializer<InteractContent> {
 
     private static String KEY_SOURCE = "source";
     private static String KEY_DATA = "data";

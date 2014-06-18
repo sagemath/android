@@ -45,6 +45,7 @@ public class SageSingleCell2 {
 
     private String permalinkURL;
     private String initialRequestString;
+    private String kernelID;
 
     private UUID session;
     private String sageInput;
@@ -144,8 +145,13 @@ public class SageSingleCell2 {
 
         Log.i(TAG, "Adding Reply:" + reply.getStringMessageType());
 
-        //TODO logic for files having images and scripts
-        if (reply instanceof InteractReply) {
+        if (reply instanceof ImageReply) {
+            //Set kernel ID so the URL is valid
+            ImageReply imageReply = (ImageReply) reply;
+            imageReply.setKernelID(kernelID);
+            listener.onSageOutputListener(imageReply);
+
+        } else if (reply instanceof InteractReply) {
             Log.i(TAG, "Reply is Interact, calling onSageInteractListener");
             InteractReply interactReply = (InteractReply) reply;
             listener.onSageInteractListener(interactReply);
@@ -157,6 +163,9 @@ public class SageSingleCell2 {
                     || statusReply.getContent().getExecutionState() == ExecutionState.DEAD) {
                 listener.onSageFinishedListener(reply);
             }
+        } else if (reply instanceof PythonInputReply) {
+            //No need to process this
+            return;
         } else if (reply.isReplyTo(currentExecuteRequest)) {
             Log.i(TAG, "Reply to current execute request");
             listener.onSageAdditionalOutputListener(reply);
@@ -188,6 +197,8 @@ public class SageSingleCell2 {
         inputStream.close();
 
         Log.i(TAG, "Received Websocket Response: " + gson.toJson(webSocketResponse));
+
+        kernelID = webSocketResponse.getKernelID();
 
         return webSocketResponse;
 

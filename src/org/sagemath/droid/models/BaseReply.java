@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.BaseReplyDeserializer;
-import org.sagemath.droid.deserializers.InteractContentDeserialiser;
+import org.sagemath.droid.deserializers.InteractContentDeserializer;
 import org.sagemath.droid.deserializers.InteractDataDeserializer;
-import org.sagemath.droid.deserializers.SageInteractDeserialiser;
+import org.sagemath.droid.deserializers.SageInteractDeserializer;
 import org.sagemath.singlecellserver.ServerReply;
 
 /**
@@ -18,7 +18,7 @@ import org.sagemath.singlecellserver.ServerReply;
  * @author Haven
  */
 public class BaseReply {
-    private static final String TAG="SageDroid:BaseReply";
+    private static final String TAG = "SageDroid:BaseReply";
 
     protected Header header;
     protected Header parent_header;
@@ -46,7 +46,7 @@ public class BaseReply {
     }
 
     //For nested classes wishing to use the base class gson
-    protected Gson getGsonInstance(){
+    protected Gson getGsonInstance() {
         return gson;
     }
 
@@ -136,9 +136,9 @@ public class BaseReply {
     public static BaseReply parse(String jsonString) throws Exception {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(BaseReply.class, new BaseReplyDeserializer())
-                .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserialiser())
+                .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserializer())
                 .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserializer())
-                .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserialiser())
+                .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserializer())
                 .create();
 
         //Return the appropriate BaseReply
@@ -174,6 +174,12 @@ public class BaseReply {
             case MessageType.SAGE_CLEAR:
                 Log.i(TAG, "Returning Sage Clear");
                 return gson.fromJson(jsonString, SageClearReply.class);
+            case MessageType.HTML_FILES:
+                Log.i(TAG, "Returning an HTML Reply");
+                return gson.fromJson(jsonString, HtmlReply.class);
+            case MessageType.IMAGE_FILENAME:
+                Log.i(TAG, "Returning Image Reply");
+                return gson.fromJson(jsonString, ImageReply.class);
             default:
                 throw new Exception("Unknown Message Type");
         }

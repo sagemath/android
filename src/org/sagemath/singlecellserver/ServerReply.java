@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.BaseReplyDeserializer;
-import org.sagemath.droid.deserializers.InteractContentDeserialiser;
+import org.sagemath.droid.deserializers.InteractContentDeserializer;
 import org.sagemath.droid.deserializers.InteractDataDeserializer;
-import org.sagemath.droid.deserializers.SageInteractDeserialiser;
+import org.sagemath.droid.deserializers.SageInteractDeserializer;
 import org.sagemath.droid.models.*;
 
 /**
@@ -24,9 +24,9 @@ public class ServerReply extends BaseReply {
     public static BaseReply parse(String jsonString) throws Exception {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(BaseReply.class, new BaseReplyDeserializer())
-                .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserialiser())
+                .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserializer())
                 .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserializer())
-                .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserialiser())
+                .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserializer())
                 .create();
 
         //Return the appropriate BaseReply

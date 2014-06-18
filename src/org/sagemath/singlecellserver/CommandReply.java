@@ -8,9 +8,9 @@ import org.json.JSONObject;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.BaseReplyDeserializer;
-import org.sagemath.droid.deserializers.InteractContentDeserialiser;
+import org.sagemath.droid.deserializers.InteractContentDeserializer;
 import org.sagemath.droid.deserializers.InteractDataDeserializer;
-import org.sagemath.droid.deserializers.SageInteractDeserialiser;
+import org.sagemath.droid.deserializers.SageInteractDeserializer;
 import org.sagemath.droid.models.*;
 import org.sagemath.droid.models.InteractReply.InteractContent;
 import org.sagemath.droid.models.InteractReply.InteractData;
@@ -168,9 +168,9 @@ public class CommandReply extends Command {
     protected static CommandReply parse(String jsonString) throws Exception {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(BaseReply.class, new BaseReplyDeserializer())
-                .registerTypeAdapter(InteractContent.class, new InteractContentDeserialiser())
+                .registerTypeAdapter(InteractContent.class, new InteractContentDeserializer())
                 .registerTypeAdapter(InteractData.class, new InteractDataDeserializer())
-                .registerTypeAdapter(SageInteract.class, new SageInteractDeserialiser())
+                .registerTypeAdapter(SageInteract.class, new SageInteractDeserializer())
                 .create();
 
         //Return the appropriate CommandReply

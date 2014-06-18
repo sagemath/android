@@ -14,7 +14,7 @@ public class MessageType {
     public static final int INTERACT_PREPARE = 0x000110;
     public static final int EXTENSION = 0x000111;
     public static final int TEXT_FILENAME = 0x000112;
-    public static final int TEXT_IMAGE_FILENAME = 0x000113;
+    public static final int IMAGE_FILENAME = 0x000113;
     public static final int INTERACT = 0x000114;
     public static final int SAGE_CLEAR = 0x000115;
 }

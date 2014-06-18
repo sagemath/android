@@ -70,7 +70,7 @@ public class BaseReplyDeserializer implements JsonDeserializer<BaseReply> {
             if (data.has(STR_TEXT_FILENAME))
                 reply.setMessageType(MessageType.TEXT_FILENAME);
             else if (data.has(STR_IMAGE_FILENAME))
-                reply.setMessageType(MessageType.TEXT_IMAGE_FILENAME);
+                reply.setMessageType(MessageType.IMAGE_FILENAME);
             else if (data.has(STR_INTERACT))
                 reply.setMessageType(MessageType.INTERACT);
             else if (data.has(STR_SAGE_CLEAR))

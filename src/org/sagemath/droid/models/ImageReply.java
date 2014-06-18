@@ -1,6 +1,7 @@
 package org.sagemath.droid.models;
 
 import android.net.Uri;
+import android.util.Log;
 import com.google.gson.annotations.SerializedName;
 import org.sagemath.droid.utils.UrlUtils;
 
@@ -9,8 +10,9 @@ import org.sagemath.droid.utils.UrlUtils;
  *         Reply which contains an image name
  */
 public class ImageReply extends BaseReply {
+    private static final String TAG = "SageDroid:ImageReply";
 
-    private static final String PATH_FILE = "file";
+    private static final String PATH_FILE = "files";
     private static final String SUFFIX_PNG = ".png";
     private static final String SUFFIX_JPG = ".jpg";
     private static final String SUFFIX_JPEG = ".jpeg";
@@ -51,6 +53,8 @@ public class ImageReply extends BaseReply {
                 .appendPath(PATH_FILE)
                 .appendPath(getContent().getData().getImageFilename())
                 .build();
+
+        Log.i(TAG, "Returning image URL" + imageUri.toString());
 
         return imageUri.toString();
     }
