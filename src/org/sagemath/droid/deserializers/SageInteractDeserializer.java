@@ -1,5 +1,6 @@
 package org.sagemath.droid.deserializers;
 
+import android.util.Log;
 import com.google.gson.*;
 import org.sagemath.droid.models.InteractReply.InteractControl;
 import org.sagemath.droid.models.InteractReply.SageInteract;
@@ -12,11 +13,11 @@ import java.util.Map;
  * @author Haven
  */
 public class SageInteractDeserializer implements JsonDeserializer<SageInteract> {
-    private static final String TAG = "SageDroid:Deserialiser";
+    private static final String TAG = "SageDroid:SageInteractDeserializer";
     private Gson gson = new Gson();
 
     private static final String KEY_CONTROLS = "controls";
-    private static final String KEY_NEW_INTERACT_ID="new_interact_id";
+    private static final String KEY_NEW_INTERACT_ID = "new_interact_id";
     private ArrayList<String> varNames;
     private ArrayList<InteractControl> controls;
 
@@ -34,23 +35,22 @@ public class SageInteractDeserializer implements JsonDeserializer<SageInteract> 
         //our InteractControl class
 
         //Get all the possible keys for InteractControl
+
+        Log.i(TAG, "Got Control" + control.toString());
+
+        Log.i(TAG, "No. of controls " + control.getAsJsonObject().entrySet().size());
+
+        //Iterate through keys and deserialize
         for (Map.Entry<String, JsonElement> keys : control.getAsJsonObject().entrySet()) {
             varNames.add(keys.getKey());
-        }
-
-        //Iterate through the keys and deserialize
-        for(String key:varNames) {
-            InteractControl interactControl = context.deserialize(control.getAsJsonObject().get(key),
-                    InteractControl.class);
-            //Associate this control with the relevant key
-            interactControl.setVarNames(key);
+            Log.i(TAG, "Got Key: " + keys.getKey());
+            InteractControl interactControl = context.deserialize(keys.getValue(), InteractControl.class);
+            Log.i(TAG, "Deserializing: " + interactControl.toString());
+            interactControl.setVarName(keys.getKey());
             controls.add(interactControl);
-
         }
-
 
         //TODO Find way to add the omitted data
-
         final SageInteract interact = new SageInteract();
         interact.setControls(controls);
         interact.setNewInteractID(jsonObject.getAsJsonPrimitive(KEY_NEW_INTERACT_ID).getAsString());

@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
-import org.sagemath.droid.deserializers.BaseReplyDeserializer;
-import org.sagemath.droid.deserializers.InteractContentDeserializer;
-import org.sagemath.droid.deserializers.InteractDataDeserializer;
-import org.sagemath.droid.deserializers.SageInteractDeserializer;
+import org.sagemath.droid.deserializers.*;
 import org.sagemath.singlecellserver.ServerReply;
 
 /**
@@ -139,6 +136,7 @@ public class BaseReply {
                 .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserializer())
                 .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserializer())
                 .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserializer())
+                .registerTypeAdapter(Values.class,new ValueDeserializer())
                 .create();
 
         //Return the appropriate BaseReply

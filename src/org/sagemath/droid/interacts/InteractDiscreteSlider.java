@@ -74,9 +74,9 @@ public class InteractDiscreteSlider
     }
 
     public void setValues(InteractControl control) {
-        Log.i(TAG, "Setting Values" + Arrays.toString(control.getValues()));
+        Log.i(TAG, "Setting Values" + Arrays.toString(control.getValues().getValues()));
         this.values.clear();
-        for (String i : control.getValues()) {
+        for (String i : control.getValues().getValues()) {
             values.add(i);
         }
         seekBar.setMax(values.size()-1);

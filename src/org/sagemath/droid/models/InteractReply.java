@@ -140,7 +140,7 @@ public class InteractReply extends BaseReply {
         private String control_type;
         private boolean display_value;
         private String[] value_labels;
-        private String[] values;
+        private Values values;
 
         @SerializedName("default")
         private int _default;
@@ -150,13 +150,13 @@ public class InteractReply extends BaseReply {
         private String label;
         private int step;
 
-        public InteractControl(){
-            gson=new Gson();
+        public InteractControl() {
+            gson = new Gson();
         }
 
-        public String toString(){
+        public String toString() {
             //TODO, Try and use the gson from BaseReply
-           return gson.toJson(this);
+            return gson.toJson(this);
         }
 
         public boolean isUpdate() {
@@ -183,7 +183,7 @@ public class InteractReply extends BaseReply {
             return display_value;
         }
 
-        public String[] getValues() {
+        public Values getValues() {
             return values;
         }
 
@@ -235,7 +235,7 @@ public class InteractReply extends BaseReply {
             this.display_value = display_value;
         }
 
-        public void setValues(String[] values) {
+        public void setValue(Values values) {
             this.values = values;
         }
 
@@ -263,7 +263,7 @@ public class InteractReply extends BaseReply {
             return varName;
         }
 
-        public void setVarNames(String varName) {
+        public void setVarName(String varName) {
             this.varName = varName;
         }
     }
