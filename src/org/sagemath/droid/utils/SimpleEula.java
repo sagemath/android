@@ -1,4 +1,4 @@
-package sheetrock.panda.changelog;
+package org.sagemath.droid.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;

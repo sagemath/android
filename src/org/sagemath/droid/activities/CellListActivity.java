@@ -5,7 +5,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.fragments.CellListFragment;
-import sheetrock.panda.changelog.ChangeLog;
+import org.sagemath.droid.utils.ChangeLog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

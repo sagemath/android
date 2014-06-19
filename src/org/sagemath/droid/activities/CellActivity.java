@@ -8,8 +8,8 @@ import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment.OnGroupSelectedListener;
 
 import org.sagemath.droid.fragments.CellListFragment;
-import sheetrock.panda.changelog.ChangeLog;
-import sheetrock.panda.changelog.SimpleEula;
+import org.sagemath.droid.utils.ChangeLog;
+import org.sagemath.droid.utils.SimpleEula;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

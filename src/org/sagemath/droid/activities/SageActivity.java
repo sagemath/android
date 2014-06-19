@@ -31,7 +31,7 @@ import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.models.InteractReply;
 import org.sagemath.droid.SageSingleCell;
-import sheetrock.panda.changelog.ChangeLog;
+import org.sagemath.droid.utils.ChangeLog;
 
 /**
  * SageActivity - handling of single cell display and input

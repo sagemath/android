@@ -12,7 +12,7 @@
  * @author: Karsten Priegnitz
  * @see: http://code.google.com/p/android-change-log/
  */
-package sheetrock.panda.changelog;
+package org.sagemath.droid.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
