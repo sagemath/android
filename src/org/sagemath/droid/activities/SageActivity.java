@@ -20,7 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-import android.widget.AdapterView.OnItemSelectedListener;
+import com.github.johnpersano.supertoasts.SuperCardToast;
+import com.github.johnpersano.supertoasts.SuperToast;
 import junit.framework.Assert;
 import org.sagemath.droid.OutputView;
 import org.sagemath.droid.R;
@@ -45,10 +46,14 @@ public class SageActivity
         implements
         Button.OnClickListener,
         OutputView.onSageListener,
-        OnItemSelectedListener {
+        SageSingleCell2.OnSageDisconnectListener,
+        AdapterView.OnItemSelectedListener {
     private static final String TAG = "SageDroid:SageActivity";
     private static final String DIALOG_NEW_CELL = "newCell";
     private static final String DIALOG_DISCARD_CELL = "discardCell";
+
+    protected static final int INSERT_FOR_LOOP = 1;
+    protected static final int INSERT_LIST_COMPREHENSION = 2;
 
     private ChangeLog changeLog;
 
@@ -58,6 +63,7 @@ public class SageActivity
     private Spinner insertSpinner;
     private OutputView outputView;
     private ProgressBar cellProgressBar;
+    private SuperCardToast toast;
 
     private static SageSingleCell2 server;
     private boolean isServerRunning = false;
@@ -69,7 +75,6 @@ public class SageActivity
         super.onCreate(savedInstanceState);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(progressBroadcastReceiver, new IntentFilter(StringConstants.PROGRESS_INTENT));
-
         server = new SageSingleCell2(this);
 
         CellCollection.initialize(getApplicationContext());
@@ -92,6 +97,7 @@ public class SageActivity
         cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
         cellProgressBar.setVisibility(View.INVISIBLE);
         server.setOnSageListener(outputView);
+        server.setOnSageDisconnectListener(this);
 
         outputView.setOnSageListener(this);
         insertSpinner.setOnItemSelectedListener(this);
@@ -279,8 +285,8 @@ public class SageActivity
         String currentInput = input.getText().toString();
         Assert.assertNotNull(currentInput);
         server.query(currentInput);
-        //showProgress();
-        outputView.requestFocus();
+        outputView.enableInteractViews();
+        //outputView.requestFocus();
         cell.setInput(currentInput);
         CellCollection.getInstance().saveCells();
         saveCurrentToHistory();
@@ -302,6 +308,7 @@ public class SageActivity
 
     @Override
     public void onSageFinishedListener() {
+        outputView.enableInteractViews();
         hideProgress();
     }
 
@@ -309,8 +316,27 @@ public class SageActivity
     public void onSageInteractListener(InteractReply interact, String name, Object value) {
         Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
         showProgress();
+        outputView.disableInteractViews();
         server.updateInteract(interact, name, value);
         Log.i(TAG, "onSageInteractListener() called!");
+    }
+
+    @Override
+    public void onServerDisconnect() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                outputView.disableInteractViews();
+                toast = new SuperCardToast(SageActivity.this);
+                toast.setText(getResources().getString(R.string.info_disconnected));
+                toast.setBackground(SuperToast.Background.RED);
+                toast.setTextColor(Color.WHITE);
+                toast.setDuration(3000);
+                toast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
+                toast.setSwipeToDismiss(true);
+                toast.show();
+            }
+        });
     }
 
     @Override
@@ -330,10 +356,6 @@ public class SageActivity
         super.onResume();
         outputView.onResume();
     }
-
-    protected static final int INSERT_PROMPT = 0;
-    protected static final int INSERT_FOR_LOOP = 1;
-    protected static final int INSERT_LIST_COMPREHENSION = 2;
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3) {

@@ -46,6 +46,7 @@ public class SageSingleCell2 {
     private String permalinkURL;
     private String initialRequestString;
     private String kernelID;
+    private boolean isInteractInput;
 
     private UUID session;
     private String sageInput;
@@ -68,47 +69,39 @@ public class SageSingleCell2 {
     //--- INTERFACE RELATED ---
     public interface OnSageListener {
 
-        /**
-         * Output in a new block or an existing block where all current entries are supposed to be erased
-         *
-         * @param reply
-         */
         public void onSageOutputListener(BaseReply reply);
 
-        /**
-         * Output to add to an existing output block
-         *
-         * @param reply
-         */
         public void onSageAdditionalOutputListener(BaseReply reply);
 
-        /**
-         * Callback for an interact_prepare message
-         *
-         * @param reply
-         */
         public void onSageInteractListener(InteractReply reply);
 
-
-        /**
-         * The Sage session has been closed
-         *
-         * @param reason A SessionEnd message or a HttpError
-         */
         public void onSageFinishedListener(BaseReply reason);
+
+        public void onInteractUpdated();
     }
 
-    private OnSageListener listener;
-
-    public void setOnSageListener(OnSageListener listener) {
-        this.listener = listener;
+    public interface OnSageDisconnectListener {
+        public void onServerDisconnect();
     }
+
+    private OnSageListener onSageListener;
+    private OnSageDisconnectListener onSageDisconnectListener;
+
+    public void setOnSageListener(OnSageListener onSageListener) {
+        this.onSageListener = onSageListener;
+    }
+
+    public void setOnSageDisconnectListener(OnSageDisconnectListener onSageDisconnectListener) {
+        this.onSageDisconnectListener = onSageDisconnectListener;
+    }
+
 
     //---CLASS METHODS---
 
     public SageSingleCell2(Context context) {
 
         this.context = context;
+        isInteractInput = false;
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         progressIntent = new Intent(StringConstants.PROGRESS_INTENT);
 
@@ -146,32 +139,37 @@ public class SageSingleCell2 {
         Log.i(TAG, "Adding Reply:" + reply.getStringMessageType());
 
         if (reply instanceof ImageReply) {
-            //Set kernel ID so the URL is valid
             ImageReply imageReply = (ImageReply) reply;
             imageReply.setKernelID(kernelID);
-            listener.onSageOutputListener(imageReply);
+            if (reply.isReplyTo(currentExecuteRequest))
+                onSageListener.onSageAdditionalOutputListener(imageReply);
+            else
+                onSageListener.onSageOutputListener(imageReply);
 
         } else if (reply instanceof InteractReply) {
             Log.i(TAG, "Reply is Interact, calling onSageInteractListener");
+            isInteractInput = true;
             InteractReply interactReply = (InteractReply) reply;
-            listener.onSageInteractListener(interactReply);
+            onSageListener.onSageInteractListener(interactReply);
         } else if (reply instanceof StatusReply) {
             //If the reply is a status with idle/dead execution state, a computation
             //has finished or terminated, inform the SageActivity
             StatusReply statusReply = (StatusReply) reply;
             if (statusReply.getContent().getExecutionState() == ExecutionState.IDLE
                     || statusReply.getContent().getExecutionState() == ExecutionState.DEAD) {
-                listener.onSageFinishedListener(reply);
+                onSageListener.onSageFinishedListener(reply);
             }
         } else if (reply instanceof PythonInputReply) {
-            //No need to process this
+            if (((PythonInputReply) reply).isInteractUpdateReply()) {
+                onSageListener.onInteractUpdated();
+            }
             return;
         } else if (reply.isReplyTo(currentExecuteRequest)) {
             Log.i(TAG, "Reply to current execute request");
-            listener.onSageAdditionalOutputListener(reply);
+            onSageListener.onSageAdditionalOutputListener(reply);
         } else {
             Log.i(TAG, "Reply is output");
-            listener.onSageOutputListener(reply);
+            onSageListener.onSageOutputListener(reply);
         }
     }
 
@@ -346,8 +344,6 @@ public class SageSingleCell2 {
         Log.i(TAG, "Updating Interact: " + sageInput);
 
         currentExecuteRequest = executeRequest = new Request(sageInput, interact.getHeader().getSession());
-        //Request interactUpdateRequest = executeRequest.getExecuteRequest();
-        //interactUpdateRequest.getContent().setCode(sageInput);
 
         Log.i(TAG, "Sending Interact Update Request:" + gson.toJson(executeRequest));
         shellSocket.send(gson.toJson(executeRequest));
@@ -410,6 +406,12 @@ public class SageSingleCell2 {
                         Log.i(TAG, "IOPub Closed due to:" + e.getMessage());
                     else
                         Log.i(TAG, "IOPub Closed ");
+
+                    //If input is interactive, tell the user when the websocket disconnects.
+                    if (isInteractInput) {
+                        Log.i(TAG, "Executing Disconnect Callback");
+                        onSageDisconnectListener.onServerDisconnect();
+                    }
                 }
             });
         }
