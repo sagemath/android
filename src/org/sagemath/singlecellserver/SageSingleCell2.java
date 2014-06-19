@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import com.codebutler.android_websockets.WebSocketClient;
 import com.google.gson.Gson;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
@@ -53,7 +52,6 @@ public class SageSingleCell2 {
     private Interact interact;
     private Request executeRequest, currentExecuteRequest;
     private WebSocket shellSocket;
-    private WebSocketClient shellClient, ioPubClient;
     private Context context;
     private ExecuteRequest testRequest;
 

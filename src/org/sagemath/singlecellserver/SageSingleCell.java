@@ -2,7 +2,6 @@ package org.sagemath.singlecellserver;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import com.codebutler.android_websockets.WebSocketClient;
 import com.google.gson.Gson;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
@@ -138,8 +137,6 @@ public class SageSingleCell {
         private CommandRequest request, currentRequest;
         private LinkedList<String> outputBlocks = new LinkedList<String>();
         private long initialTime = System.currentTimeMillis();
-        protected WebSocketClient shellclient;
-        protected WebSocketClient iopubclient;
         private String kernel_url;
         private String shell_url;
         private String iopub_url;
