@@ -6,9 +6,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.sagemath.droid.models.InteractReply.InteractControl;
 
 import java.util.Arrays;
@@ -43,10 +40,6 @@ public class InteractContinuousSlider
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
         seekBar.setLayoutParams(params);
-//		seekBar.setPadding(seekBar.getPaddingLeft() + 10, 
-//				seekBar.getPaddingTop(), 
-//				seekBar.getPaddingRight(), 
-//				seekBar.getPaddingBottom());
         addView(seekBar);
         seekBar.setOnSeekBarChangeListener(this);
 
@@ -61,24 +54,6 @@ public class InteractContinuousSlider
         this.range_min = range_min;
         this.range_max = range_max;
         this.step = step;
-        updateValueText();
-    }
-
-    public void setRange(JSONObject control) {
-        JSONArray range;
-        try {
-            range = control.getJSONArray("range");
-            this.range_min = range.getDouble(0);
-            this.range_max = range.getDouble(1);
-            this.step = control.getDouble("step");
-            int digits = Math.max(
-                    countDigitsAfterComma(control.getString("step")),
-                    countDigitsAfterComma(range.getString(0)));
-            format = variable + "=%4." + digits + "f";
-        } catch (JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
-            setRange(0, 1, 0.1);
-        }
         updateValueText();
     }
 

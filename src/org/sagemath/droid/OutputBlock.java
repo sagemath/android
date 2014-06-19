@@ -97,7 +97,6 @@ public class OutputBlock extends WebView {
      * @param reply
      */
     private void addDivImageReply(ImageReply reply) {
-        String url = reply.getImageURL();
         String jpgDivTemplate = "<img src=\"%s\"alt=\"plot output\"></img>";
         String svgDivTemplate = "<object data=\"%s\" type=\"image/svg+xml\"></img>";
         String jpgDiv, svgDiv;

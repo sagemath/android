@@ -24,10 +24,11 @@ import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.models.*;
 import org.sagemath.droid.utils.UrlUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * @author Haven
@@ -40,19 +41,14 @@ public class SageSingleCell {
     private static final String HEADER_TOS = "accepted_tos";
     private static final String VALUE_IDENTITY = "identity";
     private static final String VALUE_CODE = "code";
-    private static final String FILE_INTERACT = "current_interact";
 
     private String permalinkURL;
     private String initialRequestString;
     private String kernelID;
     private boolean isInteractInput;
 
-    private UUID session;
-    private String sageInput;
-
     private Request executeRequest, currentExecuteRequest;
     private WebSocket shellSocket;
-    private Context context;
 
     private PostTask postTask;
     private ShareTask shareTask;
@@ -95,8 +91,6 @@ public class SageSingleCell {
     //---CLASS METHODS---
 
     public SageSingleCell(Context context) {
-
-        this.context = context;
         isInteractInput = false;
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         progressIntent = new Intent(StringConstants.PROGRESS_INTENT);
@@ -109,8 +103,6 @@ public class SageSingleCell {
     }
 
     public void query(String sageInput) {
-        this.sageInput = sageInput;
-
         //Initialize a new ExecuteRequest object
         currentExecuteRequest = executeRequest = new Request(sageInput);
 
@@ -322,13 +314,6 @@ public class SageSingleCell {
 
     }
 
-    /**
-     * Update an interactive element
-     *
-     * @param interact The InteractReply received
-     * @param varName  The name of the variable in the updateInteract function declaration
-     * @param newValue The new value
-     */
     public void updateInteract(InteractReply interact, String varName, Object newValue) {
         Log.i(TAG, "UPDATING INTERACT VARIABLE: " + varName);
         Log.i(TAG, "UPDATED INTERACT VALUE: " + newValue);

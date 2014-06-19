@@ -14,7 +14,6 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
@@ -93,7 +92,7 @@ public class SimpleEula {
 		}
 	}
 
-	public void show(String termsHTML) throws ClientProtocolException, IOException, SageInterruptedException, JSONException, URISyntaxException {
+	public void show(String termsHTML) throws IOException, SageInterruptedException, JSONException, URISyntaxException {
 		PackageInfo versionInfo = getPackageInfo();
 
 		// the eulaKey changes every time you increment the version number in the AndroidManifest.xml

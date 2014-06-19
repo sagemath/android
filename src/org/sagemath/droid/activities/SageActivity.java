@@ -286,7 +286,6 @@ public class SageActivity
         Assert.assertNotNull(currentInput);
         server.query(currentInput);
         outputView.enableInteractViews();
-        //outputView.requestFocus();
         cell.setInput(currentInput);
         CellCollection.getInstance().saveCells();
         saveCurrentToHistory();

@@ -8,9 +8,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.sagemath.droid.models.InteractReply.InteractControl;
 
 import java.util.Arrays;
@@ -47,32 +44,6 @@ public class InteractSelector
 
     private LinkedList<String> values = new LinkedList<String>();
 
-    public void setValues(LinkedList<String> values) {
-        this.values = values;
-        adapter.notifyDataSetChanged();
-        currentSelection = 0;
-        spinner.setSelection(0);
-        updateValueText();
-    }
-
-    public void setValues(JSONObject control) {
-        this.values.clear();
-        try {
-            JSONArray values = control.getJSONArray("value_labels");
-            for (int i = 0; i < values.length(); i++)
-                this.values.add(values.getString(i));
-
-        } catch (JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
-            this.values.add("0");
-            this.values.add("1");
-        }
-        adapter.notifyDataSetChanged();
-        currentSelection = 0;
-        spinner.setSelection(0);
-        updateValueText();
-    }
-
     public void setValues(InteractControl control) {
         Log.i(TAG, "Setting Values: " + Arrays.toString(control.getValueLabels()));
         values.clear();
@@ -86,8 +57,7 @@ public class InteractSelector
     }
 
     public Integer getValue() {
-        int raw = spinner.getSelectedItemPosition();
-        return raw;
+        return spinner.getSelectedItemPosition();
     }
 
     public Spinner getSpinner() {

@@ -102,7 +102,6 @@ public class OutputView
         Log.i(TAG, "Block data: " + newBlock.getHtml());
         Log.i(TAG, "Block data: " + newBlock.getHTML());
         addView(newBlock);
-        //Log.i(TAG, "Creating newOutputBlock: addview: " + block.toString());
         block = newBlock;
         block.setHistoryHTML();
         return block;
