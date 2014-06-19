@@ -30,7 +30,7 @@ import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.models.InteractReply;
-import org.sagemath.singlecellserver.SageSingleCell2;
+import org.sagemath.droid.SageSingleCell;
 import sheetrock.panda.changelog.ChangeLog;
 
 /**
@@ -46,7 +46,7 @@ public class SageActivity
         implements
         Button.OnClickListener,
         OutputView.onSageListener,
-        SageSingleCell2.OnSageDisconnectListener,
+        SageSingleCell.OnSageDisconnectListener,
         AdapterView.OnItemSelectedListener {
     private static final String TAG = "SageDroid:SageActivity";
     private static final String DIALOG_NEW_CELL = "newCell";
@@ -65,7 +65,7 @@ public class SageActivity
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
 
-    private static SageSingleCell2 server;
+    private static SageSingleCell server;
     private boolean isServerRunning = false;
 
     private CellData cell;
@@ -75,7 +75,7 @@ public class SageActivity
         super.onCreate(savedInstanceState);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(progressBroadcastReceiver, new IntentFilter(StringConstants.PROGRESS_INTENT));
-        server = new SageSingleCell2(this);
+        server = new SageSingleCell(this);
 
         CellCollection.initialize(getApplicationContext());
         cell = CellCollection.getInstance().getCurrentCell();

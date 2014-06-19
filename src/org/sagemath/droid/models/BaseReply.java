@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.MessageType;
 import org.sagemath.droid.deserializers.*;
-import org.sagemath.singlecellserver.ServerReply;
 
 /**
  * Base Reply from the Server
@@ -143,8 +142,6 @@ public class BaseReply {
         BaseReply baseReply = gson.fromJson(jsonString, BaseReply.class);
 
         reply = baseReply;
-        ServerReply.jsonString = jsonString;
-
         switch (baseReply.getMessageType()) {
             case MessageType.PYIN:
                 Log.i(TAG, "Returning pyin");

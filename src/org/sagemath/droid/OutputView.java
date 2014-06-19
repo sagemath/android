@@ -11,11 +11,10 @@ import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.interacts.InteractView;
 import org.sagemath.droid.models.BaseReply;
 import org.sagemath.droid.models.InteractReply;
-import org.sagemath.singlecellserver.SageSingleCell2;
 
 public class OutputView
         extends LinearLayout
-        implements SageSingleCell2.OnSageListener, InteractView.OnInteractListener {
+        implements SageSingleCell.OnSageListener, InteractView.OnInteractListener {
     private final static String TAG = "SageDroid:OutputView";
 
     public interface onSageListener {
@@ -164,13 +163,6 @@ public class OutputView
     public void clear() {
         removeAllViews();
         block = null;
-        /*blocks.clear();
-        try {
-            if (!blocks.isEmpty())
-                blocks.getFirst().clearBlocks();
-        } catch (Exception e) {
-            Log.e(TAG, "Error clearing output blocks " + e.getLocalizedMessage());
-        }*/
         if (cell != null)
             cell.clearCache();
     }
@@ -182,13 +174,14 @@ public class OutputView
     }
 
     public void disableInteractViews() {
+        if (interactView != null)
             interactView.disableViews();
     }
 
     public void enableInteractViews() {
-        if (interactView != null) {
+        if (interactView != null)
             interactView.enableViews();
-        }
+
     }
 
 }

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.models.*;
-import org.sagemath.singlecellserver.*;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -65,30 +64,6 @@ public class OutputBlock extends WebView {
         return s.toString();
     }
 
-    private void addDiv(CommandOutput output) {
-
-        Log.i(TAG, "Adding output: " + output.toLongString());
-
-        if (output instanceof DataFile)
-            addDivDataFile((DataFile) output);
-        else if (output instanceof HtmlFiles)
-            addDivHtmlFiles((HtmlFiles) output);
-        else if (output instanceof DisplayData)
-            addDivDisplayData((DisplayData) output);
-        else if (output instanceof PythonInput) {
-            //addDivPythonInput((PythonInput) output);
-        } else if (output instanceof PythonOutput)
-            addDivPythonOutput((PythonOutput) output);
-        else if (output instanceof ResultStream)
-            addDivResultStream((ResultStream) output);
-        else if (output instanceof Traceback)
-            addDivTraceback((Traceback) output);
-        else if (output instanceof ExecuteReply)
-            addDivExecuteReply((ExecuteReply) output);
-        else
-            divs.add("Unknown output: " + output.toShortString());
-    }
-
     private void addDiv(BaseReply reply) {
         //Log.i(TAG, "Adding Reply: " + reply.toString());
 
@@ -114,20 +89,6 @@ public class OutputBlock extends WebView {
         } else {
             Log.i(TAG, "Unknown Output");
         }
-    }
-
-
-    private void addDivDataFile(DataFile dataFile) {
-        String uri = dataFile.getURI().toString();
-        String div;
-        String mime = dataFile.getMime();
-        if (dataFile.mime().equals("image/png") || dataFile.mime().equals("image/jpg"))
-            div = "<img src=\"" + uri + "\" alt=\"plot output\"></img>";
-        else if (dataFile.mime().equals("image/svg"))
-            div = "<object data\"" + uri + "\" type=\"image/svg+xml\"></object>";
-        else
-            div = "Unknown MIME type " + dataFile.mime();
-        divs.add(div);
     }
 
     /**
@@ -165,23 +126,6 @@ public class OutputBlock extends WebView {
         divs.add(reply.getContent().getData().getHtmlCode());
     }
 
-    private void addDivHtmlFiles(HtmlFiles htmlFiles) {
-        String div = "HTML";
-        divs.add(div);
-    }
-
-    private void addDivDisplayData(DisplayData displayData) {
-        String div = displayData.toHTML();
-        Log.i(TAG, "addDivDisplayData");
-        divs.add(div);
-    }
-
-    private void addDivPythonOutput(PythonOutput pythonOutput) {
-        Log.i(TAG, "addDivPythonOutput");
-        String div = htmlify(pythonOutput.get());
-        divs.add(div);
-    }
-
     private void addDivPythonOutput(PythonOutputReply reply) {
         String outputValue = reply.getContent().getData().getOutputValue();
         //If the outputValue is empty, don't add it, might overwrite data which is actually valid.
@@ -192,23 +136,8 @@ public class OutputBlock extends WebView {
         }
     }
 
-
-    private void addDivResultStream(ResultStream resultStream) {
-        Log.i(TAG, "addDivResultStream");
-        String div = htmlify(resultStream.get());
-        divs.add(div);
-        loadSavedUrl();
-    }
-
     private void addDivStreamReply(StreamReply reply) {
         String div = htmlify(reply.getContent().getData());
-        divs.add(div);
-        loadSavedUrl();
-    }
-
-    private void addDivTraceback(Traceback traceback) {
-        Log.i(TAG, "addDivTraceback");
-        String div = htmlify(traceback.toString());
         divs.add(div);
         loadSavedUrl();
     }
@@ -217,33 +146,6 @@ public class OutputBlock extends WebView {
         String div = htmlify(reply.getContent().getEname() + ":" + reply.getContent().getEvalue());
         divs.add(div);
         loadSavedUrl();
-    }
-
-    private void addDivExecuteReply(ExecuteReply reply) {
-        Log.i(TAG, "addDivExecuteReply");
-        if (reply.getStatus().equals("ok"))
-            divs.add("<font color=\"green\">ok</font>");
-        else
-            divs.add(reply.toString());
-
-        loadSavedUrl();
-    }
-
-    public void add(CommandOutput output) {
-        Log.i(TAG, "add(CommandOutput output)" + output.toString());
-        if (output.toString().contains("sys._sage_.update_interact")) {
-            clearBlocks();
-        }
-        if (name == null) {
-            Log.e(TAG, "adding output without initially setting it");
-            return;
-        }
-        if (!name.equals(output.outputBlock()))
-            Log.e(TAG, "Output has wrong output_block field");
-
-        addDiv(output);
-        cell.saveOutput("", getHtml());
-        loadUrl(cell.getUrlString(""));
     }
 
     public void add(BaseReply reply) {
@@ -264,17 +166,6 @@ public class OutputBlock extends WebView {
         Log.i(TAG, "set(String output_block");
         if (cell.hasCachedOutput(output_block))
             loadUrl(cell.getUrlString(output_block));
-    }
-
-    public void set(CommandOutput output) {
-        Log.i(TAG, "set(CommandOutput output)" + output.toString());
-        if (name == null) {
-            name = output.outputBlock();
-        }
-        if (!name.equals(output.outputBlock()))
-            Log.e(TAG, "Output has wrong output_block field");
-        divs.clear();
-        add(output);
     }
 
     public void set(BaseReply reply) {

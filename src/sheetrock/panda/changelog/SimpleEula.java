@@ -1,19 +1,5 @@
 package sheetrock.panda.changelog;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.sagemath.droid.R;
-import org.sagemath.singlecellserver.SageSingleCell;
-import org.sagemath.singlecellserver.SageSingleCell.SageInterruptedException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +13,20 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.sagemath.droid.R;
+import org.sagemath.droid.exceptions.SageInterruptedException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class SimpleEula {
 
@@ -76,7 +76,7 @@ public class SimpleEula {
 				HttpResponse termsResponse = termsHttpClient.execute(termsGet);
 				InputStream termsStream = termsResponse.getEntity().getContent();
 
-				termsString = SageSingleCell.streamToString(termsStream);
+				termsString = streamToString(termsStream);
 			} catch (Exception e) {
 				Log.e(TAG, "Error while getting EULA text." + e.getLocalizedMessage());
 			}
@@ -144,5 +144,26 @@ public class SimpleEula {
 			}
 		}
 	}
+
+    private String streamToString(InputStream is) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
 
 }
