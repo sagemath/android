@@ -2,6 +2,7 @@ package org.sagemath.droid.interacts;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import org.json.JSONArray;
@@ -13,6 +14,7 @@ import org.sagemath.droid.models.InteractReply.InteractControl;
 import org.sagemath.droid.models.InteractReply.SageInteract;
 import org.sagemath.singlecellserver.Interact;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,12 +22,14 @@ public class InteractView extends TableLayout {
     private final static String TAG = "SageDroid:InteractView";
 
     private Context context;
+    private ArrayList<View> addedViews;
 
     private TableRow row_top, row_center, row_bottom;
 
     public InteractView(Context context) {
         super(context);
         this.context = context;
+        addedViews = new ArrayList<View>();
         setLayoutParams(new LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT));
@@ -146,6 +150,7 @@ public class InteractView extends TableLayout {
         InteractContinuousSlider slider = new InteractContinuousSlider(this, control.getVarName(), context);
         slider.setRange(control);
         addView(slider);
+        addedViews.add(slider);
     }
 
     protected void addDiscreteSlider(String variable, JSONObject control) throws JSONException {
@@ -160,6 +165,7 @@ public class InteractView extends TableLayout {
         InteractDiscreteSlider slider = new InteractDiscreteSlider(this, control.getVarName(), context);
         slider.setValues(control);
         addView(slider);
+        addedViews.add(slider);
     }
 
     protected void addSelector(String variable, JSONObject control) throws JSONException {
@@ -173,10 +179,38 @@ public class InteractView extends TableLayout {
         Log.i(TAG, "Adding a selector");
         InteractSelector selector = new InteractSelector(this, control.getVarName(), context);
         selector.setValues(control);
+        addView(selector);
+        addedViews.add(selector);
     }
 
     protected void notifyChange(InteractControlBase view) {
         listener.onInteractListener(interactReply, view.getVariableName(), view.getValue());
+    }
+
+    public void disableViews() {
+        Log.i(TAG, "Disabling Views");
+        for (View v : addedViews) {
+            if (v instanceof InteractContinuousSlider) {
+                ((InteractContinuousSlider) v).getSeekBar().setEnabled(false);
+            } else if (v instanceof InteractDiscreteSlider) {
+                ((InteractDiscreteSlider) v).getSeekBar().setEnabled(false);
+            } else if (v instanceof InteractSelector) {
+                ((InteractSelector) v).getSpinner().setEnabled(false);
+            }
+        }
+    }
+
+    public void enableViews() {
+        Log.i(TAG, "Enabling Views");
+        for (View v : addedViews) {
+            if (v instanceof InteractContinuousSlider) {
+                ((InteractContinuousSlider) v).getSeekBar().setEnabled(true);
+            } else if (v instanceof InteractDiscreteSlider) {
+                ((InteractDiscreteSlider) v).getSeekBar().setEnabled(true);
+            } else if (v instanceof InteractSelector) {
+                ((InteractSelector) v).getSpinner().setEnabled(true);
+            }
+        }
     }
 
 }

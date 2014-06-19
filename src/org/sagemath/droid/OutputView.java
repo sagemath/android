@@ -31,7 +31,7 @@ public class OutputView
     }
 
     private OutputBlock block;
-
+    private InteractView interactView;
 
     private Context context;
     private CellData cell;
@@ -46,7 +46,7 @@ public class OutputView
 
     @Override
     public void onSageOutputListener(BaseReply output) {
-        Log.i(TAG,"Received Output");
+        Log.i(TAG, "Received Output");
         UpdateResult task = new UpdateResult();
         task.output = output;
         handler.post(task);
@@ -54,7 +54,7 @@ public class OutputView
 
     @Override
     public void onSageAdditionalOutputListener(BaseReply output) {
-        Log.i(TAG,"Received Additional Output");
+        Log.i(TAG, "Received Additional Output");
         UpdateResult task = new UpdateResult();
         task.additionalOutput = output;
         handler.post(task);
@@ -74,39 +74,13 @@ public class OutputView
         handler.post(task);
     }
 
-    private Handler handler = new Handler();
-
-    /**
-     * Retrieve the OutputBlock representing the output. Creates a new OutputBlock if necessary.
-     *
-     * @return
-     */
-    /*private OutputBlock getOutputBlock(CommandOutput output) {
-        //Log.i(TAG, "getOutputBlock(): " + output.outputBlock());
-        return getOutputBlock(output.outputBlock());
+    @Override
+    public void onInteractUpdated() {
+        block.clearBlocks();
     }
 
-    private OutputBlock getOutputBlock(String output_block) {
-        ListIterator<OutputBlock> iter = blocks.listIterator();
-        Log.i(TAG, "getOutputBlock(String output_block): " + output_block);
-        try {
-            while (iter.hasNext()) {
-                OutputBlock block = iter.next();
-                if (block.getOutputBlock().equals(output_block)) {
-                    Log.i(TAG, "getOutputBlock().equals(output_block): " + block + ", " + output_block);
-                    Log.i(TAG, "Returning block " + block.name);
-                    return block;
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error getting output block.");
-            return newOutputBlock();
-        }
+    private Handler handler = new Handler();
 
-        Log.i(TAG, "Returning newOutputBlock()");
-
-        return newOutputBlock();
-    }*/
     private OutputBlock getOutputBlock() {
         if (block != null)
             return block;
@@ -158,10 +132,10 @@ public class OutputView
             }
             if (interact != null) {
 
-                InteractView interactView = new InteractView(context);
+                interactView = new InteractView(context);
                 interactView.set(interact);
                 interactView.setOnInteractListener(OutputView.this);
-                Log.i(TAG, "Adding updateInteract view: " + interact.toString());
+                Log.i(TAG, "Adding Interact view: " + interact.toString());
                 addView(interactView, 0);
             }
             if (finished != null)
@@ -202,10 +176,19 @@ public class OutputView
     }
 
 
-
     @Override
     public void onInteractListener(InteractReply interact, String name, Object value) {
         listener.onSageInteractListener(interact, name, value);
+    }
+
+    public void disableInteractViews() {
+            interactView.disableViews();
+    }
+
+    public void enableInteractViews() {
+        if (interactView != null) {
+            interactView.enableViews();
+        }
     }
 
 }

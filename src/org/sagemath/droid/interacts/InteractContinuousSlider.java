@@ -83,7 +83,7 @@ public class InteractContinuousSlider
     }
 
     public void setRange(InteractControl control) {
-        Log.i(TAG,"Setting Range:"+ Arrays.toString(control.getRange()));
+        Log.i(TAG, "Setting Range:" + Arrays.toString(control.getRange()));
         this.range_min = control.getRange()[0];
         this.range_max = control.getRange()[0];
         this.step = (double) control.getStep();
@@ -101,6 +101,10 @@ public class InteractContinuousSlider
         // range_max-range_min is not necessarily divisible by step
         value = Math.min(range_max, value);
         return value;
+    }
+
+    public SeekBar getSeekBar() {
+        return seekBar;
     }
 
     private void updateValueText() {

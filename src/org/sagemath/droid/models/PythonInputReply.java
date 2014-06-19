@@ -5,6 +5,10 @@ package org.sagemath.droid.models;
  */
 
 public class PythonInputReply extends BaseReply {
+    private static final String TAG = "SageDroid:PythonInputReply";
+
+    private static final String STR_UPDATE_INTERACT = "sys._sage_.update_interact";
+
     private PythonInputContent content;
 
     public PythonInputReply() {
@@ -30,5 +34,12 @@ public class PythonInputReply extends BaseReply {
         public String getCode() {
             return code;
         }
+    }
+
+    //---UTILITY METHODS---
+    public boolean isInteractUpdateReply() {
+        if (getContent().getCode().contains(STR_UPDATE_INTERACT))
+            return true;
+        return false;
     }
 }

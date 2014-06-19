@@ -250,7 +250,7 @@ public class OutputBlock extends WebView {
 
         if (reply instanceof SageClearReply) {
             Log.i(TAG, "Sage Clear Reply");
-            divs.clear();
+            //divs.clear();
         }
         addDiv(reply);
     }
@@ -286,21 +286,6 @@ public class OutputBlock extends WebView {
         divs.clear();
     }
 
-    public void numberDivs() {
-        for (String div : divs) {
-            Log.i(TAG, "EXISTING DIV: " + div);
-        }
-    }
-
-    public String getOutputBlock() {
-        return name;
-    }
-
-    public void setHTML(String html) {
-        clearBlocks();
-        divs.add(html);
-    }
-
     public void setHistoryHTML() {
         loadUrl(cell.getUrlString(cell.getUUID().toString()));
     }
@@ -312,5 +297,4 @@ public class OutputBlock extends WebView {
         }
         return htmldata;
     }
-
 }

@@ -88,6 +88,10 @@ public class InteractDiscreteSlider
         return index;
     }
 
+    public SeekBar getSeekBar(){
+        return seekBar;
+    }
+
     private void updateValueText() {
         nameValueText.setText(getVariableName() + "=" + values.get(getValue()));
     }

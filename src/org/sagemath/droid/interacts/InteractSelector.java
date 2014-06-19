@@ -90,6 +90,10 @@ public class InteractSelector
         return raw;
     }
 
+    public Spinner getSpinner() {
+        return spinner;
+    }
+
     private void updateValueText() {
         if (values.isEmpty() || getValue() == -1) return;
         Log.e(TAG, "value = " + getValue());
