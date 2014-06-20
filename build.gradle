@@ -39,4 +39,5 @@ dependencies {
     compile 'com.squareup.mimecraft:mimecraft:1.1.1'
     compile 'com.squareup.okio:okio:1.0.0'
     compile 'com.github.johnpersano:supertoasts:1.3.4@aar'
+    compile 'commons-io:commons-io:20030203.000550'
 }

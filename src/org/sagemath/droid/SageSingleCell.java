@@ -61,9 +61,9 @@ public class SageSingleCell {
     //--- INTERFACE RELATED ---
     public interface OnSageListener {
 
-        public void onSageOutputListener(BaseReply reply);
+        public void onSageReplyListener(BaseReply reply);
 
-        public void onSageAdditionalOutputListener(BaseReply reply);
+        public void onSageAdditionalReplyListener(BaseReply reply);
 
         public void onSageInteractListener(InteractReply reply);
 
@@ -128,9 +128,9 @@ public class SageSingleCell {
             ImageReply imageReply = (ImageReply) reply;
             imageReply.setKernelID(kernelID);
             if (reply.isReplyTo(currentExecuteRequest))
-                onSageListener.onSageAdditionalOutputListener(imageReply);
+                onSageListener.onSageAdditionalReplyListener(imageReply);
             else
-                onSageListener.onSageOutputListener(imageReply);
+                onSageListener.onSageReplyListener(imageReply);
 
         } else if (reply instanceof InteractReply) {
             Log.i(TAG, "Reply is Interact, calling onSageInteractListener");
@@ -143,6 +143,7 @@ public class SageSingleCell {
             StatusReply statusReply = (StatusReply) reply;
             if (statusReply.getContent().getExecutionState() == ExecutionState.IDLE
                     || statusReply.getContent().getExecutionState() == ExecutionState.DEAD) {
+                onSageListener.onSageReplyListener(reply);
                 onSageListener.onSageFinishedListener(reply);
             }
         } else if (reply instanceof PythonInputReply) {
@@ -152,10 +153,10 @@ public class SageSingleCell {
             return;
         } else if (reply.isReplyTo(currentExecuteRequest)) {
             Log.i(TAG, "Reply to current execute request");
-            onSageListener.onSageAdditionalOutputListener(reply);
+            onSageListener.onSageAdditionalReplyListener(reply);
         } else {
             Log.i(TAG, "Reply is output");
-            onSageListener.onSageOutputListener(reply);
+            onSageListener.onSageReplyListener(reply);
         }
     }
 

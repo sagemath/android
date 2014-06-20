@@ -44,7 +44,7 @@ public class OutputView
     }
 
     @Override
-    public void onSageOutputListener(BaseReply output) {
+    public void onSageReplyListener(BaseReply output) {
         Log.i(TAG, "Received Output");
         UpdateResult task = new UpdateResult();
         task.output = output;
@@ -52,7 +52,7 @@ public class OutputView
     }
 
     @Override
-    public void onSageAdditionalOutputListener(BaseReply output) {
+    public void onSageAdditionalReplyListener(BaseReply output) {
         Log.i(TAG, "Received Additional Output");
         UpdateResult task = new UpdateResult();
         task.additionalOutput = output;
