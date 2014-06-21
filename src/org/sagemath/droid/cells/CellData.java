@@ -207,12 +207,10 @@ public class CellData implements Parcelable {
     }
 
     protected File cacheDirIndexFile(String output_block) {
-        addOutputBlock(output_block);
         return new File(cacheDir(), output_block + ".html");
     }
 
     public void saveOutput(String output_block, String html) {
-        addOutputBlock(output_block);
         htmlData += html;
         Log.i(TAG, "CellData added output_block to " + title + " " + uuid.toString() + ": " + html);
         File f = cacheDirIndexFile(output_block);
@@ -240,8 +238,14 @@ public class CellData implements Parcelable {
     }
 
     public String getUrlString(String block) {
-        Uri uri = Uri.fromFile(cacheDirIndexFile(block));
-        return uri.toString();
+        File file = cacheDirIndexFile(block);
+        if (file.exists()) {
+            Uri uri = Uri.fromFile(file);
+            Log.i(TAG, "Returning URL String: " + uri.toString());
+            return uri.toString();
+        }
+
+        return null;
     }
 
     public boolean hasCachedOutput(String block) {
@@ -253,65 +257,6 @@ public class CellData implements Parcelable {
         for (File file : files)
             if (!file.delete())
                 Log.e(TAG, "Error deleting " + file);
-    }
-
-    private void addOutputBlock(String block) {
-        //Log.i(TAG, "addOutputBlock: " + block);
-        if (outputBlocks == null)
-            outputBlocks = new LinkedList<String>();
-        if (!outputBlocks.contains(block)) {
-            outputBlocks.add(block);
-            saveOutputBlocks();
-        }
-    }
-
-    private void saveOutputBlocks() {
-        File file = new File(cacheDir(), "output_blocks");
-        try {
-            saveOutputBlocks(file);
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to save output_block list: " + e.getLocalizedMessage());
-        }
-    }
-
-    private void saveOutputBlocks(File file) throws IOException {
-        FileOutputStream fos = new FileOutputStream(file);
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(bos);
-        dos.writeInt(outputBlocks.size());
-        for (String block : outputBlocks) {
-            dos.writeUTF(block);
-        }
-        // Log.e(TAG, "saved "+outputBlocks.size()+" output_block fields");
-        dos.close();
-    }
-
-    private LinkedList<String> loadOutputBlocks(File file) throws IOException {
-        LinkedList<String> result = new LinkedList<String>();
-        FileInputStream fis = new FileInputStream(file);
-        BufferedInputStream bis = new BufferedInputStream(fis);
-        DataInputStream dis = new DataInputStream(bis);
-        int n = dis.readInt();
-        for (int i = 0; i < n; i++) {
-            String block = dis.readUTF();
-        }
-        // Log.e(TAG, "read "+n+" output_block fields");
-        dis.close();
-        return result;
-    }
-
-    public LinkedList<String> getOutputBlocks() {
-        if (outputBlocks != null)
-            return outputBlocks;
-        outputBlocks = new LinkedList<String>();
-        File file = new File(cacheDir(), "output_blocks");
-        if (!file.exists()) return outputBlocks;
-        try {
-            outputBlocks.addAll(loadOutputBlocks(file));
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to load output_block list: " + e.getLocalizedMessage());
-        }
-        return outputBlocks;
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -328,6 +273,5 @@ public class CellData implements Parcelable {
 
         return json;
     }
-
 
 }

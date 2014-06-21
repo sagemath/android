@@ -357,6 +357,12 @@ public class SageActivity
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        cell.clearCache();
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3) {
         if (parent != insertSpinner)
             return;

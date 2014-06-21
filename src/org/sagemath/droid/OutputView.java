@@ -151,11 +151,9 @@ public class OutputView
         block = null;
         cell = CellCollection.getInstance().getCurrentCell();
         Assert.assertNotNull(cell);
-        for (String block : cell.getOutputBlocks()) {
-            if (cell.hasCachedOutput(block)) {
-                OutputBlock outputBlock = newOutputBlock();
-                outputBlock.set(block);
-            }
+        if (cell.hasCachedOutput(cell.getUUID().toString())) {
+            OutputBlock outputBlock = newOutputBlock();
+            outputBlock.set(cell.getUUID().toString());
         }
     }
 

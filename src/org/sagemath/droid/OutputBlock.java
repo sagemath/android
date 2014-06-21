@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
-import org.apache.commons.io.IOUtil;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.models.*;
@@ -170,19 +169,18 @@ public class OutputBlock extends WebView {
     }
 
     public void loadSavedUrl() {
-        cell.saveOutput("test", getHtml());
-        Log.i(TAG, "Loading URL:" + cell.getUrlString("test"));
-        try {
-            Log.i(TAG, "Loading HTML:" + IOUtil.toString(context.getResources().getAssets().open(cell.getUrlString("test"))));
-        } catch (Exception e) {
-            Log.i(TAG, e + "");
+        cell.saveOutput(cell.getUUID().toString(), getHtml());
+        String url = cell.getUrlString(cell.getUUID().toString());
+
+        if (url != null) {
+            Log.i(TAG, "Loading URL:" + url);
+            Log.i(TAG, "Loading HTML:" + getHtml());
+            loadUrl(cell.getUrlString(cell.getUUID().toString()));
         }
-        Log.i(TAG, "Loading HTML:" + getHtml());
-        loadData(getHtml(), "text/html", "utf-8");
     }
 
     public void set(String output_block) {
-        Log.i(TAG, "set(String output_block");
+        Log.i(TAG, "set(String output_block)");
         if (cell.hasCachedOutput(output_block))
             loadUrl(cell.getUrlString(output_block));
     }
@@ -209,13 +207,4 @@ public class OutputBlock extends WebView {
         return htmldata;
     }
 
-    public String doubleEscapedLatex(String input) {
-        String escapedString = "";
-        for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i) == '\'') escapedString += '\\';
-            if (input.charAt(i) != '\n') escapedString += input.charAt(i);
-            if (input.charAt(i) == '\\') escapedString += "\\";
-        }
-        return escapedString;
-    }
 }
