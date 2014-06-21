@@ -1,89 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="True"
-    android:scrollbarAlwaysDrawVerticalTrack="true"
-    android:scrollbarStyle="insideInset"
-    android:scrollbars="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:id="@+id/bracket_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <Spinner
-                android:id="@+id/insert_text"
-                android:layout_width="@dimen/insert_width"
-                android:layout_height="wrap_content"
-                android:entries="@array/insert_text_values"
-                android:prompt="@string/insert_text_prompt" />
-
-            <Button
-                android:id="@+id/bracket_round"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:singleLine="true"
-                android:text="( )" />
-
-            <Button
-                android:id="@+id/bracket_square"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:singleLine="true"
-                android:text="[ ]" />
-
-            <Button
-                android:id="@+id/bracket_curly"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:singleLine="true"
-                android:text="{ }" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/sage_input"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/bracket_layout"
-            android:imeOptions="flagNoExtractUi|actionDone"
-            android:inputType="textMultiLine|textNoSuggestions"
-            android:minLines="5"
-            android:text="plot(sin(x),x,0,2*pi)" >
+            android:id="@+id/card_container"
+            android:orientation="vertical"/>
 
-            <requestFocus />
-        </EditText>
-
-        <ImageButton
-            android:id="@+id/button_run"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/sage_input"
-            android:layout_alignRight="@id/sage_input"
-            android:contentDescription="Run"
-            android:src="@android:drawable/ic_media_play" />
-
-        <org.sagemath.droid.OutputView
-            android:id="@+id/sage_output"
-            android:layout_below="@id/sage_input"
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cell_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_card"
-            android:padding="5dp" />
-    </RelativeLayout>
+            android:layout_marginTop="1dp"
+            android:indeterminate="true"
+            app:spb_sections_count="4"
+            app:spb_interpolator="spb_interpolator_accelerate"
+            app:spb_speed="1.0"
+            app:spb_reversed="false"
+            app:spb_mirror_mode="false"/>
 
-</ScrollView>
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical">
+
+        <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                    android:id="@+id/bracket_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <Spinner
+                        android:id="@+id/insert_text"
+                        android:layout_width="@dimen/insert_width"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/insert_text_values"
+                        android:prompt="@string/insert_text_prompt"/>
+
+                <Button
+                        android:id="@+id/bracket_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:text="( )"/>
+
+                <Button
+                        android:id="@+id/bracket_square"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:text="[ ]"/>
+
+                <Button
+                        android:id="@+id/bracket_curly"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:text="{ }"/>
+            </LinearLayout>
+
+            <EditText
+                    android:id="@+id/sage_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/bracket_layout"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:minLines="5"
+                    android:text="plot(sin(x),x,0,2*pi)">
+
+                <requestFocus/>
+            </EditText>
+
+            <ImageButton
+                    android:id="@+id/button_run"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sage_input"
+                    android:layout_alignRight="@id/sage_input"
+                    android:contentDescription="Run"
+                    android:src="@android:drawable/ic_media_play"/>
+
+            <org.sagemath.droid.OutputView
+                    android:id="@+id/sage_output"
+                    android:layout_below="@id/sage_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_card"
+                    android:padding="5dp"/>
+        </RelativeLayout>
+
+    </ScrollView>
+
+</LinearLayout>

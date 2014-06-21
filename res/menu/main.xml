@@ -1,49 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/menu_refresh"
-        android:title="@string/menu_refresh"
-        android:icon="@drawable/ic_action_refresh"
-        android:orderInCategory="1"
-        android:showAsAction="always" />
-    
-    <item android:id="@+id/menu_add"
-        android:title="@string/menu_add"
-        android:icon="@drawable/ic_action_new"
-        android:showAsAction="always" />
-    
-    <item android:id="@+id/menu_search"
-        android:title="@string/menu_search"
-        android:icon="@drawable/ic_action_search"
-        android:orderInCategory="0"
-        android:showAsAction="always" 
-        android:visible="false"/>
-    
-    <item android:id="@+id/menu_share" 
-        android:title="@string/menu_share" 
-        android:icon="@drawable/ic_action_share" 
-        android:orderInCategory="1" 
-        android:showAsAction="always" />
-    
-    <item android:id="@+id/menu_discard" 
-        android:title="@string/menu_discard" 
-        android:icon="@drawable/ic_action_discard" 
-        android:orderInCategory="2" 
-        android:showAsAction="always" />
-    
-    <item android:id="@+id/menu_about_sage" 
-        android:title="@string/menu_about_sage" />
-    
-    <item android:id="@+id/menu_manual_user" 
-        android:title="@string/menu_manual_user"/>
-    
-    <item android:id="@+id/menu_manual_dev" 
-        android:title="@string/menu_manual_dev"/>
-    
-    <item android:id="@+id/menu_changelog" 
-        android:title="@string/menu_changelog" />
+          android:title="@string/menu_refresh"
+          android:icon="@drawable/ic_action_refresh"
+          android:orderInCategory="1"
+          app:showAsAction="always"/>
 
-    <item android:id="@+id/menu_clean_history" 
-        android:title="@string/menu_clean_history" />
-    
+    <item android:id="@+id/menu_add"
+          android:title="@string/menu_add"
+          android:icon="@drawable/ic_action_new"
+          app:showAsAction="always"/>
+
+    <item android:id="@+id/menu_search"
+          android:title="@string/menu_search"
+          android:icon="@drawable/ic_action_search"
+          android:orderInCategory="0"
+          app:showAsAction="ifRoom"
+          android:visible="false"/>
+
+    <item android:id="@+id/menu_share"
+          android:title="@string/menu_share"
+          android:icon="@drawable/ic_action_share"
+          android:orderInCategory="1"
+          app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/menu_discard"
+          android:title="@string/menu_discard"
+          android:icon="@drawable/ic_action_discard"
+          android:orderInCategory="2"
+          app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/menu_about_sage"
+          android:title="@string/menu_about_sage"/>
+
+    <item android:id="@+id/menu_manual_user"
+          android:title="@string/menu_manual_user"/>
+
+    <item android:id="@+id/menu_manual_dev"
+          android:title="@string/menu_manual_dev"/>
+
+    <item android:id="@+id/menu_changelog"
+          android:title="@string/menu_changelog"/>
+
+    <item android:id="@+id/menu_clean_history"
+          android:title="@string/menu_clean_history"/>
+
 </menu>

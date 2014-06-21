@@ -17,5 +17,6 @@
     <string name="discard">Discard</string>
     <string name="cancel">Cancel</string>
     <string name="edit_title">Edit title/description</string>
+    <string name="info_disconnected">Server Disconnected</string>
 
 </resources>

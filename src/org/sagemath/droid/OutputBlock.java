@@ -1,216 +1,210 @@
 package org.sagemath.droid;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.sagemath.singlecellserver.CommandOutput;
-import org.sagemath.singlecellserver.DataFile;
-import org.sagemath.singlecellserver.DisplayData;
-import org.sagemath.singlecellserver.ExecuteReply;
-import org.sagemath.singlecellserver.HtmlFiles;
-import org.sagemath.singlecellserver.PythonInput;
-import org.sagemath.singlecellserver.PythonOutput;
-import org.sagemath.singlecellserver.ResultStream;
-import org.sagemath.singlecellserver.Traceback;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
+import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.models.*;
+
+import java.util.ArrayList;
 
 public class OutputBlock extends WebView {
-	private final static String TAG = "OutputBlock";
+    private final static String TAG = "SageDroid:OutputBlock";
 
-	private final CellData cell;
-	private LinkedList<String> divs = new LinkedList<String>();
-	
-	public OutputBlock(Context context, CellData cell) {
-		super(context);
-		this.cell = cell;
-	}
-	
-	public OutputBlock(Context context, CellData cell, String htmlData) {
-		super(context);
-		Log.i(TAG, "Created outputblock from htmldata.");
-		this.cell = cell;
-		divs.clear();
-		divs.add(htmlData);
-		try {
-		Log.i(TAG, "outputblock created: " + " " + cell.title + " " + cell.uuid.toString() + " " + " ");
-		} catch (Exception e){
-			Log.i(TAG, "outputblock exception: " + e.getMessage());
-		}
-	}
-	
-	// The output_block field of the JSON message
-	protected String name;  
+    private Context context;
+    private final CellData cell;
+    private ArrayList<String> divs = new ArrayList<String>();
 
-	private static String htmlify(String str) {
-		StringBuilder s = new StringBuilder();
-		s.append("<pre style=\"font-size:130%\">");
-		String[] lines = str.split("\n");
-		for (int i=0; i<lines.length; i++) {
-			if (i>0)
-				s.append("&#13;&#10;");
-			s.append(TextUtils.htmlEncode(lines[i]));
-		}
-		s.append("</pre>");
-		return s.toString();
-	}
-	
-	public String getHtml() {
-		StringBuilder s = new StringBuilder();
-		s.append("<html><body>");
-		ListIterator<String> iter = divs.listIterator();
-		while (iter.hasNext()) {
-			s.append("<div>");
-			s.append(iter.next());
-			s.append("</div>");
-		}
-		s.append("</body></html>");
-		return s.toString();
-	}
-	
-	private void addDiv(CommandOutput output) {
+    public OutputBlock(Context context, CellData cell) {
+        super(context);
+        this.getSettings().setJavaScriptEnabled(true);
+        this.getSettings().setBuiltInZoomControls(true);
+        this.context = context;
+        this.cell = cell;
+    }
 
-		Log.i(TAG, "Adding output: " + output.toLongString());
-		
-		if (output instanceof DataFile) 
-			addDivDataFile((DataFile) output);
-		else if (output instanceof HtmlFiles) 
-			addDivHtmlFiles((HtmlFiles) output);
-		else if (output instanceof DisplayData) 
-			addDivDisplayData((DisplayData) output);
-		else if (output instanceof PythonInput) {
-			//addDivPythonInput((PythonInput) output);
-		}
-		else if (output instanceof PythonOutput) 
-			addDivPythonOutput((PythonOutput) output);
-		else if (output instanceof ResultStream) 
-			addDivResultStream((ResultStream) output);
-		else if (output instanceof Traceback) 
-			addDivTraceback((Traceback) output);
-		else if (output instanceof ExecuteReply) 
-			addDivExecuteReply((ExecuteReply) output);
-		else 
-			divs.add("Unknown output: "+output.toShortString());
-	}
+    public OutputBlock(Context context, CellData cell, String htmlData) {
+        super(context);
+        this.context = context;
+        this.getSettings().setJavaScriptEnabled(true);
+        this.getSettings().setBuiltInZoomControls(true);
+        Log.i(TAG, "Created outputblock from htmldata.");
+        this.cell = cell;
+        divs.clear();
+        divs.add(htmlData);
+        try {
+            Log.i(TAG, "outputblock created: " + " " + cell.getTitle() + " " + cell.getUUID().toString() + " " + " ");
+        } catch (Exception e) {
+            Log.i(TAG, "outputblock exception: " + e.getMessage());
+        }
+    }
 
-	private void addDivDataFile(DataFile dataFile) {
-		String uri = dataFile.getURI().toString();
-		String div;
-		String mime = dataFile.getMime();
-		if (dataFile.mime().equals("image/png") || dataFile.mime().equals("image/jpg"))
-			div = "<img src=\"" + uri + "\" alt=\"plot output\"></img>";
-		else if (dataFile.mime().equals("image/svg"))
-			div = "<object data\"" + uri + "\" type=\"image/svg+xml\"></object>";
-		else
-			div = "Unknow MIME type "+dataFile.mime();
-		divs.add(div);
-	}
-	
-	private void addDivHtmlFiles(HtmlFiles htmlFiles) {
-		String div = "HTML";
-		divs.add(div);
-	}
+    // The output_block field of the JSON message
+    protected String name;
 
-	private void addDivDisplayData(DisplayData displayData) {
-		String div = displayData.toHTML();
-		Log.i(TAG, "addDivDisplayData");
-		divs.add(div);
-	}
+    private static String htmlify(String str) {
+        Log.i(TAG, "Converting to HTML: " + str);
+        StringBuilder s = new StringBuilder();
+        s.append("<pre style=\"font-size:130%\">");
+        String[] lines = str.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            if (i > 0)
+                s.append("&#13;&#10;");
+            s.append(TextUtils.htmlEncode(lines[i]));
+        }
+        s.append("</pre>");
+        Log.i(TAG, "Returning converted HTML: " + s.toString());
+        return s.toString();
+    }
 
-	private void addDivPythonOutput(PythonOutput pythonOutput) {
-		Log.i(TAG, "addDivPythonOutput");
-		String div = htmlify(pythonOutput.get());
-		divs.add(div);
-	}
-	
-	
-	private void addDivResultStream(ResultStream resultStream) {
-		Log.i(TAG, "addDivResultStream");
-		String div = htmlify(resultStream.get());
-		divs.add(div);
-	}
+    public String getHtml() {
+        StringBuilder s = new StringBuilder();
+        s.append("<html>");
+        //Configure & Load MathJax
+        s.append(StringConstants.MATHJAX_CONFIG);
+        s.append(StringConstants.MATHJAX_CDN);
+        s.append(StringConstants.IMAGE_STYLE);
+        s.append("<body>");
+        Log.i(TAG, "Constructing HTML with: " + divs.size() + "divs");
+        for (String div : divs) {
+            s.append("<div>");
+            Log.i(TAG, "Adding div" + div);
+            s.append(div);
+            s.append("</div>");
+        }
+        s.append("</body>");
+        s.append("</html>");
+        return s.toString();
+    }
 
-	private void addDivTraceback(Traceback traceback) {
-		Log.i(TAG, "addDivTraceback");
-		String div = htmlify(traceback.toString());
-		divs.add(div);
-	}
-	
-	private void addDivExecuteReply(ExecuteReply reply) {
-		Log.i(TAG, "addDivExecuteReply");
-		if (reply.getStatus().equals("ok"))
-			divs.add("<font color=\"green\">ok</font>");
-		else
-			divs.add(reply.toString());
-	}
+    private void addDiv(BaseReply reply) {
+        //Log.i(TAG, "Adding Reply: " + reply.toString());
 
-	public void add(CommandOutput output) {
-		Log.i(TAG, "add(CommandOutput output)" + output.toString());
-		if (output.toString().contains("sys._sage_.update_interact")) {
-			clearBlocks();
-		}
-		if (name == null) {
-			Log.e(TAG, "adding output without initially setting it");
-			return;
-		}
-		if (!name.equals(output.outputBlock()))
-			Log.e(TAG, "Output has wrong output_block field");
-		
-		addDiv(output);
-		// loadData(getHtml(), "text/html", "UTF-8");
-		cell.saveOutput(getOutputBlock(), getHtml());
-		loadUrl(cell.getUrlString(getOutputBlock()));
-	}
+        if (reply instanceof ImageReply) {
+            Log.i(TAG, "Adding an ImageReply");
+            addDivImageReply((ImageReply) reply);
+        } else if (reply instanceof HtmlReply) {
+            //Having text/html
+            Log.i(TAG, "Adding HTML Reply");
+            addDivHtmlReply((HtmlReply) reply);
+        } else if (reply instanceof PythonOutputReply) {
+            //Having pyout
+            Log.i(TAG, "Adding PyOut Reply");
+            addDivPythonOutputReply((PythonOutputReply) reply);
+        } else if (reply instanceof PythonErrorReply) {
+            //Having pyerr, Traceback
+            Log.i(TAG, "Adding PyErr Reply");
+            addDivPythonErrorReply((PythonErrorReply) reply);
+        } else if (reply instanceof StreamReply) {
+            //Having Stream
+            Log.i(TAG, "Adding Stream Reply");
+            addDivStreamReply((StreamReply) reply);
+        } else if (reply instanceof StatusReply) {
+            //Only Idle or Dead Status Reply is possible here, hence simply load URL
+            Log.i(TAG, "Got Idle Status, Loading URL");
+            loadSavedUrl();
+        } else {
+            Log.i(TAG, "Unknown Output");
+        }
+    }
 
-	public void set(String output_block) {
-		Log.i(TAG, "set(String output_block");
- 		if (cell.hasCachedOutput(output_block))
-			loadUrl(cell.getUrlString(output_block));
-	}
-	
-	public void set(CommandOutput output) {
-		Log.i(TAG, "set(CommandOutput output)" + output.toString());
-		if (name == null) {
-			name = output.outputBlock();
-		}
-		if (!name.equals(output.outputBlock()))
-			Log.e(TAG, "Output has wrong output_block field");
-		divs.clear();
-		add(output);
-	}
-	
-	public void clearBlocks() {
-		divs.clear();
-	}
-	
-	public void numberDivs() {
-		for (String div:divs){
-			Log.i(TAG, "EXISTING DIV: " + div);
-		}
-	}
-	
-	public String getOutputBlock() {
-		return name;
-	}
-	
-	public void setHTML(String html) {
-		clearBlocks();
-		divs.add(html);
-	}
-	
-	public void setHistoryHTML() {
-		loadUrl(cell.getUrlString(cell.uuid.toString()));
-	}
-	
-	public String getHTML() {
-		String htmldata = "";
-		for(String div: divs) {
-			htmldata += div;
-		}
-		return htmldata;
-	}
-	
+    /**
+     * Add an image to the div
+     *
+     * @param reply
+     */
+    private void addDivImageReply(ImageReply reply) {
+        String jpgDivTemplate = "<img src=\"%s\"alt=\"plot output\"></img>";
+        String svgDivTemplate = "<object data=\"%s\" type=\"image/svg+xml\"></img>";
+        String jpgDiv, svgDiv;
+
+        if (reply.getImageMimeType().equals(ImageReply.MIME_IMAGE_PNG)) {
+            Log.i(TAG, "Image is in .png format");
+            jpgDiv = String.format(jpgDivTemplate, reply.getImageURL());
+            Log.i(TAG, "Adding .png div" + jpgDiv);
+            divs.add(jpgDiv);
+        } else if (reply.getImageMimeType().equals(ImageReply.MIME_IMAGE_SVG)) {
+            Log.i(TAG, "Image is in .svg format");
+            svgDiv = String.format(svgDivTemplate, reply.getImageURL());
+            Log.i(TAG, "Adding .svg div" + svgDiv);
+            divs.add(svgDiv);
+        } else if (reply.getImageMimeType() == null) {
+            Log.i(TAG, "Unknown Image Type");
+            String div = "Unknown MIME type";
+            divs.add(div);
+        }
+    }
+
+    private void addDivHtmlReply(HtmlReply reply) {
+        String html = reply.getContent().getData().getHtmlCode();
+        divs.add(html);
+    }
+
+    private void addDivPythonOutputReply(PythonOutputReply reply) {
+        String outputValue = reply.getContent().getData().getOutputValue();
+        //If the outputValue is empty, don't add it, might overwrite data which is actually valid.
+        if (!outputValue.equalsIgnoreCase("")) {
+            String div = htmlify(outputValue);
+            divs.add(div);
+        }
+    }
+
+    private void addDivStreamReply(StreamReply reply) {
+        String div = htmlify(reply.getContent().getData());
+        divs.add(div);
+    }
+
+    private void addDivPythonErrorReply(PythonErrorReply reply) {
+        String div = htmlify(reply.getContent().getEname() + ":" + reply.getContent().getEvalue());
+        divs.add(div);
+
+    }
+
+    public void add(BaseReply reply) {
+        if (reply instanceof SageClearReply) {
+        }
+        addDiv(reply);
+    }
+
+    public void loadSavedUrl() {
+        cell.saveOutput(cell.getUUID().toString(), getHtml());
+        String url = cell.getUrlString(cell.getUUID().toString());
+
+        if (url != null) {
+            Log.i(TAG, "Loading URL:" + url);
+            Log.i(TAG, "Loading HTML:" + getHtml());
+            loadUrl(cell.getUrlString(cell.getUUID().toString()));
+        }
+    }
+
+    public void set(String output_block) {
+        Log.i(TAG, "set(String output_block)");
+        if (cell.hasCachedOutput(output_block))
+            loadUrl(cell.getUrlString(output_block));
+    }
+
+    public void set(BaseReply reply) {
+        Log.i(TAG, "Clearing divs");
+        //divs.clear();
+        add(reply);
+    }
+
+    public void clearBlocks() {
+        divs.clear();
+    }
+
+    public void setHistoryHTML() {
+        loadUrl(cell.getUrlString(cell.getUUID().toString()));
+    }
+
+    public String getHTML() {
+        String htmldata = "";
+        for (String div : divs) {
+            htmldata += div;
+        }
+        return htmldata;
+    }
+
 }
