@@ -1,9 +1,13 @@
 package org.sagemath.droid;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.models.*;
@@ -16,11 +20,14 @@ public class OutputBlock extends WebView {
     private Context context;
     private final CellData cell;
     private ArrayList<String> divs = new ArrayList<String>();
+    private boolean isImageDiv = false;
+    private boolean isHtmlScriptDiv = false;
 
     public OutputBlock(Context context, CellData cell) {
         super(context);
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(true);
+        this.setWebViewClient(client);
         this.context = context;
         this.cell = cell;
     }
@@ -30,6 +37,7 @@ public class OutputBlock extends WebView {
         this.context = context;
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(true);
+        this.setWebViewClient(client);
         Log.i(TAG, "Created outputblock from htmldata.");
         this.cell = cell;
         divs.clear();
@@ -43,6 +51,7 @@ public class OutputBlock extends WebView {
 
     // The output_block field of the JSON message
     protected String name;
+
 
     private static String htmlify(String str) {
         Log.i(TAG, "Converting to HTML: " + str);
@@ -63,9 +72,13 @@ public class OutputBlock extends WebView {
         StringBuilder s = new StringBuilder();
         s.append("<html>");
         //Configure & Load MathJax
-        s.append(StringConstants.MATHJAX_CONFIG);
-        s.append(StringConstants.MATHJAX_CDN);
-        s.append(StringConstants.IMAGE_STYLE);
+        if (isHtmlScriptDiv) {
+            s.append(StringConstants.MATHJAX_CONFIG);
+            s.append(StringConstants.MATHJAX_CDN);
+        }
+        if (isImageDiv) {
+            s.append(StringConstants.IMAGE_STYLE);
+        }
         s.append("<body>");
         Log.i(TAG, "Constructing HTML with: " + divs.size() + "divs");
         for (String div : divs) {
@@ -116,6 +129,7 @@ public class OutputBlock extends WebView {
      * @param reply
      */
     private void addDivImageReply(ImageReply reply) {
+        isImageDiv = true;
         String jpgDivTemplate = "<img src=\"%s\"alt=\"plot output\"></img>";
         String svgDivTemplate = "<object data=\"%s\" type=\"image/svg+xml\"></img>";
         String jpgDiv, svgDiv;
@@ -139,6 +153,9 @@ public class OutputBlock extends WebView {
 
     private void addDivHtmlReply(HtmlReply reply) {
         String html = reply.getContent().getData().getHtmlCode();
+        if (html.contains("script")) {
+            isHtmlScriptDiv = true;
+        }
         divs.add(html);
     }
 
@@ -206,5 +223,27 @@ public class OutputBlock extends WebView {
         }
         return htmldata;
     }
+
+    private WebViewClient client = new WebViewClient() {
+
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            Intent intent = new Intent();
+            intent.putExtra(StringConstants.ARG_PROGRESS_START, true);
+            localBroadcastManager.sendBroadcast(intent);
+
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            Intent intent = new Intent();
+            intent.putExtra(StringConstants.ARG_PROGRESS_END, true);
+            localBroadcastManager.sendBroadcast(intent);
+        }
+    };
 
 }

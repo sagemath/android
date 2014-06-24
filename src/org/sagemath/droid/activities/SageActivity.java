@@ -389,12 +389,14 @@ public class SageActivity
     public void showProgress() {
         cellProgressBar.setVisibility(View.VISIBLE);
         isServerRunning = true;
+        input.setEnabled(false);
         ActivityCompat.invalidateOptionsMenu(this);
     }
 
     public void hideProgress() {
         cellProgressBar.setVisibility(View.INVISIBLE);
         isServerRunning = false;
+        input.setEnabled(true);
         ActivityCompat.invalidateOptionsMenu(this);
     }
 
