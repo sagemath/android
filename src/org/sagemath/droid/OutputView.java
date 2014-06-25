@@ -9,8 +9,8 @@ import junit.framework.Assert;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.interacts.InteractView;
-import org.sagemath.droid.models.BaseReply;
-import org.sagemath.droid.models.InteractReply;
+import org.sagemath.droid.models.gson.BaseReply;
+import org.sagemath.droid.models.gson.InteractReply;
 
 public class OutputView
         extends LinearLayout

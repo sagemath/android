@@ -8,7 +8,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 import java.util.Arrays;
 import java.util.LinkedList;

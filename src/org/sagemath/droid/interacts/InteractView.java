@@ -5,9 +5,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
 import org.sagemath.droid.constants.ControlType;
-import org.sagemath.droid.models.InteractReply;
-import org.sagemath.droid.models.InteractReply.InteractControl;
-import org.sagemath.droid.models.InteractReply.SageInteract;
+import org.sagemath.droid.models.gson.InteractReply;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.SageInteract;
 
 import java.util.ArrayList;
 

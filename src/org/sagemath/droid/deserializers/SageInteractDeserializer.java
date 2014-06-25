@@ -2,8 +2,8 @@ package org.sagemath.droid.deserializers;
 
 import android.util.Log;
 import com.google.gson.*;
-import org.sagemath.droid.models.InteractReply.InteractControl;
-import org.sagemath.droid.models.InteractReply.SageInteract;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.SageInteract;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

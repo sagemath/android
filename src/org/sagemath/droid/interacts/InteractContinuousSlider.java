@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 import java.util.Arrays;
 

@@ -21,7 +21,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.models.*;
+import org.sagemath.droid.models.gson.*;
 import org.sagemath.droid.utils.UrlUtils;
 
 import java.io.IOException;

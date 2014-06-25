@@ -29,7 +29,7 @@ import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
-import org.sagemath.droid.models.InteractReply;
+import org.sagemath.droid.models.gson.InteractReply;
 import org.sagemath.droid.SageSingleCell;
 import org.sagemath.droid.utils.ChangeLog;
 

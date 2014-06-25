@@ -10,7 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.models.*;
+import org.sagemath.droid.models.gson.*;
 
 import java.util.ArrayList;
 

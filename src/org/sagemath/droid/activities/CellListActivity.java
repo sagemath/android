@@ -1,19 +1,19 @@
 package org.sagemath.droid.activities;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 import org.sagemath.droid.R;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.fragments.CellListFragment;
 import org.sagemath.droid.utils.ChangeLog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 
 
@@ -34,7 +34,7 @@ public class CellListActivity
 		super.onCreate(savedInstanceState);
 		CellCollection.initialize(getApplicationContext());
 		setContentView(R.layout.cell_list_fragment);
-		
+
 		CellListFragment listFragment = (CellListFragment)
 				getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
 	

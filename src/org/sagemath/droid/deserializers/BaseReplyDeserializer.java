@@ -3,7 +3,7 @@ package org.sagemath.droid.deserializers;
 import android.util.Log;
 import com.google.gson.*;
 import org.sagemath.droid.constants.MessageType;
-import org.sagemath.droid.models.BaseReply;
+import org.sagemath.droid.models.gson.BaseReply;
 
 import java.lang.reflect.Type;
 
