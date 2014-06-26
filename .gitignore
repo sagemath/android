@@ -53,3 +53,4 @@ gradle.properties
 #Maven
 target
 pom.xml.*
+*.jks
