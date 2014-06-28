@@ -15,31 +15,33 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.models.database.Cell;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
- *
  */
 public class NewCellDialogFragment extends DialogFragment {
 
-    private static final String TAG="SageDroid:DialogFragment";
+    private static final String TAG = "SageDroid:DialogFragment";
 
     private EditText title;
     private AutoCompleteTextView group;
     private EditText input;
 
-    private LinkedList<String> cellGroups;
+    private List<String> cellGroups;
     private ArrayAdapter<String> adapter;
     private String[] groupChoices;
 
-    public static NewCellDialogFragment newInstance(){
+    public static NewCellDialogFragment newInstance() {
         NewCellDialogFragment frag = new NewCellDialogFragment();
 
         return frag;
@@ -51,19 +53,21 @@ public class NewCellDialogFragment extends DialogFragment {
         View dialogView = getActivity().getLayoutInflater()
                 .inflate(R.layout.dialog_new, null);
 
-        title = (EditText)dialogView.findViewById(R.id.insert_cell_title);
-        group = (AutoCompleteTextView)dialogView.findViewById(R.id.insert_cell_group);
-        input = (EditText)dialogView.findViewById(R.id.insert_cell_input);
+        title = (EditText) dialogView.findViewById(R.id.insert_cell_title);
+        group = (AutoCompleteTextView) dialogView.findViewById(R.id.insert_cell_group);
+        input = (EditText) dialogView.findViewById(R.id.insert_cell_input);
 
-        cellGroups= CellCollection.getInstance().groups();
+        final SageSQLiteOpenHelper helper = SageSQLiteOpenHelper.getInstance(getActivity());
+
+        cellGroups = helper.getGroups();
         groupChoices = new String[cellGroups.size()];
         cellGroups.toArray(groupChoices);
-        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,groupChoices);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
         group.setAdapter(adapter);
 
         String currentGroup = CellCollection.getInstance().getCurrentGroupName();
         if (currentGroup.equals("History"))
-            currentGroup="";
+            currentGroup = "";
         group.setText(currentGroup);
 
         return new AlertDialog.Builder(getActivity())
@@ -74,42 +78,53 @@ public class NewCellDialogFragment extends DialogFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 CellData newCell = new CellData();
+                                Cell cell = new Cell();
 
                                 if (title.getText().toString().equals("")) {
                                     Date date = new Date();
-                                    DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa",Locale.US);
+                                    DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa", Locale.US);
                                     newCell.setTitle(dateFormat.format(date));
+                                    cell.setTitle(dateFormat.format(date));
                                 } else {
                                     String currentTitle = title.getText().toString();
                                     newCell.setTitle(currentTitle);
+                                    cell.setTitle(currentTitle);
                                 }
                                 if (group.getText().toString().equals("")) {
                                     newCell.setGroup("My Worksheets");
+                                    cell.setGroup("My Worksheets");
                                 } else {
-                                    String currentGroup= group.getText().toString();
+                                    String currentGroup = group.getText().toString();
                                     newCell.setGroup(currentGroup);
+                                    cell.setGroup(currentGroup);
                                 }
                                 if (input.getText().toString().equals("")) {
                                     Toast.makeText(getActivity(), "Enter an input to calculate!", Toast.LENGTH_SHORT).show();
+                                    cell.setInput("");
                                     return;
                                 } else {
-                                    String currentInput=input.getText().toString();
+                                    String currentInput = input.getText().toString();
                                     newCell.setInput(currentInput);
+                                    cell.setInput(currentInput);
                                 }
 
                                 newCell.setRank(0);
                                 CellCollection.getInstance().addCell(newCell);
                                 CellCollection.getInstance().setCurrentCell(newCell);
 
+                                cell.setRank(0);
+                                Long id = helper.addCell(cell);
 
                                 Intent i = new Intent(getActivity().getApplicationContext(),
                                         SageActivity.class);
                                 i.putExtra("NEWCELL", true);
+                                i.putExtra(StringConstants.ID, id);
                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(i);
 
                             }
-                        })
+                        }
+                )
                 .setNegativeButton(android.R.string.cancel, null)
                 .create();
     }

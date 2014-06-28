@@ -23,6 +23,8 @@ public class StringConstants {
     public static final String ARG_PROGRESS_START = "progress-start";
     public static final String ARG_PROGRESS_END = "progress-end";
 
+    public static final String ID="id";
+
     public static final String MATHJAX_CONFIG ="<script type=\"text/x-mathjax-config\">\n" +
             "  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']]}});\n" +
             "</script>";

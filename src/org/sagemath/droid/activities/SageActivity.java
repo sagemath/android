@@ -25,12 +25,13 @@ import com.github.johnpersano.supertoasts.SuperToast;
 import junit.framework.Assert;
 import org.sagemath.droid.OutputView;
 import org.sagemath.droid.R;
-import org.sagemath.droid.cells.CellCollection;
-import org.sagemath.droid.cells.CellData;
-import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.dialogs.NewCellDialogFragment;
-import org.sagemath.droid.models.gson.InteractReply;
 import org.sagemath.droid.SageSingleCell;
+import org.sagemath.droid.cells.CellCollection;
+import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.dialogs.NewCellDialogFragment;
+import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.gson.InteractReply;
 import org.sagemath.droid.utils.ChangeLog;
 
 /**
@@ -65,10 +66,12 @@ public class SageActivity
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
 
+    private SageSQLiteOpenHelper helper;
+
     private static SageSingleCell server;
     private boolean isServerRunning = false;
 
-    private CellData cell;
+    private Cell cell;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,10 +79,13 @@ public class SageActivity
 
         LocalBroadcastManager.getInstance(this).registerReceiver(progressBroadcastReceiver, new IntentFilter(StringConstants.PROGRESS_INTENT));
         server = new SageSingleCell(this);
+        helper = SageSQLiteOpenHelper.getInstance(this);
 
-        CellCollection.initialize(getApplicationContext());
-        cell = CellCollection.getInstance().getCurrentCell();
-        Assert.assertNotNull(cell);
+        Long cellID = getIntent().getLongExtra(StringConstants.ID, -1);
+
+        if (cellID != -1) {
+            cell = helper.getCellbyID(cellID);
+        }
 
         setContentView(R.layout.main);
 
@@ -108,15 +114,12 @@ public class SageActivity
         try {
             Log.i(TAG, "Cell group is: " + cell.getGroup());
             Log.i(TAG, "Cell title is: " + cell.getTitle());
-            Log.i(TAG, "Cell uuid is: " + cell.getUUID().toString());
-            Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
+            Log.i(TAG, "Cell uuid is: " + cell.getUuid().toString());
+            //Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
         } catch (Exception e) {
         }
 
         if (cell.getGroup().equals("History")) {
-            outputView.setOutputBlocks(cell.getHtmlData());
-
-            Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
         } else {
             try {
                 outputView.clear();
@@ -185,8 +188,7 @@ public class SageActivity
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(
                                                     DialogInterface dialog, int id) {
-                                                CellCollection.getInstance()
-                                                        .removeCurrentCell();
+                                                helper.deleteCell(cell);
                                                 SageActivity.this.onBackPressed();
                                             }
                                         }
@@ -287,11 +289,11 @@ public class SageActivity
         server.query(currentInput);
         outputView.enableInteractViews();
         cell.setInput(currentInput);
-        CellCollection.getInstance().saveCells();
-        saveCurrentToHistory();
+        helper.saveEditedCell(cell);
+        // saveCurrentToHistory();
     }
 
-    private void saveCurrentToHistory() {
+    /*private void saveCurrentToHistory() {
         if (!cell.getGroup().equals("History")) {
             CellData HistoryCell = new CellData(cell);
             HistoryCell.setGroup("History");
@@ -303,7 +305,7 @@ public class SageActivity
             HistoryCell.setTitle(shortenedInput);
             CellCollection.getInstance().addCell(HistoryCell);
         }
-    }
+    }*/
 
     @Override
     public void onSageFinishedListener() {
@@ -359,7 +361,7 @@ public class SageActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        cell.clearCache();
+        //cell.clearCache();
     }
 
     @Override
