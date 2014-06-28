@@ -22,6 +22,8 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = "SageDroid:SageSQLiteOpenHelper";
 
+    private static SageSQLiteOpenHelper instance = null;
+
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "sagedroid.db";
 
@@ -31,9 +33,18 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         cupboard().register(Cell.class);
     }
 
-    public SageSQLiteOpenHelper(Context context) {
+    public static SageSQLiteOpenHelper getInstance(Context context) {
+
+        if (instance == null) {
+            instance = new SageSQLiteOpenHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    private SageSQLiteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
+        //TODO THIS IS NOT OK! Can leak activity context
+        this.context = context.getApplicationContext();
     }
 
     @Override
@@ -132,6 +143,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
                     .query()
                     .list();
 
+            Log.i(TAG, "Returning group:" + group + " " + list.toString());
 
         } catch (Exception e) {
             Log.e(TAG, e + "");
@@ -141,7 +153,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public List<String> getGroups() {
 
-       List<String> list = null;
+        List<String> list = null;
         QueryResultIterable<Cell> itr = null;
 
         try {
@@ -149,6 +161,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
                     .withDatabase(getReadableDatabase())
                     .query(Cell.class)
                     .withProjection("cellGroup")
+                    .orderBy("cellGroup asc")
                     .distinct()
                     .query();
 
@@ -165,6 +178,18 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
                 itr.close();
         }
         return list;
+    }
+
+    public void saveEditedCell(Cell cell) {
+        cupboard().withDatabase(getWritableDatabase()).put(cell);
+    }
+
+    public Cell getCellbyID(Long id) {
+        return cupboard().withDatabase(getReadableDatabase()).get(Cell.class, id);
+    }
+
+    public void deleteCell(Cell cell) {
+        cupboard().withDatabase(getWritableDatabase()).delete(cell);
     }
 
 }
