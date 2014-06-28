@@ -50,8 +50,11 @@ public class SageActivity
         SageSingleCell.OnSageDisconnectListener,
         AdapterView.OnItemSelectedListener {
     private static final String TAG = "SageDroid:SageActivity";
+
     private static final String DIALOG_NEW_CELL = "newCell";
     private static final String DIALOG_DISCARD_CELL = "discardCell";
+    private static final String ARG_HTML = "html";
+    private static final String ARG_BUNDLE = "bundle";
 
     protected static final int INSERT_FOR_LOOP = 1;
     protected static final int INSERT_LIST_COMPREHENSION = 2;
@@ -69,7 +72,10 @@ public class SageActivity
     private SageSQLiteOpenHelper helper;
 
     private static SageSingleCell server;
+
     private boolean isServerRunning = false;
+    private String savedHtml;
+    private Bundle savedData;
 
     private Cell cell;
 
@@ -106,15 +112,26 @@ public class SageActivity
         server.setOnSageDisconnectListener(this);
 
         outputView.setOnSageListener(this);
+        outputView.setCell(cell);
         insertSpinner.setOnItemSelectedListener(this);
         roundBracket.setOnClickListener(this);
         squareBracket.setOnClickListener(this);
         curlyBracket.setOnClickListener(this);
         runButton.setOnClickListener(this);
+
+        //We have saved HTML, load it
+        if (savedInstanceState != null) {
+            Bundle saveState = savedInstanceState.getBundle(ARG_BUNDLE);
+            if ((saveState != null) && (saveState.get(ARG_HTML) != null)) {
+                savedHtml = saveState.getString(ARG_HTML);
+                outputView.setSavedHtml(savedHtml);
+            }
+        }
+
         try {
             Log.i(TAG, "Cell group is: " + cell.getGroup());
             Log.i(TAG, "Cell title is: " + cell.getTitle());
-            Log.i(TAG, "Cell uuid is: " + cell.getUuid().toString());
+            Log.i(TAG, "Cell uuid is: " + cell.getUUID().toString());
             //Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
         } catch (Exception e) {
         }
@@ -342,26 +359,30 @@ public class SageActivity
 
     @Override
     protected void onPause() {
-        try {
-            super.onPause();
-            if (cell.getGroup().equals("History"))
-                outputView.clear();
-        } catch (RuntimeException RE) {
-            Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
-            RE.printStackTrace();
+        super.onPause();
+        String html = outputView.getSavedHtml();
+        if (html != null) {
+            savedHtml = html;
+            savedData = new Bundle();
+            savedData.putString(ARG_HTML, savedHtml);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        outputView.onResume();
+        outputView.setSavedHtml(savedHtml);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //cell.clearCache();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(ARG_BUNDLE, savedData);
     }
 
     @Override

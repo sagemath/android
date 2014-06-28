@@ -17,11 +17,12 @@ public class Cell implements Parcelable {
     String title;
     String description;
     String input;
+    String htmlData;
     int rank;
     boolean favorite;
 
     public Cell() {
-        setUuid(UUID.randomUUID());
+        setUUID(UUID.randomUUID());
         //This id should be unique since UUID is inherently unique.
         _id = Long.valueOf(uuid.hashCode());
         favorite = false;
@@ -95,11 +96,11 @@ public class Cell implements Parcelable {
         this._id = _id;
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return UUID.fromString(uuid);
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUUID(UUID uuid) {
         this.uuid = uuid.toString();
     }
 
@@ -149,6 +150,14 @@ public class Cell implements Parcelable {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public String getHtmlData() {
+        return htmlData;
+    }
+
+    public void setHtmlData(String htmlData) {
+        this.htmlData = htmlData;
     }
 
     public static class CellComparator implements Comparator<Cell> {

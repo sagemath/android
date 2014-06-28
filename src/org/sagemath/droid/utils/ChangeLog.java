@@ -277,7 +277,7 @@ public class ChangeLog {
     private static final String TAG = "ChangeLog";
 
     /**
-     * manually set the last version name - for testing purposes only
+     * manually reloadHtml the last version name - for testing purposes only
      * @param lastVersion
      */
     void setLastVersion(String lastVersion) {

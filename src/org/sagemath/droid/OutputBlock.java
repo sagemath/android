@@ -8,8 +8,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.gson.*;
 
 import java.util.ArrayList;
@@ -18,28 +19,33 @@ public class OutputBlock extends WebView {
     private final static String TAG = "SageDroid:OutputBlock";
 
     private Context context;
-    private final CellData cell;
     private ArrayList<String> divs = new ArrayList<String>();
     private boolean isImageDiv = false;
     private boolean isHtmlScriptDiv = false;
+    private String htmlData;
+    private Cell cell;
+    private SageSQLiteOpenHelper helper;
 
-    public OutputBlock(Context context, CellData cell) {
+    public OutputBlock(Context context, Cell cell) {
         super(context);
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(true);
         this.setWebViewClient(client);
         this.context = context;
         this.cell = cell;
+        helper = SageSQLiteOpenHelper.getInstance(context);
     }
 
-    public OutputBlock(Context context, CellData cell, String htmlData) {
+    public OutputBlock(Context context, Cell cell, String htmlData) {
         super(context);
+        this.htmlData = htmlData;
         this.context = context;
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(true);
         this.setWebViewClient(client);
-        Log.i(TAG, "Created outputblock from htmldata.");
         this.cell = cell;
+        helper = SageSQLiteOpenHelper.getInstance(context);
+        Log.i(TAG, "Created outputblock from htmldata.");
         divs.clear();
         divs.add(htmlData);
         try {
@@ -186,42 +192,27 @@ public class OutputBlock extends WebView {
     }
 
     public void loadSavedUrl() {
-        cell.saveOutput(cell.getUUID().toString(), getHtml());
-        String url = cell.getUrlString(cell.getUUID().toString());
-
-        if (url != null) {
-            Log.i(TAG, "Loading URL:" + url);
-            Log.i(TAG, "Loading HTML:" + getHtml());
-            loadUrl(cell.getUrlString(cell.getUUID().toString()));
-        }
+        htmlData = getHtml();
+        cell.setHtmlData(htmlData);
+        helper.saveEditedCell(cell);
+        loadData(htmlData, "text/html", "utf-8");
     }
 
-    public void set(String output_block) {
-        Log.i(TAG, "set(String output_block)");
-        if (cell.hasCachedOutput(output_block))
-            loadUrl(cell.getUrlString(output_block));
+
+    public void reloadHtml(String savedHtml) {
+        htmlData = cell.getHtmlData();
+        Log.i(TAG, "Loading Saved HTML" + htmlData);
+        loadData(htmlData, "text/html", "utf-8");
+        reload();
     }
 
     public void set(BaseReply reply) {
         Log.i(TAG, "Clearing divs");
-        //divs.clear();
         add(reply);
     }
 
     public void clearBlocks() {
         divs.clear();
-    }
-
-    public void setHistoryHTML() {
-        loadUrl(cell.getUrlString(cell.getUUID().toString()));
-    }
-
-    public String getHTML() {
-        String htmldata = "";
-        for (String div : divs) {
-            htmldata += div;
-        }
-        return htmldata;
     }
 
     private WebViewClient client = new WebViewClient() {

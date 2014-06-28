@@ -18,7 +18,7 @@ public class ExampleCreator {
 
         for (CellData cellData : cellDatas) {
             Cell cell = new Cell();
-            cell.setUuid(cellData.getUUID());
+            cell.setUUID(cellData.getUUID());
             cell.setDescription(cellData.getDescription());
             cell.setFavorite(cellData.isFavorite());
             cell.setInput(cellData.getInput());
