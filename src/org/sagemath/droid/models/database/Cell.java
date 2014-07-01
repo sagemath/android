@@ -17,7 +17,6 @@ public class Cell implements Parcelable {
     String title;
     String description;
     String input;
-    String htmlData;
     int rank;
     boolean favorite;
 
@@ -150,14 +149,6 @@ public class Cell implements Parcelable {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
-    }
-
-    public String getHtmlData() {
-        return htmlData;
-    }
-
-    public void setHtmlData(String htmlData) {
-        this.htmlData = htmlData;
     }
 
     public static class CellComparator implements Comparator<Cell> {
