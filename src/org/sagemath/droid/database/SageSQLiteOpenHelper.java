@@ -69,7 +69,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         try {
             return cupboard().withDatabase(getWritableDatabase()).put(cell);
         } catch (Exception e) {
-            Log.e(TAG, "Unable to add cell");
+            Log.e(TAG, "Unable to add cell: " + e);
         }
         return null;
     }

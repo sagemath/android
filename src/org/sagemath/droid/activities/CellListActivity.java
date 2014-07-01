@@ -29,22 +29,24 @@ public class CellListActivity extends ActionBarActivity {
     private static final String DIALOG_NEW_CELL = "newCell";
     private ChangeLog changeLog;
 
+    private CellListFragment cellListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CellCollection.initialize(getApplicationContext());
         setContentView(R.layout.cell_list_fragment);
 
-        CellListFragment listFragment = (CellListFragment)
+        cellListFragment = (CellListFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
 
         Intent intent = getIntent();
         if (intent == null)
-            listFragment.switchToGroup(null);
+            cellListFragment.switchToGroup(null);
         else {
             String group = intent.getStringExtra(CellActivity.INTENT_SWITCH_GROUP);
             Log.i(TAG, "Got group:" + group);
-            listFragment.setGroup(group);
+            cellListFragment.setGroup(group);
         }
 
         //TODO setTitle
@@ -81,6 +83,12 @@ public class CellListActivity extends ActionBarActivity {
             case R.id.menu_add: {
                 FragmentManager fm = this.getSupportFragmentManager();
                 NewCellDialogFragment dialog = NewCellDialogFragment.newInstance();
+                dialog.setOnCellCreateListener(new NewCellDialogFragment.OnCellCreateListener() {
+                    @Override
+                    public void onCellCreated() {
+                        cellListFragment.refreshAdapter();
+                    }
+                });
                 dialog.show(fm, DIALOG_NEW_CELL);
                 return true;
             }

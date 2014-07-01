@@ -108,6 +108,11 @@ public class CellListFragment
 
     }
 
+    public void refreshAdapter() {
+        if (group != null)
+            adapter.updateCellList(helper.getCellsWithGroup(group));
+    }
+
     public void setGroup(String group) {
         this.group = group;
         getActivity().setTitle(group);

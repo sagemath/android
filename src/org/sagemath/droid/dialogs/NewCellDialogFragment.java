@@ -6,11 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.Toast;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.cells.CellCollection;
@@ -31,11 +31,22 @@ import java.util.Locale;
  */
 public class NewCellDialogFragment extends DialogFragment {
 
-    private static final String TAG = "SageDroid:DialogFragment";
+    public interface OnCellCreateListener {
+        public void onCellCreated();
+    }
+
+    private OnCellCreateListener listener;
+
+    public void setOnCellCreateListener(OnCellCreateListener listener) {
+        this.listener = listener;
+    }
+
+    private static final String TAG = "SageDroid:NewCellDialogFragment";
 
     private EditText title;
     private AutoCompleteTextView group;
     private EditText input;
+    private boolean isInputEmpty;
 
     private List<String> cellGroups;
     private ArrayAdapter<String> adapter;
@@ -99,10 +110,10 @@ public class NewCellDialogFragment extends DialogFragment {
                                     cell.setGroup(currentGroup);
                                 }
                                 if (input.getText().toString().equals("")) {
-                                    Toast.makeText(getActivity(), "Enter an input to calculate!", Toast.LENGTH_SHORT).show();
+                                    isInputEmpty = true;
                                     cell.setInput("");
-                                    return;
                                 } else {
+                                    isInputEmpty = false;
                                     String currentInput = input.getText().toString();
                                     newCell.setInput(currentInput);
                                     cell.setInput(currentInput);
@@ -115,12 +126,15 @@ public class NewCellDialogFragment extends DialogFragment {
                                 cell.setRank(0);
                                 Long id = helper.addCell(cell);
 
-                                Intent i = new Intent(getActivity().getApplicationContext(),
+                                Log.i(TAG, "Added cell " + cell.toString());
+
+                                Intent intent = new Intent(getActivity().getApplicationContext(),
                                         SageActivity.class);
-                                i.putExtra("NEWCELL", true);
-                                i.putExtra(StringConstants.ID, id);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
+                                intent.putExtra("NEWCELL", true);
+                                intent.putExtra(StringConstants.ID, id);
+                                intent.putExtra(StringConstants.FLAG_INPUT_EMPTY, isInputEmpty);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
 
                             }
                         }
