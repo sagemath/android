@@ -193,14 +193,12 @@ public class OutputBlock extends WebView {
 
     public void loadSavedUrl() {
         htmlData = getHtml();
-        cell.setHtmlData(htmlData);
         helper.saveEditedCell(cell);
         loadData(htmlData, "text/html", "utf-8");
     }
 
 
     public void reloadHtml(String savedHtml) {
-        htmlData = cell.getHtmlData();
         Log.i(TAG, "Loading Saved HTML" + htmlData);
         loadData(htmlData, "text/html", "utf-8");
         reload();

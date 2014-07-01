@@ -13,8 +13,7 @@ import org.sagemath.droid.models.gson.InteractReply;
 public class OutputView
         extends LinearLayout
         implements SageSingleCell.OnSageListener
-        , InteractView.OnInteractListener
-        , OutputBlock.OnHtmlLoadedListener {
+        , InteractView.OnInteractListener {
     private final static String TAG = "SageDroid:OutputView";
 
     public interface onSageListener {
@@ -124,13 +123,11 @@ public class OutputView
             if (output != null) {
                 Log.d(TAG, "set " + output.toString());
                 OutputBlock block = getOutputBlock();
-                block.setOnHtmlLoadedListener(OutputView.this);
                 Log.i(TAG, "Setting block output: " + output);
                 block.set(output);
             }
             if (additionalOutput != null) {
                 OutputBlock block = getOutputBlock();
-                block.setOnHtmlLoadedListener(OutputView.this);
                 Log.i(TAG, "Adding additionalOutput: " + additionalOutput);
                 //block.clearBlocks();
                 block.add(additionalOutput);
@@ -164,11 +161,6 @@ public class OutputView
         removeAllViews();
         block = null;
         //TODO html null here
-    }
-
-    @Override
-    public void onHtmlLoaded(String html) {
-        savedHtml = html;
     }
 
     public String getSavedHtml() {
