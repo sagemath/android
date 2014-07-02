@@ -6,9 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import nl.qbusict.cupboard.QueryResultIterable;
 import org.sagemath.droid.R;
-import org.sagemath.droid.cells.CellCollectionXMLParser;
+import org.sagemath.droid.utils.FileXMLParser;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.utils.ExampleCreator;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private SageSQLiteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        //TODO THIS IS NOT OK! Can leak activity context
         this.context = context.getApplicationContext();
     }
 
@@ -53,15 +51,17 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         cupboard().withDatabase(db).createTables();
         //TODO replace this, only for testing
         InputStream inputStream = context.getResources().openRawResource(R.raw.cell_collection);
-        CellCollectionXMLParser parser = new CellCollectionXMLParser();
-        List<Cell> initialCells = ExampleCreator.getExamples(parser.parse(inputStream));
+        FileXMLParser parser = new FileXMLParser();
+        List<Cell> initialCells = parser.parse(inputStream);
         Log.i(TAG, "Initial Cells" + initialCells.toString());
         addInitialCells(initialCells, db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO Figure out the code here.
+        //Not sure if this is alright...
+        cupboard().withDatabase(getWritableDatabase()).dropAllTables();
+        onCreate(getWritableDatabase());
     }
 
     public Long addCell(Cell cell) {

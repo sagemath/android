@@ -13,8 +13,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
-import org.sagemath.droid.cells.CellCollection;
-import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Cell;
@@ -76,11 +74,6 @@ public class NewCellDialogFragment extends DialogFragment {
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
         group.setAdapter(adapter);
 
-        String currentGroup = CellCollection.getInstance().getCurrentGroupName();
-        if (currentGroup.equals("History"))
-            currentGroup = "";
-        group.setText(currentGroup);
-
         return new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
                 .setTitle(R.string.add_new_title)
@@ -88,25 +81,20 @@ public class NewCellDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                CellData newCell = new CellData();
                                 Cell cell = new Cell();
 
                                 if (title.getText().toString().equals("")) {
                                     Date date = new Date();
                                     DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa", Locale.US);
-                                    newCell.setTitle(dateFormat.format(date));
                                     cell.setTitle(dateFormat.format(date));
                                 } else {
                                     String currentTitle = title.getText().toString();
-                                    newCell.setTitle(currentTitle);
                                     cell.setTitle(currentTitle);
                                 }
                                 if (group.getText().toString().equals("")) {
-                                    newCell.setGroup("My Worksheets");
                                     cell.setGroup("My Worksheets");
                                 } else {
                                     String currentGroup = group.getText().toString();
-                                    newCell.setGroup(currentGroup);
                                     cell.setGroup(currentGroup);
                                 }
                                 if (input.getText().toString().equals("")) {
@@ -115,16 +103,15 @@ public class NewCellDialogFragment extends DialogFragment {
                                 } else {
                                     isInputEmpty = false;
                                     String currentInput = input.getText().toString();
-                                    newCell.setInput(currentInput);
                                     cell.setInput(currentInput);
                                 }
 
-                                newCell.setRank(0);
-                                CellCollection.getInstance().addCell(newCell);
-                                CellCollection.getInstance().setCurrentCell(newCell);
-
                                 cell.setRank(0);
                                 Long id = helper.addCell(cell);
+
+                                if (id != null) {
+                                    listener.onCellCreated();
+                                }
 
                                 Log.i(TAG, "Added cell " + cell.toString());
 

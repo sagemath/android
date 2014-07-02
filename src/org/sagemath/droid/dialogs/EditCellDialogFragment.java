@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.sagemath.droid.R;
-import org.sagemath.droid.cells.CellData;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Cell;
 
@@ -29,8 +28,14 @@ public class EditCellDialogFragment extends DialogFragment {
     private static final String TAG = "SageDroid:EditCellDialogFragment";
     private static final String ARG_CELL = "Cell";
 
-    public interface onGroupSwitchListener {
-        public void onGroupSwitched(String group);
+    public interface OnCellEditListener {
+        public void onCellEdited();
+    }
+
+    private OnCellEditListener listener;
+
+    public void setOnCellEditListener(OnCellEditListener listener) {
+        this.listener = listener;
     }
 
     private EditText titleView;
@@ -42,24 +47,6 @@ public class EditCellDialogFragment extends DialogFragment {
     private String[] groupChoices;
 
     private Cell currentCell;
-
-    private onGroupSwitchListener mListener;
-
-    public void setOnGroupSwitchedListener(onGroupSwitchListener listener) {
-        mListener = listener;
-    }
-
-    public static EditCellDialogFragment newInstance(CellData cell) {
-
-        EditCellDialogFragment frag = new EditCellDialogFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_CELL, cell);
-
-        frag.setArguments(args);
-
-        return frag;
-
-    }
 
     public static EditCellDialogFragment newInstance(Cell cell) {
 
@@ -115,7 +102,8 @@ public class EditCellDialogFragment extends DialogFragment {
                 }
                 //Save the new data into DB
                 helper.saveEditedCell(currentCell);
-                mListener.onGroupSwitched(currentCell.getGroup());
+                listener.onCellEdited();
+                //mListener.onGroupSwitched(currentCell.getGroup());
             }
         });
         builder.setNegativeButton(android.R.string.cancel, null);

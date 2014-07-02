@@ -65,7 +65,6 @@ public class CellGroupsFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        CellCollection.getInstance().saveCells();
         return inflater.inflate(R.layout.cell_groups_layout, null);
     }
 

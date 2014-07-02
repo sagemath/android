@@ -92,16 +92,13 @@ public class CellListFragment
                 longClickedCell = cells.get(pos);
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 EditCellDialogFragment mEditCellDialogFragment = EditCellDialogFragment.newInstance(longClickedCell);
-                mEditCellDialogFragment.setOnGroupSwitchedListener(new EditCellDialogFragment.onGroupSwitchListener() {
+                mEditCellDialogFragment.setOnCellEditListener(new EditCellDialogFragment.OnCellEditListener() {
                     @Override
-                    public void onGroupSwitched(String group) {
-                        switchToGroup(group);
-                        adapter.updateCellList(cells);
-
+                    public void onCellEdited() {
+                        refreshAdapter();
                     }
                 });
                 mEditCellDialogFragment.show(fm, DIALOG_EDIT_CELL);
-                CellCollection.getInstance().saveCells();
                 return true;
             }
         });

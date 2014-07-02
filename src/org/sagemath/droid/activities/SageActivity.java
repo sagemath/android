@@ -228,7 +228,7 @@ public class SageActivity
                 startActivity(intent);
                 return true;
             case R.id.menu_clean_history:
-                CellCollection.getInstance().cleanHistory();
+                //TODO Remove this
                 return true;
         }
         return super.onOptionsItemSelected(item);

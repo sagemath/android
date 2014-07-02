@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import org.sagemath.droid.R;
-import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.fragments.CellListFragment;
 import org.sagemath.droid.utils.ChangeLog;
@@ -34,7 +33,6 @@ public class CellListActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CellCollection.initialize(getApplicationContext());
         setContentView(R.layout.cell_list_fragment);
 
         cellListFragment = (CellListFragment)
@@ -114,7 +112,6 @@ public class CellListActivity extends ActionBarActivity {
                 startActivity(intent);
                 return true;
             case R.id.menu_clean_history:
-                CellCollection.getInstance().cleanHistory();
                 return true;
         }
         return super.onOptionsItemSelected(item);
