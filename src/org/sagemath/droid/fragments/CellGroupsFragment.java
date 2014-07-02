@@ -11,7 +11,6 @@ import android.view.Window;
 import android.widget.ListView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.adapters.CellGroupsAdapter;
-import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 
 import java.util.List;

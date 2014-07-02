@@ -24,9 +24,11 @@ import org.sagemath.droid.utils.ChangeLog;
  */
 public class CellListActivity extends ActionBarActivity {
     private static final String TAG = "SageDroid:CellListActivity";
+    private static String ARG_GROUP = "group";
 
     private static final String DIALOG_NEW_CELL = "newCell";
     private ChangeLog changeLog;
+    private String group;
 
     private CellListFragment cellListFragment;
 
@@ -42,12 +44,17 @@ public class CellListActivity extends ActionBarActivity {
         if (intent == null)
             cellListFragment.switchToGroup(null);
         else {
-            String group = intent.getStringExtra(CellActivity.INTENT_SWITCH_GROUP);
+            group = intent.getStringExtra(CellActivity.INTENT_SWITCH_GROUP);
             Log.i(TAG, "Got group:" + group);
             cellListFragment.setGroup(group);
         }
 
-        //TODO setTitle
+        if (savedInstanceState != null) {
+            group = savedInstanceState.getString(ARG_GROUP);
+            cellListFragment.setGroup(group);
+        }
+
+        setTitle(group);
 
         changeLog = new ChangeLog(this);
         if (changeLog.firstRun())
@@ -55,12 +62,16 @@ public class CellListActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ARG_GROUP, group);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        //if (CellCollection.getInstance().getCurrentGroup().isEmpty())
-        //	this.onBackPressed();
+        cellListFragment.setGroup(group);
     }
 
     @Override

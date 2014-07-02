@@ -14,7 +14,6 @@ import android.widget.ListView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.adapters.CellListAdapter;
-import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.EditCellDialogFragment;

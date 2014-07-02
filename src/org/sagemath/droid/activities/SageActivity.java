@@ -26,7 +26,6 @@ import junit.framework.Assert;
 import org.sagemath.droid.OutputView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.SageSingleCell;
-import org.sagemath.droid.cells.CellCollection;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
