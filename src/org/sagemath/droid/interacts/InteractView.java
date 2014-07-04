@@ -3,6 +3,7 @@ package org.sagemath.droid.interacts;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TableLayout;
 import org.sagemath.droid.constants.ControlType;
 import org.sagemath.droid.models.gson.InteractReply;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 
 public class InteractView extends TableLayout {
     private final static String TAG = "SageDroid:InteractView";
+
+    private static final String ARG_INTERACTS = "interacts";
 
     private Context context;
     private ArrayList<View> addedViews;
@@ -47,31 +50,48 @@ public class InteractView extends TableLayout {
 
         //For each control present, add the corresponding type.
         for (InteractControl control : sageInteract.getControls()) {
-            addInteract(control);
+            addInteract(control, false);
         }
     }
 
     /**
      * Add an Interact Control to the output
      *
-     * @param control
+     * @param control        The {@link org.sagemath.droid.models.gson.InteractReply.InteractControl} for this view
+     * @param fromSavedState Whether to restore from saved state or not
      */
-    public void addInteract(InteractControl control) {
+    public void addInteract(InteractControl control, boolean fromSavedState) {
         Log.i(TAG, "Processing InteractControl" + control.toString());
         switch (control.getControlType()) {
             case ControlType.CONTROL_SLIDER:
                 if (control.getSubtype() == ControlType.SLIDER_CONTINUOUS) {
-                    addContinuousSlider(control);
+                    if (!fromSavedState)
+                        addContinuousSlider(control);
+                    else
+                        addContinuousSlider(control, control.getIntSavedValue(), control.isViewEnabled());
                 } else if (control.getSubtype() == ControlType.SLIDER_DISCRETE) {
                     //Add discrete slider
-                    addDiscreteSlider(control);
+                    if (!fromSavedState)
+                        addDiscreteSlider(control);
+                    else
+                        addDiscreteSlider(control, control.getIntSavedValue(), control.isViewEnabled());
                 }
                 break;
 
             case ControlType.CONTROL_SELECTOR:
                 //Add a selector
-                addSelector(control);
+                if (!fromSavedState)
+                    addSelector(control);
+                else
+                    addSelector(control, control.getStringSavedValue(), control.isViewEnabled());
                 break;
+        }
+    }
+
+    public void addInteractsFromSavedState(ArrayList<InteractControl> savedControls) {
+        addedViews.clear();
+        for (InteractControl control : savedControls) {
+            addInteract(control, true);
         }
     }
 
@@ -79,6 +99,16 @@ public class InteractView extends TableLayout {
         Log.i(TAG, "Adding Continous Slider");
         InteractContinuousSlider slider = new InteractContinuousSlider(this, control.getVarName(), context);
         slider.setRange(control);
+        addView(slider);
+        addedViews.add(slider);
+    }
+
+    public void addContinuousSlider(InteractControl control, int savedValue, boolean enabled) {
+        Log.i(TAG, "Add Slider from Saved State with value: " + savedValue + "enabled: " + enabled);
+        InteractContinuousSlider slider = new InteractContinuousSlider(this, control.getVarName(), context);
+        slider.setRange(control);
+        slider.getSeekBar().setProgress(savedValue);
+        slider.getSeekBar().setEnabled(enabled);
         addView(slider);
         addedViews.add(slider);
     }
@@ -91,6 +121,16 @@ public class InteractView extends TableLayout {
         addedViews.add(slider);
     }
 
+    public void addDiscreteSlider(InteractControl control, int savedValue, boolean enabled) {
+        Log.i(TAG, "Add Slider from Saved State with value: " + savedValue + "enabled: " + enabled);
+        InteractDiscreteSlider slider = new InteractDiscreteSlider(this, control.getVarName(), context);
+        slider.setValues(control);
+        slider.getSeekBar().setProgress(savedValue);
+        slider.getSeekBar().setEnabled(enabled);
+        addView(slider);
+        addedViews.add(slider);
+    }
+
     protected void addSelector(InteractControl control) {
         Log.i(TAG, "Adding a selector");
         InteractSelector selector = new InteractSelector(this, control.getVarName(), context);
@@ -99,8 +139,24 @@ public class InteractView extends TableLayout {
         addedViews.add(selector);
     }
 
+    public void addSelector(InteractControl control, String savedSelection, boolean enabled) {
+        Log.i(TAG, "Adding a selector");
+        InteractSelector selector = new InteractSelector(this, control.getVarName(), context);
+        selector.setValues(control);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) selector.getSpinner().getAdapter();
+        int pos = adapter.getPosition(savedSelection);
+        selector.getSpinner().setSelection((pos == -1) ? 0 : pos);
+        selector.getSpinner().setEnabled(enabled);
+        addView(selector);
+        addedViews.add(selector);
+    }
+
     protected void notifyChange(InteractControlBase view) {
         listener.onInteractListener(interactReply, view.getVariableName(), view.getValue());
+    }
+
+    public ArrayList<View> getAddedViews() {
+        return addedViews;
     }
 
     public void disableViews() {

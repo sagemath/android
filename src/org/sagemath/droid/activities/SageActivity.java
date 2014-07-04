@@ -75,8 +75,7 @@ public class SageActivity
     private static SageSingleCell server;
 
     private boolean isServerRunning = false;
-    private String savedHtml;
-    private Bundle savedData;
+
 
     private Cell cell;
 
@@ -120,15 +119,6 @@ public class SageActivity
         squareBracket.setOnClickListener(this);
         curlyBracket.setOnClickListener(this);
         runButton.setOnClickListener(this);
-
-        //We have saved HTML, load it
-        if (savedInstanceState != null) {
-            Bundle saveState = savedInstanceState.getBundle(ARG_BUNDLE);
-            if ((saveState != null) && (saveState.get(ARG_HTML) != null)) {
-                savedHtml = saveState.getString(ARG_HTML);
-                outputView.setSavedHtml(savedHtml);
-            }
-        }
 
         try {
             Log.i(TAG, "Cell group is: " + cell.getGroup());
@@ -316,31 +306,8 @@ public class SageActivity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        String html = outputView.getSavedHtml();
-        if (html != null) {
-            savedHtml = html;
-            savedData = new Bundle();
-            savedData.putString(ARG_HTML, savedHtml);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        outputView.setSavedHtml(savedHtml);
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBundle(ARG_BUNDLE, savedData);
     }
 
     @Override

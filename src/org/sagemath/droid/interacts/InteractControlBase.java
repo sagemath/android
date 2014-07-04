@@ -2,6 +2,7 @@ package org.sagemath.droid.interacts;
 
 import android.content.Context;
 import android.widget.LinearLayout;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 public abstract class InteractControlBase 
     	extends LinearLayout {
@@ -24,6 +25,8 @@ public abstract class InteractControlBase
 	}
 	
 	protected abstract Object getValue();
+
+    protected abstract InteractControl getViewInteractControl();
 	
 
 	protected int countDigitsAfterComma(String s) {

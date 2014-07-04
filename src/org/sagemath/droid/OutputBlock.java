@@ -74,7 +74,7 @@ public class OutputBlock extends WebView {
         return s.toString();
     }
 
-    public String getHtml() {
+    private String getHtml() {
         StringBuilder s = new StringBuilder();
         s.append("<html>");
         //Configure & Load MathJax
@@ -193,7 +193,7 @@ public class OutputBlock extends WebView {
 
     public void loadSavedUrl() {
         htmlData = getHtml();
-        helper.saveEditedCell(cell);
+        //helper.saveEditedCell(cell);
         loadData(htmlData, "text/html", "utf-8");
     }
 
@@ -207,6 +207,18 @@ public class OutputBlock extends WebView {
     public void set(BaseReply reply) {
         Log.i(TAG, "Clearing divs");
         add(reply);
+    }
+
+    public String getHtmlData() {
+        if (htmlData != null)
+            return htmlData;
+        return null;
+    }
+
+    public void setHtmlFromSavedState(String html) {
+        Log.i(TAG, "Setting HTML from saved state" + html);
+        this.htmlData = html;
+        loadData(htmlData, "text/html", "utf-8");
     }
 
     public void clearBlocks() {

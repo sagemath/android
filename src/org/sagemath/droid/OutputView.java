@@ -2,13 +2,18 @@ package org.sagemath.droid;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.LinearLayout;
 import org.sagemath.droid.interacts.InteractView;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.gson.BaseReply;
 import org.sagemath.droid.models.gson.InteractReply;
+import org.sagemath.droid.states.InteractViewState;
+import org.sagemath.droid.states.OutputBlockState;
+import org.sagemath.droid.states.OutputViewState;
 
 public class OutputView
         extends LinearLayout
@@ -23,8 +28,6 @@ public class OutputView
     }
 
     private onSageListener listener;
-
-    private String savedHtml;
 
     public void setOnSageListener(onSageListener listener) {
         this.listener = listener;
@@ -46,6 +49,97 @@ public class OutputView
 
     public void setCell(Cell cell) {
         this.cell = cell;
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        OutputBlockState blockState = null;
+        InteractViewState viewState = null;
+        Log.i(TAG, "In onSaveInstanceState");
+        if (block != null) {
+            blockState = new OutputBlockState(superState, block.getHtmlData());
+        }
+        if (interactView != null) {
+            viewState = new InteractViewState(superState, interactView.getAddedViews());
+        }
+
+        if (blockState == null && viewState == null) {
+            //Contains neither html output nor interacts, just return normal
+            Log.i(TAG, "No output, default behaviour");
+            return superState;
+        }
+
+        if (viewState == null) {
+            //Only HTML output
+            Log.i(TAG, "Saving HTML Output");
+            return blockState;
+        } else {
+            // Has both Interact Controls and HTML
+            Log.i(TAG, "Saving Interact Output");
+            return new OutputViewState(superState, blockState, viewState);
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof BaseSavedState)) {
+            //No state was saved, skip
+            super.onRestoreInstanceState(state);
+            return;
+        }
+        removeAllViews();
+        if (state instanceof OutputBlockState) {
+            //HTML was saved, restore it.
+            final OutputBlockState savedState = (OutputBlockState) state;
+            super.onRestoreInstanceState(savedState.getSuperState());
+
+            //Have to post it in a runnable or UI will not update
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    String html = savedState.getSavedHtml();
+                    block = getOutputBlock();
+                    block.setHtmlFromSavedState(html);
+                }
+            });
+        } else if (state instanceof OutputViewState) {
+            //Restore an interact state, along with HTML
+            OutputViewState outputViewState = (OutputViewState) state;
+            super.onRestoreInstanceState(outputViewState.getSuperState());
+            final OutputBlockState blockState = outputViewState.getOutputBlockState();
+            final InteractViewState viewState = outputViewState.getInteractViewState();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //Restore html
+                    block = getOutputBlock();
+                    block.setHtmlFromSavedState(blockState.getSavedHtml());
+
+                    //Restore interacts
+                    interactView = new InteractView(context);
+                    interactView.addInteractsFromSavedState(viewState.getSavedControls());
+                    interactView.setOnInteractListener(OutputView.this);
+                    addView(interactView, 0);
+                }
+            });
+
+
+        }
+    }
+
+    //Prevent Child Views from saving/restoring their state,
+    //since we will handle this explicitly
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        super.dispatchSaveInstanceState(container);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        super.dispatchRestoreInstanceState(container);
     }
 
     @Override
@@ -92,22 +186,12 @@ public class OutputView
 
     }
 
-    public void setOutputBlocks(String html) {
-        block = null;
-
-        OutputBlock newBlock = new OutputBlock(context, cell, html);
-        newBlock.reload();
-        Log.i(TAG, "Creatng new block with HTML: " + html);
-        block = newBlock;
-    }
-
     private OutputBlock newOutputBlock() {
         Log.i(TAG, "Creating newOutputBlock");
         OutputBlock newBlock = new OutputBlock(context, cell);
-        Log.i(TAG, "Block data: " + newBlock.getHtml());
+        Log.i(TAG, "Block data: " + newBlock.getHtmlData());
         addView(newBlock);
         block = newBlock;
-        //block.setHistoryHTML();
         return block;
     }
 
@@ -146,28 +230,9 @@ public class OutputView
         }
     }
 
-
-    /**
-     * Reload html from SageActivity on orientation change
-     */
-    public void setSavedHtml(String savedHtml) {
-        removeAllViews();
-        block = null;
-        OutputBlock outputBlock = new OutputBlock(context, cell);
-        outputBlock.reloadHtml(savedHtml);
-    }
-
     public void clear() {
         removeAllViews();
         block = null;
-        //TODO html null here
-    }
-
-    public String getSavedHtml() {
-        if (savedHtml != null) {
-            return savedHtml;
-        }
-        return null;
     }
 
     @Override
