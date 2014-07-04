@@ -1,4 +1,4 @@
-package org.sagemath.droid.models;
+package org.sagemath.droid.models.gson;
 
 import android.net.Uri;
 import org.sagemath.droid.utils.UrlUtils;

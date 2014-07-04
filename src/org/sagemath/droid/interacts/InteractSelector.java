@@ -8,7 +8,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -22,6 +22,7 @@ public class InteractSelector
     protected ArrayAdapter<String> adapter;
     protected TextView nameValueText;
     protected int currentSelection = 0;
+    private InteractControl control;
 
     public InteractSelector(InteractView interactView, String variable, Context context) {
         super(interactView, variable, context);
@@ -46,6 +47,7 @@ public class InteractSelector
 
     public void setValues(InteractControl control) {
         Log.i(TAG, "Setting Values: " + Arrays.toString(control.getValueLabels()));
+        this.control = control;
         values.clear();
         for (String i : control.getValueLabels()) {
             values.add(i);
@@ -54,6 +56,10 @@ public class InteractSelector
         currentSelection = 0;
         spinner.setSelection(0);
         updateValueText();
+    }
+
+    public InteractControl getViewInteractControl() {
+        return control;
     }
 
     public Integer getValue() {

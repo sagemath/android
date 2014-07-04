@@ -1,4 +1,4 @@
-package org.sagemath.droid.models;
+package org.sagemath.droid.models.gson;
 
 /**
  * @author Haven

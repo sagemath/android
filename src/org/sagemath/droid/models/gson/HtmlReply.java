@@ -1,4 +1,4 @@
-package org.sagemath.droid.models;
+package org.sagemath.droid.models.gson;
 
 import com.google.gson.annotations.SerializedName;
 

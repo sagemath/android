@@ -18,5 +18,7 @@
     <string name="cancel">Cancel</string>
     <string name="edit_title">Edit title/description</string>
     <string name="info_disconnected">Server Disconnected</string>
+    <string name="list_empty_text">Select a Group</string>
+    <string name="group_empty_text">No Cells have been saved</string>
 
 </resources>

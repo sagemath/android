@@ -1,15 +1,15 @@
 package org.sagemath.droid.activities;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -25,12 +25,13 @@ import com.github.johnpersano.supertoasts.SuperToast;
 import junit.framework.Assert;
 import org.sagemath.droid.OutputView;
 import org.sagemath.droid.R;
-import org.sagemath.droid.cells.CellCollection;
-import org.sagemath.droid.cells.CellData;
-import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.dialogs.NewCellDialogFragment;
-import org.sagemath.droid.models.InteractReply;
 import org.sagemath.droid.SageSingleCell;
+import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
+import org.sagemath.droid.dialogs.NewCellDialogFragment;
+import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.gson.InteractReply;
 import org.sagemath.droid.utils.ChangeLog;
 
 /**
@@ -47,10 +48,14 @@ public class SageActivity
         Button.OnClickListener,
         OutputView.onSageListener,
         SageSingleCell.OnSageDisconnectListener,
-        AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener,
+        DeleteCellDialogFragment.OnCellDeleteListener {
     private static final String TAG = "SageDroid:SageActivity";
+
     private static final String DIALOG_NEW_CELL = "newCell";
     private static final String DIALOG_DISCARD_CELL = "discardCell";
+    private static final String ARG_HTML = "html";
+    private static final String ARG_BUNDLE = "bundle";
 
     protected static final int INSERT_FOR_LOOP = 1;
     protected static final int INSERT_LIST_COMPREHENSION = 2;
@@ -65,10 +70,14 @@ public class SageActivity
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
 
+    private SageSQLiteOpenHelper helper;
+
     private static SageSingleCell server;
+
     private boolean isServerRunning = false;
 
-    private CellData cell;
+
+    private Cell cell;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,10 +85,14 @@ public class SageActivity
 
         LocalBroadcastManager.getInstance(this).registerReceiver(progressBroadcastReceiver, new IntentFilter(StringConstants.PROGRESS_INTENT));
         server = new SageSingleCell(this);
+        helper = SageSQLiteOpenHelper.getInstance(this);
 
-        CellCollection.initialize(getApplicationContext());
-        cell = CellCollection.getInstance().getCurrentCell();
-        Assert.assertNotNull(cell);
+        Long cellID = getIntent().getLongExtra(StringConstants.ID, -1);
+
+        if (cellID != -1) {
+            cell = helper.getCellbyID(cellID);
+            Log.i(TAG, "Got cell " + cell.toString());
+        }
 
         setContentView(R.layout.main);
 
@@ -100,36 +113,25 @@ public class SageActivity
         server.setOnSageDisconnectListener(this);
 
         outputView.setOnSageListener(this);
+        outputView.setCell(cell);
         insertSpinner.setOnItemSelectedListener(this);
         roundBracket.setOnClickListener(this);
         squareBracket.setOnClickListener(this);
         curlyBracket.setOnClickListener(this);
         runButton.setOnClickListener(this);
+
         try {
             Log.i(TAG, "Cell group is: " + cell.getGroup());
             Log.i(TAG, "Cell title is: " + cell.getTitle());
             Log.i(TAG, "Cell uuid is: " + cell.getUUID().toString());
-            Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
+            //Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
         } catch (Exception e) {
         }
 
-        if (cell.getGroup().equals("History")) {
-            outputView.setOutputBlocks(cell.getHtmlData());
-
-            Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
-        } else {
-            try {
-                outputView.clear();
-            } catch (Exception e) {
-                Log.e(TAG, "Error clearing output view." + e.getLocalizedMessage());
-            }
-        }
-
-        //server.setDownloadDataFiles(false);
-        setTitle(cell.getGroup() + " • " + cell.getTitle());
+        setTitle(cell.getTitle());
         input.setText(cell.getInput());
-        Boolean isNewCell = getIntent().getBooleanExtra("NEWCELL", false);
-        if (isNewCell) {
+        boolean isInputEmpty = getIntent().getBooleanExtra(StringConstants.FLAG_INPUT_EMPTY, true);
+        if (!isInputEmpty) {
             runButton();
         }
 
@@ -175,35 +177,9 @@ public class SageActivity
             }
             case R.id.menu_discard: {
                 FragmentManager fm = this.getSupportFragmentManager();
-                DialogFragment dialog = new DialogFragment() {
-                    @Override
-                    public Dialog onCreateDialog(Bundle savedInstanceState) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                getActivity());
-                        builder.setMessage(R.string.dialog_confirm_discard)
-                                .setPositiveButton(R.string.discard,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(
-                                                    DialogInterface dialog, int id) {
-                                                CellCollection.getInstance()
-                                                        .removeCurrentCell();
-                                                SageActivity.this.onBackPressed();
-                                            }
-                                        }
-                                )
-                                .setNegativeButton(R.string.cancel,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(
-                                                    DialogInterface dialog, int id) {
-                                                // User cancelled the dialog
-                                            }
-                                        }
-                                );
-                        // Create the AlertDialog object and return it
-                        return builder.create();
-                    }
-                };
-                dialog.show(fm, DIALOG_DISCARD_CELL);
+                DeleteCellDialogFragment deleteDialogFragment = DeleteCellDialogFragment.newInstance(cell);
+                deleteDialogFragment.setOnCellDeleteListener(this);
+                deleteDialogFragment.show(fm, DIALOG_DISCARD_CELL);
                 return true;
             }
             case R.id.menu_search:
@@ -241,10 +217,15 @@ public class SageActivity
                 startActivity(intent);
                 return true;
             case R.id.menu_clean_history:
-                CellCollection.getInstance().cleanHistory();
+                //TODO Remove this
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCellDeleted() {
+        finish();
     }
 
     @Override
@@ -287,22 +268,8 @@ public class SageActivity
         server.query(currentInput);
         outputView.enableInteractViews();
         cell.setInput(currentInput);
-        CellCollection.getInstance().saveCells();
-        saveCurrentToHistory();
-    }
-
-    private void saveCurrentToHistory() {
-        if (!cell.getGroup().equals("History")) {
-            CellData HistoryCell = new CellData(cell);
-            HistoryCell.setGroup("History");
-            String currentInput = input.getText().toString();
-            HistoryCell.setInput(currentInput);
-            String shortenedInput = HistoryCell.getInput();
-            if (HistoryCell.getInput().length() > 16)
-                shortenedInput = shortenedInput.substring(0, 16);
-            HistoryCell.setTitle(shortenedInput);
-            CellCollection.getInstance().addCell(HistoryCell);
-        }
+        helper.saveEditedCell(cell);
+        // saveCurrentToHistory();
     }
 
     @Override
@@ -339,27 +306,8 @@ public class SageActivity
     }
 
     @Override
-    protected void onPause() {
-        try {
-            super.onPause();
-            if (cell.getGroup().equals("History"))
-                outputView.clear();
-        } catch (RuntimeException RE) {
-            Log.e(TAG, "Error pausing activity..." + RE.getLocalizedMessage());
-            RE.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        outputView.onResume();
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        cell.clearCache();
     }
 
     @Override
@@ -389,12 +337,14 @@ public class SageActivity
     public void showProgress() {
         cellProgressBar.setVisibility(View.VISIBLE);
         isServerRunning = true;
+        input.setEnabled(false);
         ActivityCompat.invalidateOptionsMenu(this);
     }
 
     public void hideProgress() {
         cellProgressBar.setVisibility(View.INVISIBLE);
         isServerRunning = false;
+        input.setEnabled(true);
         ActivityCompat.invalidateOptionsMenu(this);
     }
 

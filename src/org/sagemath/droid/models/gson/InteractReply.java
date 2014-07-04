@@ -1,4 +1,4 @@
-package org.sagemath.droid.models;
+package org.sagemath.droid.models.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -135,6 +135,15 @@ public class InteractReply extends BaseReply {
         private transient String varName;
         private transient Gson gson;
 
+        //Value held by seekbar(s) on rotation
+        private transient int intSavedValue;
+
+        //Value held by spinner(s) on rotation
+        private transient String stringSavedValue;
+
+        //State of the Interact Control before rotation.
+        private transient boolean enabled;
+
         private boolean update;
         private boolean raw;
         private String control_type;
@@ -265,6 +274,30 @@ public class InteractReply extends BaseReply {
 
         public void setVarName(String varName) {
             this.varName = varName;
+        }
+
+        public int getIntSavedValue() {
+            return intSavedValue;
+        }
+
+        public void setIntSavedValue(int intSavedValue) {
+            this.intSavedValue = intSavedValue;
+        }
+
+        public String getStringSavedValue() {
+            return stringSavedValue;
+        }
+
+        public void setStringSavedValue(String stringSavedValue) {
+            this.stringSavedValue = stringSavedValue;
+        }
+
+        public boolean isViewEnabled() {
+            return enabled;
+        }
+
+        public void setViewEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
     }
 

@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 import java.util.Arrays;
 
@@ -18,6 +18,7 @@ public class InteractContinuousSlider
     protected String format;
     protected SeekBar seekBar;
     protected TextView nameValueText;
+    private InteractControl control;
 
     public InteractContinuousSlider(InteractView interactView, String variable, Context context) {
         super(interactView, variable, context);
@@ -59,6 +60,7 @@ public class InteractContinuousSlider
 
     public void setRange(InteractControl control) {
         Log.i(TAG, "Setting Range:" + Arrays.toString(control.getRange()));
+        this.control = control;
         this.range_min = control.getRange()[0];
         this.range_max = control.getRange()[0];
         this.step = (double) control.getStep();
@@ -76,6 +78,10 @@ public class InteractContinuousSlider
         // range_max-range_min is not necessarily divisible by step
         value = Math.min(range_max, value);
         return value;
+    }
+
+    public InteractControl getViewInteractControl() {
+        return control;
     }
 
     public SeekBar getSeekBar() {

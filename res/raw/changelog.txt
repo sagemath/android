@@ -20,6 +20,23 @@
     </style>
   </head>
   <body>
+$ 0.9.4b
+  % Version 0.9.4 (Beta)
+  _2014-06-24
+    _New Features:
+        * New Progress Indicator
+        * Notification on Server Disconnect for Interacts
+        * Latex Math now displayed using MathJax
+        * Group selection simplified
+    _Bugfixes:
+        * Disable Interact Controls when server disconnects
+        * Interact controls are disabled when an update is in progress
+        * Calculations requiring an image(s) to be displayed now work properly
+    _Internal:
+        * Rewrite entire JSON parsing code.
+        * Better WebSockets
+        * More efficient URL loading in WebView
+        * Code refactoring
 $ 0.9.3
   % Version 0.9.3
   _ 2014-02-03

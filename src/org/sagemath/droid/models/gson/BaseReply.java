@@ -1,4 +1,4 @@
-package org.sagemath.droid.models;
+package org.sagemath.droid.models.gson;
 
 import android.util.Log;
 import com.google.gson.Gson;

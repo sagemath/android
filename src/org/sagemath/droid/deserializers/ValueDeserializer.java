@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import org.sagemath.droid.models.Values;
+import org.sagemath.droid.models.gson.Values;
 
 import java.lang.reflect.Type;
 

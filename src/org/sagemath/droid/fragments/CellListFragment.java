@@ -4,17 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.adapters.CellListAdapter;
-import org.sagemath.droid.cells.CellCollection;
-import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.EditCellDialogFragment;
+import org.sagemath.droid.models.database.Cell;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,35 +32,58 @@ import java.util.LinkedList;
  */
 public class CellListFragment
         extends ListFragment {
-    private static final String TAG = "CellListFragment";
+    private static final String TAG = "SageDroid:CellListFragment";
+
+    private static final String DIALOG_EDIT_CELL = "editCell";
+    private static final String ARG_GROUP = "group";
+    private Cell longClickedCell;
 
 
-    protected LinkedList<CellData> cells = new LinkedList<CellData>();
+    private List<Cell> cells = new ArrayList<Cell>();
+    private SageSQLiteOpenHelper helper;
+    private String group;
 
-    protected CellListAdapter adapter;
+    private CellListAdapter adapter;
+
+    public CellListFragment() {
+        helper = SageSQLiteOpenHelper.getInstance(getActivity());
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        switchToGroup(null);
-        adapter.updateCellList(cells);
+        if (group != null && adapter != null) {
+            Log.i(TAG, "Updating Cells with group:" + group);
+            cells = helper.getCellsWithGroup(group);
+            adapter.updateCellList(cells);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ARG_GROUP, group);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "In onCreate");
         super.onCreate(savedInstanceState);
-
-        adapter = new CellListAdapter(getActivity(), cells);
-        setListAdapter(adapter);
+        if ((savedInstanceState != null) && (savedInstanceState.getString(ARG_GROUP) != null)) {
+            this.group = savedInstanceState.getString(ARG_GROUP);
+        }
     }
 
-    private static final String DIALOG_EDIT_CELL = "editCell";
-    private CellData longClickedCell;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.cell_list_layout, null);
+
+    }
 
     @Override
     public void onActivityCreated(Bundle savedState) {
         super.onActivityCreated(savedState);
-
         getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -62,31 +91,39 @@ public class CellListFragment
                 longClickedCell = cells.get(pos);
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 EditCellDialogFragment mEditCellDialogFragment = EditCellDialogFragment.newInstance(longClickedCell);
-                mEditCellDialogFragment.setOnGroupSwitchedListener(new EditCellDialogFragment.onGroupSwitchListener() {
+                mEditCellDialogFragment.setOnCellEditListener(new EditCellDialogFragment.OnCellEditListener() {
                     @Override
-                    public void onGroupSwitched(String group) {
-                        switchToGroup(group);
-                        adapter.updateCellList(cells);
-
+                    public void onCellEdited() {
+                        refreshAdapter();
                     }
                 });
                 mEditCellDialogFragment.show(fm, DIALOG_EDIT_CELL);
-                CellCollection.getInstance().saveCells();
                 return true;
             }
         });
+
     }
 
+    public void refreshAdapter() {
+        if (group != null)
+            adapter.updateCellList(helper.getCellsWithGroup(group));
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+        getActivity().setTitle(group);
+        cells = helper.getCellsWithGroup(group);
+        adapter = new CellListAdapter(getActivity(), cells);
+        setListAdapter(adapter);
+    }
 
     public void switchToGroup(String group) {
-        CellCollection cellCollection = CellCollection.getInstance();
         cells.clear();
         if (group == null)
-            group = cellCollection.getCurrentGroupName();
-        cells.addAll(cellCollection.getGroup(group));
+            group = helper.getGroups().get(0);
+        cells.addAll(helper.getCellsWithGroup(group));
         if (cells.size() > 0) {
-            cellCollection.setCurrentCell(cells.getFirst());
-            getActivity().setTitle(cells.getFirst().getGroup());
+            getActivity().setTitle(cells.get(0).getTitle());
         } else
             getActivity().getSupportFragmentManager().popBackStack();
         if (adapter != null)
@@ -97,11 +134,10 @@ public class CellListFragment
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        CellData cell = cells.get(position);
-        CellCollection.getInstance().setCurrentCell(cell);
+        Cell cell = cells.get(position);
         Intent i = new Intent(getActivity().getApplicationContext(), SageActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra(StringConstants.ID, cell.getID());
         startActivity(i);
     }
-
 }

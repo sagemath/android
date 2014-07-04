@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import org.sagemath.droid.models.InteractReply.InteractControl;
+import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -18,6 +18,7 @@ public class InteractDiscreteSlider
 
     protected SeekBar seekBar;
     protected TextView nameValueText;
+    private InteractControl control;
 
     public InteractDiscreteSlider(InteractView interactView, String variable, Context context) {
         super(interactView, variable, context);
@@ -48,11 +49,12 @@ public class InteractDiscreteSlider
 
     public void setValues(InteractControl control) {
         Log.i(TAG, "Setting Values" + Arrays.toString(control.getValues().getValues()));
+        this.control = control;
         this.values.clear();
         for (String i : control.getValues().getValues()) {
             values.add(i);
         }
-        seekBar.setMax(values.size()-1);
+        seekBar.setMax(values.size() - 1);
         updateValueText();
     }
 
@@ -60,7 +62,11 @@ public class InteractDiscreteSlider
         return seekBar.getProgress();
     }
 
-    public SeekBar getSeekBar(){
+    public InteractControl getViewInteractControl() {
+        return control;
+    }
+
+    public SeekBar getSeekBar() {
         return seekBar;
     }
 

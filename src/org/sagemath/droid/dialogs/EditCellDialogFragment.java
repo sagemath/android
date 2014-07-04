@@ -11,13 +11,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.sagemath.droid.R;
-import org.sagemath.droid.cells.CellCollection;
-import org.sagemath.droid.cells.CellData;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.models.database.Cell;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -28,27 +28,27 @@ public class EditCellDialogFragment extends DialogFragment {
     private static final String TAG = "SageDroid:EditCellDialogFragment";
     private static final String ARG_CELL = "Cell";
 
-    public interface onGroupSwitchListener{
-        public void onGroupSwitched(String group);
+    public interface OnCellEditListener {
+        public void onCellEdited();
+    }
+
+    private OnCellEditListener listener;
+
+    public void setOnCellEditListener(OnCellEditListener listener) {
+        this.listener = listener;
     }
 
     private EditText titleView;
     private EditText descView;
     private AutoCompleteTextView groupView;
 
-    private LinkedList<String> cellGroups;
+    private List<String> cellGroups;
     private ArrayAdapter<String> adapter;
     private String[] groupChoices;
 
-    private CellData selectedCell;
+    private Cell currentCell;
 
-    private onGroupSwitchListener mListener;
-
-    public void setOnGroupSwitchedListener(onGroupSwitchListener listener){
-        mListener=listener;
-    }
-
-    public static EditCellDialogFragment newInstance(CellData cell) {
+    public static EditCellDialogFragment newInstance(Cell cell) {
 
         EditCellDialogFragment frag = new EditCellDialogFragment();
         Bundle args = new Bundle();
@@ -57,27 +57,28 @@ public class EditCellDialogFragment extends DialogFragment {
         frag.setArguments(args);
 
         return frag;
-
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        selectedCell = getArguments().getParcelable(ARG_CELL);
+        currentCell = getArguments().getParcelable(ARG_CELL);
 
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit, null);
 
         titleView = (EditText) dialogView.findViewById(R.id.insert_cell_title);
-        titleView.setText(selectedCell.getTitle(), TextView.BufferType.EDITABLE);
+        titleView.setText(currentCell.getTitle(), TextView.BufferType.EDITABLE);
         descView = (EditText) dialogView.findViewById(R.id.insert_cell_desc);
-        descView.setText(selectedCell.getDescription(), TextView.BufferType.EDITABLE);
+        descView.setText(currentCell.getDescription(), TextView.BufferType.EDITABLE);
         groupView = (AutoCompleteTextView) dialogView.findViewById(R.id.insert_cell_group);
-        groupView.setText(selectedCell.getGroup(), TextView.BufferType.EDITABLE);
+        groupView.setText(currentCell.getGroup(), TextView.BufferType.EDITABLE);
+        final SageSQLiteOpenHelper helper = SageSQLiteOpenHelper.getInstance(getActivity());
 
-        cellGroups= CellCollection.getInstance().groups();
+
+        cellGroups = helper.getGroups();
         groupChoices = new String[cellGroups.size()];
         cellGroups.toArray(groupChoices);
-        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,groupChoices);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
         groupView.setAdapter(adapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -89,21 +90,23 @@ public class EditCellDialogFragment extends DialogFragment {
                 if (titleView.getText().toString().equals("")) {
                     Date date = new Date();
                     DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy hh:mm aaa", Locale.US);
-                    selectedCell.setTitle(dateFormat.format(date));
+                    currentCell.setTitle(dateFormat.format(date));
                 } else {
-                    selectedCell.setTitle(titleView.getText().toString());
+                    currentCell.setTitle(titleView.getText().toString());
                 }
-                selectedCell.setDescription(descView.getText().toString());
+                currentCell.setDescription(descView.getText().toString());
                 if (groupView.getText().toString().equals("")) {
-                    selectedCell.updateGroup("My Worksheets");
+                    currentCell.setGroup("My Worksheets");
                 } else {
-                    selectedCell.updateGroup(groupView.getText().toString());
+                    currentCell.setGroup(groupView.getText().toString());
                 }
-                CellCollection.getInstance().saveCells();
-                mListener.onGroupSwitched(selectedCell.getGroup());
+                //Save the new data into DB
+                helper.saveEditedCell(currentCell);
+                listener.onCellEdited();
+                //mListener.onGroupSwitched(currentCell.getGroup());
             }
         });
-        builder.setNegativeButton(android.R.string.cancel,null);
+        builder.setNegativeButton(android.R.string.cancel, null);
         return builder.create();
     }
 }
