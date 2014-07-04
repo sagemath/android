@@ -33,7 +33,7 @@
     </style>
 
     <style name="ActionBarCompatItemBase">
-        <!-- layout_width/height must be set in code -->
+        <!-- layout_width/height must be reloadHtml in code -->
         <item name="android:scaleType">center</item>
         <item name="android:background">@drawable/actionbar_compat_item</item>
     </style>
@@ -44,7 +44,7 @@
 
     <style name="ActionBarCompatTitleBase">
         <item name="android:id">@id/actionbar_compat_title</item>
-        <!-- layout_width/height/weight must be set in code -->
+        <!-- layout_width/height/weight must be reloadHtml in code -->
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">18sp</item>
         <item name="android:paddingLeft">6dp</item>
