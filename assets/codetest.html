@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+
+<script type="text/javascript" src="lib/codemirror.js"></script>
+<script type="text/javascript" src="mode/python/python.js"></script>
+<script type="text/javascript" src="addon/edit/closebrackets.js"></script>
+<link rel="stylesheet" href="lib/codemirror.css">
+
+<body>
+<textarea id="editor"></textarea>
+
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        mode: "text/x-python",
+        lineWrapping: true,
+        lineNumbers: true,
+        autoCloseBrackets: true});
+
+    function getText() {
+        //var htmlString = document.getElementById("editor").value;
+        JavaScriptInterface.getHtml(editor.getValue());
+    }
+
+    function setText(html) {
+        editor.setValue(html);
+        //Set cursor at the end of the document
+        editor.setCursor(editor.lineCount(), 0);
+    }
+
+</script>
+</body>
+</html>
