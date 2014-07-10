@@ -12,6 +12,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.events.CodeReceivedEvent;
+import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.ui.CodeView;
@@ -92,22 +93,24 @@ public class CodeEditorFragment extends BaseFragment {
         SageSQLiteOpenHelper.getInstance(getActivity()).saveEditedCell(cell);
     }
 
+    @Subscribe
+    public void onComputationFinished(InteractFinishEvent event) {
+        codeViewToggleButton.requestFocus();
+        codeViewToggleButton.setEnabled(true);
+    }
+
     private void setAndFocusEditor(String text) {
         Log.i(TAG, "Setting Text:" + text);
         codeView.setEditorText(text);
-        codeView.requestFocus(View.FOCUS_DOWN);
     }
 
     @Subscribe
     public void onProgressUpdate(ProgressEvent event) {
         if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_START)) {
             if (!codeViewToggleButton.isEnabled()) {
-                codeViewToggleButton.setEnabled(true);
-            }
-        } else if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_END)) {
-            if (codeViewToggleButton.isEnabled()) {
                 codeViewToggleButton.setEnabled(false);
             }
+        } else if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_END)) {
         }
     }
 

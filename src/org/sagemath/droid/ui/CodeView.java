@@ -47,7 +47,7 @@ public class CodeView extends WebView {
     private void init() {
         javaScriptInterface = new SageJavascriptInterface((Activity) getContext());
         this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setBuiltInZoomControls(true);
+        this.getSettings().setBuiltInZoomControls(false);
         this.getSettings().setDefaultFixedFontSize(16);
         this.getSettings().setUseWideViewPort(true);
         this.getSettings().setLoadWithOverviewMode(true);
