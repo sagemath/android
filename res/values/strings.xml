@@ -20,5 +20,9 @@
     <string name="info_disconnected">Server Disconnected</string>
     <string name="list_empty_text">Select a Group</string>
     <string name="group_empty_text">No Cells have been saved</string>
+    <string name="menu_run">Run</string>
+
+    <string name="fa_expand">&#xf065;</string>
+    <string name="fa_collapse">&#xf066;</string>
 
 </resources>
