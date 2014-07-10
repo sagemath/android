@@ -21,7 +21,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.events.InteractDisconnectEvent;
+import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.InteractUpdateEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.gson.*;
@@ -398,7 +398,7 @@ public class SageSingleCell {
                         ((Activity)context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                BusProvider.getInstance().post(new InteractDisconnectEvent(true));
+                                BusProvider.getInstance().post(new ServerDisconnectEvent(true));
                             }
                         });
                         Log.i(TAG, "Disconnect posted");

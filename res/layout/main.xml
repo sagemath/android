@@ -100,7 +100,7 @@
                     android:contentDescription="Run"
                     android:src="@android:drawable/ic_media_play"/>
 
-            <org.sagemath.droid.OutputView
+            <org.sagemath.droid.ui.OutputView
                     android:id="@+id/sage_output"
                     android:layout_below="@id/sage_input"
                     android:layout_width="match_parent"

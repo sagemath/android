@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +15,7 @@ import org.sagemath.droid.utils.BusProvider;
 
 import java.util.ArrayList;
 
-public class OutputBlock extends WebView {
+public class OutputWebView extends WebView {
     private final static String TAG = "SageDroid:OutputBlock";
 
     private Context context;
@@ -26,7 +26,7 @@ public class OutputBlock extends WebView {
     private Cell cell;
     private SageSQLiteOpenHelper helper;
 
-    public OutputBlock(Context context, Cell cell) {
+    public OutputWebView(Context context, Cell cell) {
         super(context);
         this.context = context;
         this.cell = cell;
@@ -34,7 +34,7 @@ public class OutputBlock extends WebView {
 
     }
 
-    public OutputBlock(Context context, Cell cell, String htmlData) {
+    public OutputWebView(Context context, Cell cell, String htmlData) {
         super(context);
         this.htmlData = htmlData;
         this.context = context;

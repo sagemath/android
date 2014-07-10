@@ -1,4 +1,4 @@
-package org.sagemath.droid;
+package org.sagemath.droid.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.LinearLayout;
+import org.sagemath.droid.SageSingleCell;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.interacts.InteractView;
 import org.sagemath.droid.models.database.Cell;
@@ -23,7 +24,7 @@ public class OutputView
         implements SageSingleCell.OnSageListener {
     private final static String TAG = "SageDroid:OutputView";
 
-    private OutputBlock block;
+    private OutputWebView block;
     private InteractView interactView;
 
     private Context context;
@@ -177,16 +178,16 @@ public class OutputView
 
     private Handler handler = new Handler();
 
-    public OutputBlock getOutputBlock() {
+    public OutputWebView getOutputBlock() {
         if (block != null)
             return block;
         else return newOutputBlock();
 
     }
 
-    private OutputBlock newOutputBlock() {
+    private OutputWebView newOutputBlock() {
         Log.i(TAG, "Creating newOutputBlock");
-        OutputBlock newBlock = new OutputBlock(context, cell);
+        OutputWebView newBlock = new OutputWebView(context, cell);
         Log.i(TAG, "Block data: " + newBlock.getHtmlData());
         addView(newBlock);
         block = newBlock;
@@ -204,12 +205,12 @@ public class OutputView
 
             if (output != null) {
                 Log.d(TAG, "Setting:  " + output.getStringMessageType());
-                OutputBlock block = getOutputBlock();
+                OutputWebView block = getOutputBlock();
                 Log.i(TAG, "Setting block output: " + output.getStringMessageType());
                 block.set(output);
             }
             if (additionalOutput != null) {
-                OutputBlock block = getOutputBlock();
+                OutputWebView block = getOutputBlock();
                 Log.i(TAG, "Adding additionalOutput: " + additionalOutput.getStringMessageType());
                 //block.clearBlocks();
                 block.add(additionalOutput);
