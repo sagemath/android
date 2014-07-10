@@ -1,5 +1,6 @@
 package org.sagemath.droid.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -9,17 +10,27 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.webkit.WebView;
+import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * Created by Haven on 08-07-2014.
  */
-public class CodeView extends WebView implements SageJavascriptInterface.OnHtmlReceivedListener {
+public class CodeView extends WebView {
     private static final String TAG = "Test:CodeView";
+
+    public interface OnCodeReceivedListener {
+        public void OnCodeReceived(String code);
+    }
+
+    private OnCodeReceivedListener listener;
+
+    public void setOnCodeReceivedListener(OnCodeReceivedListener listener) {
+        this.listener = listener;
+    }
 
     private static final String INTERFACE_NAME = "JavaScriptInterface";
 
     private SageJavascriptInterface javaScriptInterface;
-    private String receivedHtml;
 
     @SuppressWarnings("unused")
     public CodeView(Context context) {
@@ -34,15 +45,19 @@ public class CodeView extends WebView implements SageJavascriptInterface.OnHtmlR
     }
 
     private void init() {
-        javaScriptInterface = new SageJavascriptInterface();
-        javaScriptInterface.setOnHtmlReceivedListener(this);
+        javaScriptInterface = new SageJavascriptInterface((Activity) getContext());
         this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setBuiltInZoomControls(false);
+        this.getSettings().setBuiltInZoomControls(true);
         this.getSettings().setDefaultFixedFontSize(16);
         this.getSettings().setUseWideViewPort(true);
         this.getSettings().setLoadWithOverviewMode(true);
         this.addJavascriptInterface(javaScriptInterface, INTERFACE_NAME);
-        loadUrl("file:///android_asset/codetest.html");
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                loadUrl("file:///android_asset/codetest.html");
+            }
+        });
     }
 
     //Hackfix
@@ -51,31 +66,26 @@ public class CodeView extends WebView implements SageJavascriptInterface.OnHtmlR
         return new CodeViewInputConnection(this, false);
     }
 
-    @Override
-    public void OnHtmlReceived(String html) {
-        receivedHtml = html;
-    }
-
-    public String getEditorText() {
+    public void getEditorText(boolean forRun) {
+        javaScriptInterface.setForRun(forRun);
         this.post(new Runnable() {
             @Override
             public void run() {
-                loadUrl("javascript:getText()");
+                loadUrl("javascript:getEditorText();");
             }
         });
-        return receivedHtml;
     }
 
     public void setEditorText(String text) {
-        final String functionCall = "javascript:setText(\"%s\")";
-        final String textToSet = text;
+        final String functionCall = "javascript:setEditorText(\"%s\");";
+        final String textToSet = StringEscapeUtils.escapeJavaScript(text);
         Log.i(TAG, "Calling js: " + String.format(functionCall, textToSet));
-        this.post(new Runnable() {
+        this.postDelayed(new Runnable() {
             @Override
             public void run() {
                 loadUrl(String.format(functionCall, textToSet));
             }
-        });
+        }, 500);
     }
 
     private class CodeViewInputConnection extends BaseInputConnection {

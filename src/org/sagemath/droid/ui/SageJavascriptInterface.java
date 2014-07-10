@@ -1,7 +1,10 @@
 package org.sagemath.droid.ui;
 
+import android.app.Activity;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import org.sagemath.droid.events.CodeReceivedEvent;
+import org.sagemath.droid.utils.BusProvider;
 
 /**
  * Created by Haven on 08-07-2014.
@@ -9,19 +12,32 @@ import android.webkit.JavascriptInterface;
 public class SageJavascriptInterface {
     private static String TAG = "SageDroid:JavaScriptInterface";
 
-    public interface OnHtmlReceivedListener {
-        public void OnHtmlReceived(String html);
+    private boolean forRun = false;
+    private Activity activity;
+
+    public SageJavascriptInterface(Activity activity) {
+        this.activity = activity;
     }
 
-    private OnHtmlReceivedListener listener;
+    public boolean isForRun() {
+        return forRun;
+    }
 
-    public void setOnHtmlReceivedListener(OnHtmlReceivedListener listener) {
-        this.listener = listener;
+    public void setForRun(boolean forRun) {
+        this.forRun = forRun;
     }
 
     @JavascriptInterface
     public void getHtml(String html) {
         Log.i(TAG, "Got Text from Editor: " + html);
-        listener.OnHtmlReceived(html);
+        final CodeReceivedEvent event = new CodeReceivedEvent(html);
+        event.setForRun(forRun);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                BusProvider.getInstance().post(event);
+            }
+        });
+
     }
 }
