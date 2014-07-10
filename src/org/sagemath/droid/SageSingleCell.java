@@ -1,14 +1,14 @@
 package org.sagemath.droid;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
+import com.squareup.otto.Subscribe;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
@@ -21,7 +21,11 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.StringConstants;
+import org.sagemath.droid.events.InteractDisconnectEvent;
+import org.sagemath.droid.events.InteractUpdateEvent;
+import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.gson.*;
+import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.UrlUtils;
 
 import java.io.IOException;
@@ -47,13 +51,13 @@ public class SageSingleCell {
     private String kernelID;
     private boolean isInteractInput;
 
+    private Context context;
+
     private Request executeRequest, currentExecuteRequest;
     private WebSocket shellSocket;
 
     private PostTask postTask;
     private ShareTask shareTask;
-    private LocalBroadcastManager localBroadcastManager;
-    private Intent progressIntent;
 
     private Gson gson;
     private DefaultHttpClient httpClient;
@@ -72,29 +76,18 @@ public class SageSingleCell {
         public void onInteractUpdated();
     }
 
-    public interface OnSageDisconnectListener {
-        public void onServerDisconnect();
-    }
-
     private OnSageListener onSageListener;
-    private OnSageDisconnectListener onSageDisconnectListener;
 
     public void setOnSageListener(OnSageListener onSageListener) {
         this.onSageListener = onSageListener;
     }
 
-    public void setOnSageDisconnectListener(OnSageDisconnectListener onSageDisconnectListener) {
-        this.onSageDisconnectListener = onSageDisconnectListener;
-    }
-
-
     //---CLASS METHODS---
 
     public SageSingleCell(Context context) {
+        this.context = context;
         isInteractInput = false;
-        localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        progressIntent = new Intent(StringConstants.PROGRESS_INTENT);
-
+        BusProvider.getInstance().register(this);
         gson = new Gson();
 
         HttpParams params = new BasicHttpParams();
@@ -116,8 +109,7 @@ public class SageSingleCell {
     }
 
     public void cancelTasks() {
-        //TODO way to actually cancel AsyncTask here, which would involve some sort of loop to check if computation is finished.
-
+        //TODO way to actually cancel AsyncTask here, which would involve some sort of loop to check if computation is finished
     }
 
     public void addReply(BaseReply reply) {
@@ -232,8 +224,9 @@ public class SageSingleCell {
 
         @Override
         protected void onPreExecute() {
-            progressIntent.putExtra(StringConstants.ARG_PROGRESS_START, true);
-            localBroadcastManager.sendBroadcast(progressIntent);
+            //progressIntent.putExtra(StringConstants.ARG_PROGRESS_START, true);
+            //localBroadcastManager.sendBroadcast(progressIntent);
+            BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_START));
         }
 
         @Override
@@ -263,8 +256,7 @@ public class SageSingleCell {
 
         @Override
         protected void onPostExecute(Void result) {
-            progressIntent.putExtra(StringConstants.ARG_PROGRESS_END, true);
-            localBroadcastManager.sendBroadcast(progressIntent);
+            //BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_END));
         }
     }
 
@@ -272,8 +264,7 @@ public class SageSingleCell {
 
         @Override
         protected void onPreExecute() {
-            progressIntent.putExtra(StringConstants.ARG_PROGRESS_START, true);
-            localBroadcastManager.sendBroadcast(progressIntent);
+            BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_START));
         }
 
         @Override
@@ -292,8 +283,7 @@ public class SageSingleCell {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            progressIntent.putExtra(StringConstants.ARG_PROGRESS_END, true);
-            localBroadcastManager.sendBroadcast(progressIntent);
+            //BusProvider.getInstance().post(StringConstants.ARG_PROGRESS_END);
         }
     }
 
@@ -313,6 +303,21 @@ public class SageSingleCell {
 
         return String.format(template, interactID, name, value);
 
+    }
+
+    @Subscribe
+    public void onInteractUpdate(InteractUpdateEvent event) {
+        Log.i(TAG, "UPDATING INTERACT VARIABLE: " + event.getVarName());
+        Log.i(TAG, "UPDATED INTERACT VALUE: " + event.getValue().toString());
+
+        String interactID = event.getReply().getContent().getData().getInteract().getNewInteractID();
+        String sageInput = formatInteractUpdate(interactID, event.getVarName(), event.getValue().toString());
+        Log.i(TAG, "Updating Interact: " + sageInput);
+
+        currentExecuteRequest = executeRequest = new Request(sageInput, event.getReply().getHeader().getSession());
+
+        Log.i(TAG, "Sending Interact Update Request:" + gson.toJson(executeRequest));
+        shellSocket.send(gson.toJson(executeRequest));
     }
 
     public void updateInteract(InteractReply interact, String varName, Object newValue) {
@@ -390,7 +395,13 @@ public class SageSingleCell {
                     //If input is interactive, tell the user when the websocket disconnects.
                     if (isInteractInput) {
                         Log.i(TAG, "Executing Disconnect Callback");
-                        onSageDisconnectListener.onServerDisconnect();
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                BusProvider.getInstance().post(new InteractDisconnectEvent(true));
+                            }
+                        });
+                        Log.i(TAG, "Disconnect posted");
                     }
                 }
             });

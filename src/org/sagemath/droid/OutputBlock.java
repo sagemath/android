@@ -1,17 +1,17 @@
 package org.sagemath.droid;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.gson.*;
+import org.sagemath.droid.utils.BusProvider;
 
 import java.util.ArrayList;
 
@@ -28,23 +28,18 @@ public class OutputBlock extends WebView {
 
     public OutputBlock(Context context, Cell cell) {
         super(context);
-        this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setBuiltInZoomControls(true);
-        this.setWebViewClient(client);
         this.context = context;
         this.cell = cell;
-        helper = SageSQLiteOpenHelper.getInstance(context);
+        init();
+
     }
 
     public OutputBlock(Context context, Cell cell, String htmlData) {
         super(context);
         this.htmlData = htmlData;
         this.context = context;
-        this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setBuiltInZoomControls(true);
-        this.setWebViewClient(client);
         this.cell = cell;
-        helper = SageSQLiteOpenHelper.getInstance(context);
+        init();
         Log.i(TAG, "Created outputblock from htmldata.");
         divs.clear();
         divs.add(htmlData);
@@ -55,9 +50,17 @@ public class OutputBlock extends WebView {
         }
     }
 
-    // The output_block field of the JSON message
-    protected String name;
+    private void init() {
+        this.getSettings().setJavaScriptEnabled(true);
+        this.getSettings().setBuiltInZoomControls(true);
+        this.setWebViewClient(client);
+        helper = SageSQLiteOpenHelper.getInstance(context);
+        BusProvider.getInstance().register(this);
+    }
 
+    public void unregister(){
+        BusProvider.getInstance().unregister(this);
+    }
 
     private static String htmlify(String str) {
         Log.i(TAG, "Converting to HTML: " + str);
@@ -227,23 +230,18 @@ public class OutputBlock extends WebView {
 
     private WebViewClient client = new WebViewClient() {
 
-        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            Intent intent = new Intent();
-            intent.putExtra(StringConstants.ARG_PROGRESS_START, true);
-            localBroadcastManager.sendBroadcast(intent);
+            BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_START));
 
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            Intent intent = new Intent();
-            intent.putExtra(StringConstants.ARG_PROGRESS_END, true);
-            localBroadcastManager.sendBroadcast(intent);
+            BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_END));
         }
     };
 

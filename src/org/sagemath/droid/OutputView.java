@@ -1,5 +1,6 @@
 package org.sagemath.droid;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -7,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.LinearLayout;
+import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.interacts.InteractView;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.gson.BaseReply;
@@ -14,24 +16,12 @@ import org.sagemath.droid.models.gson.InteractReply;
 import org.sagemath.droid.states.InteractViewState;
 import org.sagemath.droid.states.OutputBlockState;
 import org.sagemath.droid.states.OutputViewState;
+import org.sagemath.droid.utils.BusProvider;
 
 public class OutputView
         extends LinearLayout
-        implements SageSingleCell.OnSageListener
-        , InteractView.OnInteractListener {
+        implements SageSingleCell.OnSageListener {
     private final static String TAG = "SageDroid:OutputView";
-
-    public interface onSageListener {
-        public void onSageInteractListener(InteractReply interact, String name, Object value);
-
-        public void onSageFinishedListener();
-    }
-
-    private onSageListener listener;
-
-    public void setOnSageListener(onSageListener listener) {
-        this.listener = listener;
-    }
 
     private OutputBlock block;
     private InteractView interactView;
@@ -82,6 +72,15 @@ public class OutputView
 
     }
 
+    public void unregisterComponentViews() {
+        if (block != null) {
+            block.unregister();
+        }
+        if (interactView != null) {
+            interactView.unregister();
+        }
+    }
+
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         if (!(state instanceof BaseSavedState)) {
@@ -121,7 +120,6 @@ public class OutputView
                     //Restore interacts
                     interactView = new InteractView(context);
                     interactView.addInteractsFromSavedState(viewState.getSavedControls());
-                    interactView.setOnInteractListener(OutputView.this);
                     addView(interactView, 0);
                 }
             });
@@ -205,14 +203,14 @@ public class OutputView
         public void run() {
 
             if (output != null) {
-                Log.d(TAG, "set " + output.toString());
+                Log.d(TAG, "Setting:  " + output.getStringMessageType());
                 OutputBlock block = getOutputBlock();
-                Log.i(TAG, "Setting block output: " + output);
+                Log.i(TAG, "Setting block output: " + output.getStringMessageType());
                 block.set(output);
             }
             if (additionalOutput != null) {
                 OutputBlock block = getOutputBlock();
-                Log.i(TAG, "Adding additionalOutput: " + additionalOutput);
+                Log.i(TAG, "Adding additionalOutput: " + additionalOutput.getStringMessageType());
                 //block.clearBlocks();
                 block.add(additionalOutput);
             }
@@ -220,13 +218,14 @@ public class OutputView
 
                 interactView = new InteractView(context);
                 interactView.set(interact);
-                interactView.setOnInteractListener(OutputView.this);
-                Log.i(TAG, "Adding Interact view: " + interact.toString());
+                Log.i(TAG, "Adding Interact view with controls: "
+                        + interact.getContent().getData().getInteract().getControls());
                 addView(interactView, 0);
             }
-            if (finished != null)
+            if (finished != null) {
                 Log.i(TAG, "onSageFinishedListener called.");
-            listener.onSageFinishedListener();
+                BusProvider.getInstance().post(new InteractFinishEvent());
+            }
         }
     }
 
@@ -235,19 +234,28 @@ public class OutputView
         block = null;
     }
 
-    @Override
-    public void onInteractListener(InteractReply interact, String name, Object value) {
-        listener.onSageInteractListener(interact, name, value);
-    }
-
     public void disableInteractViews() {
-        if (interactView != null)
-            interactView.disableViews();
+        if (interactView != null) {
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    interactView.disableViews();
+                }
+            });
+        }
+
     }
 
     public void enableInteractViews() {
-        if (interactView != null)
-            interactView.enableViews();
+        if (interactView != null) {
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    interactView.enableViews();
+                }
+            });
+        }
+
 
     }
 
