@@ -3,7 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:descendantFocusability="blocksDescendants">
 
     <org.sagemath.droid.ui.CodeView
             android:layout_width="match_parent"
@@ -17,11 +18,13 @@
             android:id="@+id/codeViewStateToggleButton"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textOn="@string/fa_expand"
-            android:textOff="@string/fa_collapse"
+            android:textOn="@string/fa_collapse"
+            android:textOff="@string/fa_expand"
             android:gravity="right|top"
             android:layout_marginRight="4dp"
             android:layout_marginTop="4dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:textColor="@drawable/toggle_selector"
             android:textAppearance="?android:textAppearanceLarge"
             android:background="@android:color/transparent"
