@@ -19,7 +19,8 @@
 
         <activity
                 android:theme="@style/Theme.AppCompat.Light"
-                android:name=".activities.SageActivity">
+                android:name=".activities.SageActivity"
+                android:windowSoftInputMode="adjustPan">
         </activity>
 
         <activity
