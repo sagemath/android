@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ToggleButton;
 import com.squareup.otto.Subscribe;
-import org.sagemath.droid.OutputView;
+import org.sagemath.droid.ui.OutputView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.events.InteractDisconnectEvent;
+import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.database.Cell;
@@ -75,7 +75,7 @@ public class OutputViewFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void onServerDisconnect(InteractDisconnectEvent event) {
+    public void onServerDisconnect(ServerDisconnectEvent event) {
         outputView.disableInteractViews();
     }
 

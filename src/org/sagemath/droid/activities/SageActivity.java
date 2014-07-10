@@ -27,7 +27,7 @@ import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.events.CodeReceivedEvent;
-import org.sagemath.droid.events.InteractDisconnectEvent;
+import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.fragments.CodeEditorFragment;
@@ -249,7 +249,7 @@ public class SageActivity
     }
 
     @Subscribe
-    public void onInteractDisconnected(InteractDisconnectEvent event) {
+    public void onInteractDisconnected(ServerDisconnectEvent event) {
         Log.i(TAG, "Interact Disconnected, Showing Message");
         runOnUiThread(new Runnable() {
             @Override
