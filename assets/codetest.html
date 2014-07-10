@@ -6,6 +6,7 @@
 <script type="text/javascript" src="lib/codemirror.js"></script>
 <script type="text/javascript" src="mode/python/python.js"></script>
 <script type="text/javascript" src="addon/edit/closebrackets.js"></script>
+<script type="text/javascript" src="addon/edit/matchbrackets.js"></script>
 <link rel="stylesheet" href="lib/codemirror.css">
 
 <body>
@@ -16,14 +17,15 @@
         mode: "text/x-python",
         lineWrapping: true,
         lineNumbers: true,
+        matchBrackets: true,
         autoCloseBrackets: true});
 
-    function getText() {
+    function getEditorText() {
         //var htmlString = document.getElementById("editor").value;
         JavaScriptInterface.getHtml(editor.getValue());
     }
 
-    function setText(html) {
+    function setEditorText(html) {
         editor.setValue(html);
         //Set cursor at the end of the document
         editor.setCursor(editor.lineCount(), 0);
