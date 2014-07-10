@@ -13,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.squareup.otto.Subscribe;
@@ -45,7 +47,8 @@ public class SageActivity
         extends
         ActionBarActivity
         implements
-        DeleteCellDialogFragment.OnCellDeleteListener {
+        DeleteCellDialogFragment.OnCellDeleteListener,
+        ToggleButton.OnCheckedChangeListener {
     private static final String TAG = "SageDroid:SageActivity";
 
     private static final String DIALOG_NEW_CELL = "newCell";
@@ -58,6 +61,7 @@ public class SageActivity
 
     private CodeEditorFragment codeEditorFragment;
     private OutputViewFragment outputViewFragment;
+    private View dividerView;
 
     private SageSQLiteOpenHelper helper;
 
@@ -80,8 +84,12 @@ public class SageActivity
 
         setContentView(R.layout.activity_sage);
 
+        dividerView = findViewById(R.id.dividerView);
         codeEditorFragment = (CodeEditorFragment) getSupportFragmentManager().findFragmentById(R.id.codeFragment);
         outputViewFragment = (OutputViewFragment) getSupportFragmentManager().findFragmentById(R.id.outputFragment);
+
+        codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
+        outputViewFragment.getOutputViewToggleButton().setOnCheckedChangeListener(this);
 
         if (cellID != -1) {
             cell = helper.getCellbyID(cellID);
@@ -115,7 +123,43 @@ public class SageActivity
 
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
+        switch (buttonView.getId()) {
+            case R.id.codeViewStateToggleButton:
+                if (isChecked)
+                    performFragmentResize(R.id.codeFragment, R.id.outputFragment);
+                else
+                    performFragmentRestore();
+                break;
+
+            case R.id.outputViewStateToggleButton:
+                if (isChecked)
+                    performFragmentResize(R.id.outputFragment, R.id.codeFragment);
+                else
+                    performFragmentRestore();
+                break;
+        }
+    }
+
+    private void performFragmentResize(int expand, int collapse) {
+        dividerView.setVisibility(View.GONE);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .hide(manager.findFragmentById(collapse))
+                .show(manager.findFragmentById(expand))
+                .commit();
+    }
+
+    private void performFragmentRestore() {
+        dividerView.setVisibility(View.VISIBLE);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .show(manager.findFragmentById(R.id.codeFragment))
+                .show(manager.findFragmentById(R.id.outputFragment))
+                .commit();
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

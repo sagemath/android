@@ -25,6 +25,7 @@ public class OutputViewFragment extends BaseFragment {
     private OutputView outputView;
     private ToggleButton outputViewToggleButton;
 
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -67,8 +68,10 @@ public class OutputViewFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void onInteractFinished(InteractFinishEvent event) {
+    public void onComputationFinished(InteractFinishEvent event) {
         outputView.enableInteractViews();
+        outputViewToggleButton.requestFocus();
+        outputViewToggleButton.setEnabled(true);
     }
 
     @Subscribe
@@ -81,13 +84,10 @@ public class OutputViewFragment extends BaseFragment {
         Log.i(TAG, "Received Progress Update" + event.getProgressState());
         if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_START)) {
             if (!outputViewToggleButton.isEnabled()) {
-                outputViewToggleButton.setEnabled(true);
+                outputViewToggleButton.setEnabled(false);
             }
             outputView.disableInteractViews();
         } else if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_END)) {
-            if (outputViewToggleButton.isEnabled()) {
-                outputViewToggleButton.setEnabled(false);
-            }
             outputView.enableInteractViews();
         }
     }
