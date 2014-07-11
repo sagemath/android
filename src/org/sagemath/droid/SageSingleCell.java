@@ -2,37 +2,30 @@ package org.sagemath.droid;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.util.Pair;
 import com.google.gson.Gson;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 import com.squareup.otto.Subscribe;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.InteractUpdateEvent;
 import org.sagemath.droid.events.ProgressEvent;
+import org.sagemath.droid.events.ServerDisconnectEvent;
+import org.sagemath.droid.fragments.AsyncTaskFragment;
 import org.sagemath.droid.models.gson.*;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.UrlUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.ArrayList;
 
 /**
  * @author Haven
@@ -41,23 +34,19 @@ public class SageSingleCell {
 
     private static final String TAG = "SageDroid:SageSingleCell2";
 
-    private static final String HEADER_ACCEPT_ENCODING = "Accept_Encoding";
-    private static final String HEADER_TOS = "accepted_tos";
-    private static final String VALUE_IDENTITY = "identity";
-    private static final String VALUE_CODE = "code";
+    private static final String TASK_FRAGMENT_ID = "taskFragment";
 
     private String permalinkURL;
-    private String initialRequestString;
+    private String queryCode;
     private String kernelID;
     private boolean isInteractInput;
 
     private Context context;
+    private FragmentManager manager;
+    private AsyncTaskFragment taskFragment;
 
     private Request executeRequest, currentExecuteRequest;
-    private WebSocket shellSocket;
-
-    private PostTask postTask;
-    private ShareTask shareTask;
+    private WebSocket shellSocket, ioPubSocket;
 
     private Gson gson;
     private DefaultHttpClient httpClient;
@@ -84,11 +73,13 @@ public class SageSingleCell {
 
     //---CLASS METHODS---
 
-    public SageSingleCell(Context context) {
+    public SageSingleCell(Context context, FragmentManager manager) {
         this.context = context;
         isInteractInput = false;
         BusProvider.getInstance().register(this);
         gson = new Gson();
+
+        this.manager = manager;
 
         HttpParams params = new BasicHttpParams();
         params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -101,15 +92,58 @@ public class SageSingleCell {
 
         Log.i(TAG, "Creating new ExecuteRequest: " + gson.toJson(executeRequest));
 
-        shareTask = new ShareTask();
-        shareTask.execute(executeRequest);
+        queryCode = gson.toJson(executeRequest);
 
-        postTask = new PostTask();
-        postTask.execute(executeRequest);
+        taskFragment = (AsyncTaskFragment) manager.findFragmentByTag(TASK_FRAGMENT_ID);
+
+        if (taskFragment == null) {
+            taskFragment = AsyncTaskFragment.getInstance(executeRequest);
+            manager.beginTransaction().add(taskFragment, TASK_FRAGMENT_ID).commit();
+        } else {
+            taskFragment.excecuteRequest(executeRequest);
+        }
+
+    }
+
+
+    public void sendProgressStart() {
+        BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_START));
+    }
+
+
+    public void parseResponses(Pair<BaseResponse, BaseResponse> responses) {
+        BaseResponse firstResponse = responses.first;
+        BaseResponse secondResponse = responses.second;
+        if (firstResponse instanceof PermalinkResponse) {
+            permalinkURL = ((PermalinkResponse) firstResponse).getQueryURL();
+        }
+        if (secondResponse instanceof WebSocketResponse) {
+            if (((WebSocketResponse) secondResponse).isValidResponse()) {
+                Log.d(TAG, "Response is valid");
+                //Cache to avoid huge lengths
+                WebSocketResponse response = (WebSocketResponse) secondResponse;
+                kernelID = response.getKernelID();
+                String shellURL, ioPubURL;
+
+                shellURL = UrlUtils.getShellURL(response.getKernelID(), response.getWebSocketURL());
+                ioPubURL = UrlUtils.getIoPubURL(response.getKernelID(), response.getWebSocketURL());
+                setupWebSockets(shellURL, ioPubURL, shellCallback, ioPubCallback);
+            }
+        }
+    }
+
+
+    public void cancelComputation() {
+        BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_END));
     }
 
     public void cancelTasks() {
-        //TODO way to actually cancel AsyncTask here, which would involve some sort of loop to check if computation is finished
+        if (taskFragment != null) {
+            Log.d(TAG, "Removing fragment");
+            taskFragment.cancel();
+            manager.beginTransaction().remove(taskFragment).commit();
+        }
+        closeWebSockets();
     }
 
     public void addReply(BaseReply reply) {
@@ -152,66 +186,6 @@ public class SageSingleCell {
         }
     }
 
-    public WebSocketResponse sendInitialRequest() throws IOException {
-
-        WebSocketResponse webSocketResponse;
-
-        HttpPost httpPost = new HttpPost();
-
-        String url = UrlUtils.getInitialKernelURL();
-
-        httpPost.setURI(URI.create(url));
-
-        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair(HEADER_ACCEPT_ENCODING, VALUE_IDENTITY));
-        postParameters.add(new BasicNameValuePair(HEADER_TOS, "true"));
-        httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
-
-        HttpResponse httpResponse = httpClient.execute(httpPost);
-        InputStream inputStream = httpResponse.getEntity().getContent();
-
-        webSocketResponse = gson.fromJson(new InputStreamReader(inputStream), WebSocketResponse.class);
-        inputStream.close();
-
-        Log.i(TAG, "Received Websocket Response: " + gson.toJson(webSocketResponse));
-
-        kernelID = webSocketResponse.getKernelID();
-
-        return webSocketResponse;
-
-    }
-
-    public PermalinkResponse sendPermalinkRequest(Request request) throws IOException {
-
-        PermalinkResponse permalinkResponse;
-
-        HttpParams params = new BasicHttpParams();
-        params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        httpClient = new DefaultHttpClient(params);
-
-        String url = UrlUtils.getPermalinkURL();
-
-        HttpPost permalinkPost = new HttpPost();
-        permalinkPost.setURI(URI.create(url));
-        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair(VALUE_CODE, request.getContent().getCode()));
-        permalinkPost.setEntity(new UrlEncodedFormEntity(postParameters));
-
-        Log.i(TAG, "Permalink URL: " + url);
-        Log.i(TAG, "Permalink code: " + request.getContent().getCode());
-
-        HttpResponse httpResponse = httpClient.execute(permalinkPost);
-        InputStream inputStream = httpResponse.getEntity().getContent();
-
-        permalinkResponse = gson.fromJson(new InputStreamReader(inputStream), PermalinkResponse.class);
-
-        Log.i(TAG, "Permalink Response" + gson.toJson(permalinkResponse));
-
-        inputStream.close();
-
-        return permalinkResponse;
-    }
-
     public void setupWebSockets(String shellURL, String ioPubURL
             , AsyncHttpClient.WebSocketConnectCallback shellCallback
             , AsyncHttpClient.WebSocketConnectCallback ioPubCallback) {
@@ -220,71 +194,12 @@ public class SageSingleCell {
         AsyncHttpClient.getDefaultInstance().websocket(ioPubURL, "ws", ioPubCallback);
     }
 
-    private class PostTask extends AsyncTask<Request, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            //progressIntent.putExtra(StringConstants.ARG_PROGRESS_START, true);
-            //localBroadcastManager.sendBroadcast(progressIntent);
-            BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_START));
+    public void closeWebSockets() {
+        if (shellSocket != null && ioPubSocket != null) {
+            shellSocket.close();
+            ioPubSocket.close();
         }
-
-        @Override
-        protected Void doInBackground(Request... requests) {
-            initialRequestString = gson.toJson(requests[0]);
-
-            Log.i(TAG, "Request String:" + initialRequestString);
-
-            try {
-                //initialRequestString= testRequest.toJSON().toString();
-                WebSocketResponse response = sendInitialRequest();
-
-                if (response.isValidResponse()) {
-                    Log.i(TAG, "Response is valid,Setting up Websockets");
-                    String shellURL = UrlUtils.getShellURL(response.getKernelID(), response.getWebSocketURL());
-                    String ioPubURL = UrlUtils.getIoPubURL(response.getKernelID(), response.getWebSocketURL());
-
-                    setupWebSockets(shellURL, ioPubURL, shellCallback, ioPubCallback);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_END));
-        }
-    }
-
-    private class ShareTask extends AsyncTask<Request, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            BusProvider.getInstance().post(new ProgressEvent(StringConstants.ARG_PROGRESS_START));
-        }
-
-        @Override
-        protected Void doInBackground(Request... requests) {
-
-            try {
-                PermalinkResponse response = sendPermalinkRequest(requests[0]);
-                permalinkURL = response.getQueryURL();
-                Log.i(TAG, "Permalink URL:" + permalinkURL);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            //BusProvider.getInstance().post(StringConstants.ARG_PROGRESS_END);
-        }
+        Log.i(TAG, "Sockets closed");
     }
 
     public URI getShareURI() {
@@ -320,20 +235,6 @@ public class SageSingleCell {
         shellSocket.send(gson.toJson(executeRequest));
     }
 
-    public void updateInteract(InteractReply interact, String varName, Object newValue) {
-        Log.i(TAG, "UPDATING INTERACT VARIABLE: " + varName);
-        Log.i(TAG, "UPDATED INTERACT VALUE: " + newValue);
-
-        String interactID = interact.getContent().getData().getInteract().getNewInteractID();
-        String sageInput = formatInteractUpdate(interactID, varName, newValue.toString());
-        Log.i(TAG, "Updating Interact: " + sageInput);
-
-        currentExecuteRequest = executeRequest = new Request(sageInput, interact.getHeader().getSession());
-
-        Log.i(TAG, "Sending Interact Update Request:" + gson.toJson(executeRequest));
-        shellSocket.send(gson.toJson(executeRequest));
-    }
-
     private AsyncHttpClient.WebSocketConnectCallback shellCallback = new AsyncHttpClient.WebSocketConnectCallback() {
         @Override
         public void onCompleted(Exception e, WebSocket webSocket) {
@@ -342,8 +243,8 @@ public class SageSingleCell {
                 Log.i(TAG, e.getMessage());
             }
             shellSocket = webSocket;
-            Log.i(TAG, "Shell Connected, Sending " + initialRequestString);
-            shellSocket.send(initialRequestString);
+            Log.i(TAG, "Shell Connected, Sending " + queryCode);
+            shellSocket.send(queryCode);
 
             shellSocket.setStringCallback(new WebSocket.StringCallback() {
                 @Override
@@ -371,10 +272,11 @@ public class SageSingleCell {
                 Log.i(TAG, e.getMessage());
             }
             Log.i(TAG, "IOPub Connected");
-            webSocket.setStringCallback(new WebSocket.StringCallback() {
+
+            ioPubSocket = webSocket;
+            ioPubSocket.setStringCallback(new WebSocket.StringCallback() {
                 @Override
                 public void onStringAvailable(String s) {
-                    Log.i(TAG, "IOPub received String" + s);
                     try {
                         BaseReply reply = BaseReply.parse(s);
                         addReply(reply);
@@ -384,7 +286,7 @@ public class SageSingleCell {
                     }
                 }
             });
-            webSocket.setClosedCallback(new CompletedCallback() {
+            ioPubSocket.setClosedCallback(new CompletedCallback() {
                 @Override
                 public void onCompleted(Exception e) {
                     if (e != null)
@@ -395,7 +297,7 @@ public class SageSingleCell {
                     //If input is interactive, tell the user when the websocket disconnects.
                     if (isInteractInput) {
                         Log.i(TAG, "Executing Disconnect Callback");
-                        ((Activity)context).runOnUiThread(new Runnable() {
+                        ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 BusProvider.getInstance().post(new ServerDisconnectEvent(true));

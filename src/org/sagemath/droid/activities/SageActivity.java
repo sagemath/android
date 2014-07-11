@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,9 +31,11 @@ import org.sagemath.droid.events.CodeReceivedEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.events.ServerDisconnectEvent;
+import org.sagemath.droid.fragments.AsyncTaskFragment;
 import org.sagemath.droid.fragments.CodeEditorFragment;
 import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.gson.BaseResponse;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.ChangeLog;
 
@@ -48,11 +51,13 @@ public class SageActivity
         ActionBarActivity
         implements
         DeleteCellDialogFragment.OnCellDeleteListener,
-        ToggleButton.OnCheckedChangeListener {
+        ToggleButton.OnCheckedChangeListener,
+        AsyncTaskFragment.CallBacks {
     private static final String TAG = "SageDroid:SageActivity";
 
     private static final String DIALOG_NEW_CELL = "newCell";
     private static final String DIALOG_DISCARD_CELL = "discardCell";
+    private static final String FLAG_SERVER_STATE = "serverState";
 
     private ChangeLog changeLog;
 
@@ -76,7 +81,7 @@ public class SageActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        server = new SageSingleCell(this);
+        server = new SageSingleCell(this, getSupportFragmentManager());
         helper = SageSQLiteOpenHelper.getInstance(this);
         BusProvider.getInstance().register(this);
 
@@ -87,6 +92,7 @@ public class SageActivity
         dividerView = findViewById(R.id.dividerView);
         codeEditorFragment = (CodeEditorFragment) getSupportFragmentManager().findFragmentById(R.id.codeFragment);
         outputViewFragment = (OutputViewFragment) getSupportFragmentManager().findFragmentById(R.id.outputFragment);
+
 
         codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
         outputViewFragment.getOutputViewToggleButton().setOnCheckedChangeListener(this);
@@ -116,11 +122,34 @@ public class SageActivity
         }
 
         setTitle(cell.getTitle());
-        boolean isInputEmpty = getIntent().getBooleanExtra(StringConstants.FLAG_INPUT_EMPTY, true);
-        if (!isInputEmpty) {
-            runButton();
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean(FLAG_SERVER_STATE)) {
+                //Server was running when an orientation change occurred
+                hideProgress();
+                outputViewFragment.getOutputView().clear();
+                server.cancelTasks();
+                isServerRunning = false;
+                ActivityCompat.invalidateOptionsMenu(this);
+                startExecution();
+            }
         }
 
+    }
+
+    @Override
+    public void onPreExecute() {
+        server.sendProgressStart();
+    }
+
+    @Override
+    public void onPostExecute(Pair<BaseResponse, BaseResponse> responses) {
+        server.parseResponses(responses);
+    }
+
+    @Override
+    public void onCancelled() {
+        server.cancelComputation();
     }
 
     @Override
@@ -195,7 +224,7 @@ public class SageActivity
                 finish();
                 return true;
             case R.id.menu_refresh:
-                runButton();
+                startExecution();
                 return true;
             case R.id.menu_add: {
                 FragmentManager fm = this.getSupportFragmentManager();
@@ -219,12 +248,12 @@ public class SageActivity
                     startActivity(share);
                 } catch (Exception e) {
                     Log.e(TAG, "Couldn't share for some reason... " + e.getLocalizedMessage());
-                    runButton();
+                    startExecution();
                     Toast.makeText(this, "You must run the calculation first! Try sharing again.", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.menu_run:
-                runButton();
+                startExecution();
                 return true;
 
         }
@@ -239,12 +268,13 @@ public class SageActivity
     @Subscribe
     public void onRun(CodeReceivedEvent event) {
         if (event.isForRun()) {
+            Log.i(TAG, "Received Query: " + event.getReceivedCode());
             String query = event.getReceivedCode();
             server.query(query);
         }
     }
 
-    private void runButton() {
+    private void startExecution() {
         outputViewFragment.getOutputView().clear();
         codeEditorFragment.getCodeView().getEditorText(true);
     }
@@ -282,6 +312,12 @@ public class SageActivity
     protected void onPause() {
         super.onPause();
         BusProvider.getInstance().unregister(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(FLAG_SERVER_STATE, isServerRunning);
     }
 
     @Override
