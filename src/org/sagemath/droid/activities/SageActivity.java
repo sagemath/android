@@ -27,9 +27,9 @@ import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
 import org.sagemath.droid.events.CodeReceivedEvent;
-import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
+import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.fragments.CodeEditorFragment;
 import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
@@ -165,10 +165,16 @@ public class SageActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         MenuItem refreshItem = menu.findItem(R.id.menu_refresh);
+        MenuItem runStateItem = menu.findItem(R.id.menu_run);
         Drawable refreshIcon = getResources().getDrawable(R.drawable.ic_action_refresh);
-        if (isServerRunning)
+        Drawable playIcon = getResources().getDrawable(R.drawable.ic_action_av_play);
+        Drawable stopIcon = getResources().getDrawable(R.drawable.ic_action_av_stop);
+        if (isServerRunning) {
             refreshIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
-
+            runStateItem.setIcon(stopIcon);
+        } else {
+            runStateItem.setIcon(playIcon);
+        }
         refreshItem.setEnabled(!isServerRunning);
         refreshItem.setIcon(refreshIcon);
 
