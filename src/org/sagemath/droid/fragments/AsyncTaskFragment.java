@@ -173,7 +173,8 @@ public class AsyncTaskFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            callBacks.onPreExecute();
+            if (callBacks != null)
+                callBacks.onPreExecute();
         }
 
         @Override
@@ -194,12 +195,14 @@ public class AsyncTaskFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Pair<BaseResponse, BaseResponse> responses) {
-            callBacks.onPostExecute(responses);
+            if (callBacks != null)
+                callBacks.onPostExecute(responses);
         }
 
         @Override
         protected void onCancelled() {
-            callBacks.onCancelled();
+            if (callBacks != null)
+                callBacks.onCancelled();
         }
     }
 }
