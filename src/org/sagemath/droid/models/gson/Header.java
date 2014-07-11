@@ -1,10 +1,12 @@
 package org.sagemath.droid.models.gson;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import org.sagemath.droid.constants.MessageType;
 
 import java.util.UUID;
 
-public class Header {
+public class Header implements Parcelable {
 
     //---STATIC VARIABLES---
     public static final String STR_EXECUTE_REQUEST = "execute_request";
@@ -25,6 +27,10 @@ public class Header {
     private String session;
     private String msg_type;
     private String date;
+
+    public Header(){
+
+    }
 
     //--SETTERS AND GETTERS
     public String getMessageID() {
@@ -89,6 +95,43 @@ public class Header {
     public void setDate(String date) {
         this.date = date;
     }
+
+    //PARCELABLE
+
+    private Header(Parcel in) {
+        msg_id = in.readString();
+        username = in.readString();
+        session = in.readString();
+        msg_type = in.readString();
+        date = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(msg_id);
+        dest.writeString(username);
+        dest.writeString(session);
+        dest.writeString(msg_type);
+        dest.writeString(date);
+    }
+
+    public static final Creator<Header> CREATOR = new Creator<Header>() {
+        @Override
+        public Header createFromParcel(Parcel source) {
+            return new Header(source);
+        }
+
+        @Override
+        public Header[] newArray(int size) {
+            return new Header[size];
+        }
+    };
+
 
     //UTILITY METHODS
 

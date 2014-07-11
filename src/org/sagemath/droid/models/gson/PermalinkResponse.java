@@ -6,7 +6,7 @@ import org.sagemath.droid.utils.UrlUtils;
 /**
  * @author Haven
  */
-public class PermalinkResponse {
+public class PermalinkResponse extends BaseResponse{
 
     private String query;
     private String zip;
