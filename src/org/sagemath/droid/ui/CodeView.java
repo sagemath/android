@@ -18,16 +18,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 public class CodeView extends WebView {
     private static final String TAG = "Test:CodeView";
 
-    public interface OnCodeReceivedListener {
-        public void OnCodeReceived(String code);
-    }
-
-    private OnCodeReceivedListener listener;
-
-    public void setOnCodeReceivedListener(OnCodeReceivedListener listener) {
-        this.listener = listener;
-    }
-
     private static final String INTERFACE_NAME = "JavaScriptInterface";
 
     private SageJavascriptInterface javaScriptInterface;
@@ -58,6 +48,7 @@ public class CodeView extends WebView {
                 loadUrl("file:///android_asset/codetest.html");
             }
         });
+
     }
 
     //Hackfix
@@ -68,12 +59,12 @@ public class CodeView extends WebView {
 
     public void getEditorText(boolean forRun) {
         javaScriptInterface.setForRun(forRun);
-        this.post(new Runnable() {
+        this.postDelayed(new Runnable() {
             @Override
             public void run() {
                 loadUrl("javascript:getEditorText();");
             }
-        });
+        },500);
     }
 
     public void setEditorText(String text) {
@@ -85,7 +76,7 @@ public class CodeView extends WebView {
             public void run() {
                 loadUrl(String.format(functionCall, textToSet));
             }
-        }, 500);
+        },500);
     }
 
     private class CodeViewInputConnection extends BaseInputConnection {
