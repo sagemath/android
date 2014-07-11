@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:descendantFocusability="blocksDescendants">
+                android:layout_height="match_parent">
 
     <org.sagemath.droid.ui.OutputView
             android:layout_width="match_parent"
