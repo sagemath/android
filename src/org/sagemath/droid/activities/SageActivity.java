@@ -113,24 +113,12 @@ public class SageActivity
         cellProgressBar.setVisibility(View.INVISIBLE);
         server.setOnSageListener(outputViewFragment.getOutputView());
 
-        try {
-            Log.i(TAG, "Cell group is: " + cell.getGroup());
-            Log.i(TAG, "Cell title is: " + cell.getTitle());
-            Log.i(TAG, "Cell uuid is: " + cell.getUUID().toString());
-            //Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
-        } catch (Exception e) {
-        }
-
         setTitle(cell.getTitle());
 
         if (savedInstanceState != null) {
             if (savedInstanceState.getBoolean(FLAG_SERVER_STATE)) {
                 //Server was running when an orientation change occurred
-                hideProgress();
-                outputViewFragment.getOutputView().clear();
-                server.cancelTasks();
-                isServerRunning = false;
-                ActivityCompat.invalidateOptionsMenu(this);
+                cancelComputation();
                 startExecution();
             }
         }
@@ -275,8 +263,20 @@ public class SageActivity
     }
 
     private void startExecution() {
+        if (isServerRunning) {
+            //Computation already running, stop
+            cancelComputation();
+
+        } else {
+            outputViewFragment.getOutputView().clear();
+            codeEditorFragment.getCodeView().getEditorText(true);
+        }
+    }
+
+    private void cancelComputation() {
+        hideProgress();
         outputViewFragment.getOutputView().clear();
-        codeEditorFragment.getCodeView().getEditorText(true);
+        server.cancelTasks();
     }
 
     @Subscribe
