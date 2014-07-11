@@ -92,6 +92,7 @@ public class OutputView
         removeAllViews();
         if (state instanceof OutputBlockState) {
             //HTML was saved, restore it.
+            clear();
             final OutputBlockState savedState = (OutputBlockState) state;
             super.onRestoreInstanceState(savedState.getSuperState());
 
