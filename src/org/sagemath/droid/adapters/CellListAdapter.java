@@ -26,7 +26,7 @@ public class CellListAdapter extends ArrayAdapter<Cell> {
     private List<Cell> cells;
 
     public CellListAdapter(Context context, List<Cell> cells) {
-        super(context, R.layout.cell_list_item, cells);
+        super(context, R.layout.item_cell_list, cells);
         this.context = context;
         this.cells = cells;
     }
@@ -54,7 +54,7 @@ public class CellListAdapter extends ArrayAdapter<Cell> {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            item = inflater.inflate(R.layout.cell_list_item, parent, false);
+            item = inflater.inflate(R.layout.item_cell_list, parent, false);
             titleView = (TextView) item.findViewById(R.id.cell_title);
             descriptionView = (TextView) item.findViewById(R.id.cell_description);
             favorite = (CheckBox) item.findViewById(R.id.favorite);

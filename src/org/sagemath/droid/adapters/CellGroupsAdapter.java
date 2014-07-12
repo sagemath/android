@@ -22,7 +22,7 @@ public class CellGroupsAdapter extends ArrayAdapter<String> {
     private List<String> groups;
 
     public CellGroupsAdapter(Context context, List<String> groups) {
-        super(context, R.layout.cell_groups_item, groups);
+        super(context, R.layout.item_cell_group, groups);
         this.context = context;
         this.groups = groups;
 
@@ -34,7 +34,7 @@ public class CellGroupsAdapter extends ArrayAdapter<String> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            item = (TextView) inflater.inflate(R.layout.cell_groups_item, parent, false);
+            item = (TextView) inflater.inflate(R.layout.item_cell_group, parent, false);
         } else {
             item = (TextView) convertView;
         }

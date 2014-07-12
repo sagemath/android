@@ -149,7 +149,6 @@ public class InteractView extends TableLayout {
     }
 
     protected void notifyChange(InteractControlBase view) {
-        //listener.onInteractListener(interactReply, view.getVariableName(), view.getValue());
         BusProvider.getInstance().post(new InteractUpdateEvent(interactReply, view.getVariableName(), view.getValue()));
     }
 

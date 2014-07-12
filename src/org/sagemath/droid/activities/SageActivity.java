@@ -90,8 +90,10 @@ public class SageActivity
         setContentView(R.layout.activity_sage);
 
         dividerView = findViewById(R.id.dividerView);
-        codeEditorFragment = (CodeEditorFragment) getSupportFragmentManager().findFragmentById(R.id.codeFragment);
-        outputViewFragment = (OutputViewFragment) getSupportFragmentManager().findFragmentById(R.id.outputFragment);
+        codeEditorFragment = (CodeEditorFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.codeFragment);
+        outputViewFragment = (OutputViewFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.outputFragment);
 
 
         codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
