@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,20 +21,16 @@ import com.github.johnpersano.supertoasts.SuperCardToast;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.squareup.otto.Subscribe;
 import org.sagemath.droid.R;
-import org.sagemath.droid.SageSingleCell;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
 import org.sagemath.droid.dialogs.NewCellDialogFragment;
-import org.sagemath.droid.events.CodeReceivedEvent;
-import org.sagemath.droid.events.InteractFinishEvent;
-import org.sagemath.droid.events.ProgressEvent;
-import org.sagemath.droid.events.ServerDisconnectEvent;
+import org.sagemath.droid.events.*;
 import org.sagemath.droid.fragments.AsyncTaskFragment;
 import org.sagemath.droid.fragments.CodeEditorFragment;
 import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.models.gson.BaseResponse;
+import org.sagemath.droid.models.gson.BaseReply;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.ChangeLog;
 
@@ -52,12 +47,14 @@ public class SageActivity
         implements
         DeleteCellDialogFragment.OnCellDeleteListener,
         ToggleButton.OnCheckedChangeListener,
-        AsyncTaskFragment.CallBacks {
+        AsyncTaskFragment.ServerCallbacks {
     private static final String TAG = "SageDroid:SageActivity";
 
     private static final String DIALOG_NEW_CELL = "newCell";
     private static final String DIALOG_DISCARD_CELL = "discardCell";
     private static final String FLAG_SERVER_STATE = "serverState";
+
+    private static final String TASK_FRAGMENT_TAG = "taskFragment";
 
     private ChangeLog changeLog;
 
@@ -66,11 +63,10 @@ public class SageActivity
 
     private CodeEditorFragment codeEditorFragment;
     private OutputViewFragment outputViewFragment;
+    private AsyncTaskFragment taskFragment;
     private View dividerView;
 
     private SageSQLiteOpenHelper helper;
-
-    private static SageSingleCell server;
 
     private boolean isServerRunning = false;
 
@@ -81,7 +77,6 @@ public class SageActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        server = new SageSingleCell(this, getSupportFragmentManager());
         helper = SageSQLiteOpenHelper.getInstance(this);
         BusProvider.getInstance().register(this);
 
@@ -95,6 +90,15 @@ public class SageActivity
         outputViewFragment = (OutputViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.outputFragment);
 
+        if (getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG) == null) {
+            taskFragment = AsyncTaskFragment.getInstance();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(taskFragment, TASK_FRAGMENT_TAG)
+                    .commit();
+        } else {
+            taskFragment = (AsyncTaskFragment) getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG);
+        }
 
         codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
         outputViewFragment.getOutputViewToggleButton().setOnCheckedChangeListener(this);
@@ -113,33 +117,28 @@ public class SageActivity
 
         cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
         cellProgressBar.setVisibility(View.INVISIBLE);
-        server.setOnSageListener(outputViewFragment.getOutputView());
 
         setTitle(cell.getTitle());
 
         if (savedInstanceState != null) {
             if (savedInstanceState.getBoolean(FLAG_SERVER_STATE)) {
                 //Server was running when an orientation change occurred
-                cancelComputation();
-                startExecution();
+                //cancelComputation();
+                showProgress();
+                //startExecution();
             }
         }
 
     }
 
     @Override
-    public void onPreExecute() {
-        server.sendProgressStart();
+    public void onReply(BaseReply reply) {
+        BusProvider.getInstance().post(new ReplyEvent(reply));
     }
 
     @Override
-    public void onPostExecute(Pair<BaseResponse, BaseResponse> responses) {
-        server.parseResponses(responses);
-    }
-
-    @Override
-    public void onCancelled() {
-        server.cancelComputation();
+    public void onComputationFinished() {
+        hideProgress();
     }
 
     @Override
@@ -231,7 +230,7 @@ public class SageActivity
             }
             case R.id.menu_share:
                 try {
-                    String shareURL = server.getShareURI().toString();
+                    String shareURL = taskFragment.getShareURI().toString();
                     Intent share = new Intent(android.content.Intent.ACTION_SEND);
                     share.setType("text/plain");
                     share.putExtra(Intent.EXTRA_TEXT, shareURL);
@@ -260,7 +259,7 @@ public class SageActivity
         if (event.isForRun()) {
             Log.i(TAG, "Received Query: " + event.getReceivedCode());
             String query = event.getReceivedCode();
-            server.query(query);
+            taskFragment.query(query);
         }
     }
 
@@ -278,7 +277,7 @@ public class SageActivity
     private void cancelComputation() {
         hideProgress();
         outputViewFragment.getOutputView().clear();
-        server.cancelTasks();
+        taskFragment.cancel();
     }
 
     @Subscribe
