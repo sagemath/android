@@ -15,7 +15,7 @@ import org.sagemath.droid.events.CodeReceivedEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.ui.CodeView;
+import org.sagemath.droid.view.CodeView;
 import org.sagemath.droid.utils.BusProvider;
 
 /**

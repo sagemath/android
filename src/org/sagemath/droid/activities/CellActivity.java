@@ -38,7 +38,7 @@ public class CellActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cell_activity);
+        setContentView(R.layout.activity_cell);
         try {
             new SimpleEula(this).new EulaTask().execute();
         } catch (Exception e) {

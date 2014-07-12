@@ -5,12 +5,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <org.sagemath.droid.ui.CodeView
+    <org.sagemath.droid.view.CodeView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:id="@+id/codeView">
-    </org.sagemath.droid.ui.CodeView>
+    </org.sagemath.droid.view.CodeView>
 
     <ToggleButton
             android:layout_width="wrap_content"

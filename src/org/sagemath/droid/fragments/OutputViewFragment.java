@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ToggleButton;
 import com.squareup.otto.Subscribe;
-import org.sagemath.droid.ui.OutputView;
+import org.sagemath.droid.view.OutputView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.events.ServerDisconnectEvent;

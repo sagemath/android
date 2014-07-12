@@ -35,7 +35,7 @@ public class CellListActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cell_list_fragment);
+        setContentView(R.layout.fragment_cell_list);
 
         cellListFragment = (CellListFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);

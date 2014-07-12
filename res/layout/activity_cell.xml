@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <fragment
+		android:name="org.sagemath.droid.fragments.CellGroupsFragment"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/cell_groups_fragment" tools:layout="@layout/cell_groups_layout">
+    </fragment>
+</LinearLayout>   
