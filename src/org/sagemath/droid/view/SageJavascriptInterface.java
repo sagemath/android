@@ -30,14 +30,16 @@ public class SageJavascriptInterface {
     @JavascriptInterface
     public void getHtml(String html) {
         Log.i(TAG, "Got Text from Editor: " + html);
-        final CodeReceivedEvent event = new CodeReceivedEvent(html);
-        event.setForRun(forRun);
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                BusProvider.getInstance().post(event);
-            }
-        });
+        if (html != null) {
+            final CodeReceivedEvent event = new CodeReceivedEvent(html);
+            event.setForRun(forRun);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    BusProvider.getInstance().post(event);
+                }
+            });
 
+        }
     }
 }

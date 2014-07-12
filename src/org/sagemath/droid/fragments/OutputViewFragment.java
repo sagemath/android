@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ToggleButton;
 import com.squareup.otto.Subscribe;
-import org.sagemath.droid.view.OutputView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.constants.StringConstants;
-import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
+import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.utils.BusProvider;
+import org.sagemath.droid.view.OutputView;
 
 /**
  * Created by Haven on 08-07-2014.
@@ -35,6 +35,7 @@ public class OutputViewFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         BusProvider.getInstance().register(this);
+        outputView.register();
     }
 
     @Override

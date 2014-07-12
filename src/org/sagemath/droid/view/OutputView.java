@@ -8,8 +8,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.LinearLayout;
-import org.sagemath.droid.SageSingleCell;
-import org.sagemath.droid.events.InteractFinishEvent;
+import com.squareup.otto.Subscribe;
+import org.sagemath.droid.events.InteractUpdateEvent;
+import org.sagemath.droid.events.ReplyEvent;
 import org.sagemath.droid.interacts.InteractView;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.gson.BaseReply;
@@ -20,8 +21,7 @@ import org.sagemath.droid.states.OutputViewState;
 import org.sagemath.droid.utils.BusProvider;
 
 public class OutputView
-        extends LinearLayout
-        implements SageSingleCell.OnSageListener {
+        extends LinearLayout {
     private final static String TAG = "SageDroid:OutputView";
 
     private OutputWebView block;
@@ -40,6 +40,10 @@ public class OutputView
 
     public void setCell(Cell cell) {
         this.cell = cell;
+    }
+
+    public void register(){
+        BusProvider.getInstance().register(this);
     }
 
     @Override
@@ -80,6 +84,7 @@ public class OutputView
         if (interactView != null) {
             interactView.unregister();
         }
+        BusProvider.getInstance().unregister(this);
     }
 
     @Override
@@ -142,38 +147,23 @@ public class OutputView
         super.dispatchRestoreInstanceState(container);
     }
 
-    @Override
-    public void onSageReplyListener(BaseReply output) {
-        Log.i(TAG, "Received Output");
-        UpdateResult task = new UpdateResult();
-        task.output = output;
-        handler.post(task);
+    @Subscribe
+    public void onReplyReceived(ReplyEvent replyEvent) {
+        Log.i(TAG, "Received Reply: " + replyEvent.getReply().getStringMessageType());
+        BaseReply reply = replyEvent.getReply();
+        if (reply instanceof InteractReply) {
+            UpdateResult task = new UpdateResult();
+            task.interact = (InteractReply) reply;
+            handler.post(task);
+        } else {
+            UpdateResult task = new UpdateResult();
+            task.output = reply;
+            handler.post(task);
+        }
     }
 
-    @Override
-    public void onSageAdditionalReplyListener(BaseReply output) {
-        Log.i(TAG, "Received Additional Output");
-        UpdateResult task = new UpdateResult();
-        task.additionalOutput = output;
-        handler.post(task);
-    }
-
-    @Override
-    public void onSageInteractListener(InteractReply interact) {
-        UpdateResult task = new UpdateResult();
-        task.interact = interact;
-        handler.post(task);
-    }
-
-    @Override
-    public void onSageFinishedListener(BaseReply reason) {
-        UpdateResult task = new UpdateResult();
-        task.finished = reason;
-        handler.post(task);
-    }
-
-    @Override
-    public void onInteractUpdated() {
+    @Subscribe
+    public void onInteractUpdated(InteractUpdateEvent event) {
         block.clearBlocks();
     }
 
@@ -197,9 +187,7 @@ public class OutputView
 
     private class UpdateResult implements Runnable {
         private BaseReply output;
-        private BaseReply additionalOutput;
         private InteractReply interact;
-        private BaseReply finished;
 
         @Override
         public void run() {
@@ -210,12 +198,6 @@ public class OutputView
                 Log.i(TAG, "Setting block output: " + output.getStringMessageType());
                 block.set(output);
             }
-            if (additionalOutput != null) {
-                OutputWebView block = getOutputBlock();
-                Log.i(TAG, "Adding additionalOutput: " + additionalOutput.getStringMessageType());
-                //block.clearBlocks();
-                block.add(additionalOutput);
-            }
             if (interact != null) {
 
                 interactView = new InteractView(context);
@@ -224,10 +206,7 @@ public class OutputView
                         + interact.getContent().getData().getInteract().getControls());
                 addView(interactView, 0);
             }
-            if (finished != null) {
-                Log.i(TAG, "onSageFinishedListener called.");
-                BusProvider.getInstance().post(new InteractFinishEvent());
-            }
+
         }
     }
 

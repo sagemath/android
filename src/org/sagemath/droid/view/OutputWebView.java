@@ -58,7 +58,7 @@ public class OutputWebView extends WebView {
         BusProvider.getInstance().register(this);
     }
 
-    public void unregister(){
+    public void unregister() {
         BusProvider.getInstance().unregister(this);
     }
 
@@ -196,8 +196,14 @@ public class OutputWebView extends WebView {
 
     public void loadSavedUrl() {
         htmlData = getHtml();
-        //helper.saveEditedCell(cell);
-        loadData(htmlData, "text/html", "utf-8");
+        Log.i(TAG, "Loading html: " + htmlData);
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                loadData(htmlData, "text/html", "utf-8");
+            }
+        });
+
     }
 
 
