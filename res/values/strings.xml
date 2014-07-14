@@ -20,7 +20,18 @@
     <string name="info_disconnected">Server Disconnected</string>
     <string name="list_empty_text">Select a Group</string>
     <string name="group_empty_text">No Cells have been saved</string>
+
+    <string name="toast_cell_saved">Input saved successfully</string>
+    <string name="toast_share_unavailable">You must run a computation first!</string>
+    <string name="toast_link_copied">Link copied to ClipBoard</string>
+    <string name="toast_image_generating">Please Wait, Generating Image…</string>
+    <string name="toast_external_storage_unmounted">External Storage is not mounted,please try again</string>
+    <string name="toast_share_server_running">Please wait for the current computation to finish</string>
+
+    <string name="dialog_share_title">Choose an Action…</string>
+
     <string name="menu_run">Run</string>
+    <string name="menu_save">Save Current Input</string>
 
     <string name="fa_expand">&#xf065;</string>
     <string name="fa_collapse">&#xf066;</string>
