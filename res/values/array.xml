@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="dialog_share_choices">
+        <item>Get Link(Open in Browser)</item>
+        <item>Share Link</item>
+        <item>Get Link(Copy to Clipboard)</item>
+        <item>Share Output</item>
+    </string-array>
+
+</resources>
