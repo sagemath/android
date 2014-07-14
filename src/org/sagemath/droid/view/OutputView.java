@@ -42,7 +42,7 @@ public class OutputView
         this.cell = cell;
     }
 
-    public void register(){
+    public void register() {
         BusProvider.getInstance().register(this);
     }
 
