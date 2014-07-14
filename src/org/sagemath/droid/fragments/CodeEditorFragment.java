@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.squareup.otto.Subscribe;
 import org.sagemath.droid.R;
@@ -15,8 +16,8 @@ import org.sagemath.droid.events.CodeReceivedEvent;
 import org.sagemath.droid.events.InteractFinishEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.view.CodeView;
 import org.sagemath.droid.utils.BusProvider;
+import org.sagemath.droid.view.CodeView;
 
 /**
  * Created by Haven on 08-07-2014.
@@ -76,6 +77,10 @@ public class CodeEditorFragment extends BaseFragment {
         return codeView;
     }
 
+    public void saveCurrentInput() {
+        codeView.getEditorText(false);
+    }
+
     @Override
     public void setCell(Cell cell) {
         super.setCell(cell);
@@ -91,6 +96,9 @@ public class CodeEditorFragment extends BaseFragment {
         String receivedCode = event.getReceivedCode();
         cell.setInput(receivedCode);
         SageSQLiteOpenHelper.getInstance(getActivity()).saveEditedCell(cell);
+        if (!event.isForRun()) {
+            Toast.makeText(getActivity(), R.string.toast_cell_saved, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Subscribe
