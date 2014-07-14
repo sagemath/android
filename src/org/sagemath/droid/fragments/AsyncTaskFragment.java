@@ -27,6 +27,7 @@ import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.events.InteractUpdateEvent;
 import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.events.ServerDisconnectEvent;
+import org.sagemath.droid.events.ShareAvailableEvent;
 import org.sagemath.droid.models.gson.*;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.UrlUtils;
@@ -257,6 +258,7 @@ public class AsyncTaskFragment extends Fragment {
         BaseResponse secondResponse = responses.second;
         if (firstResponse instanceof PermalinkResponse) {
             permalinkURL = ((PermalinkResponse) firstResponse).getQueryURL();
+            BusProvider.getInstance().post(new ShareAvailableEvent(permalinkURL));
         }
         if (secondResponse instanceof WebSocketResponse) {
             if (((WebSocketResponse) secondResponse).isValidResponse()) {

@@ -1,8 +1,6 @@
 package org.sagemath.droid.activities;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -15,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.ToggleButton;
+import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.squareup.otto.Subscribe;
@@ -24,7 +22,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
-import org.sagemath.droid.dialogs.NewCellDialogFragment;
+import org.sagemath.droid.dialogs.ShareDialogFragment;
 import org.sagemath.droid.events.*;
 import org.sagemath.droid.fragments.AsyncTaskFragment;
 import org.sagemath.droid.fragments.CodeEditorFragment;
@@ -47,11 +45,11 @@ public class SageActivity
         implements
         DeleteCellDialogFragment.OnCellDeleteListener,
         ToggleButton.OnCheckedChangeListener,
-        AsyncTaskFragment.ServerCallbacks {
+        AsyncTaskFragment.ServerCallbacks
+        , ShareDialogFragment.OnRequestOutputListener {
     private static final String TAG = "SageDroid:SageActivity";
 
-    private static final String DIALOG_NEW_CELL = "newCell";
-    private static final String DIALOG_DISCARD_CELL = "discardCell";
+    private static final String DIALOG_SHARE = "shareDialog";
     private static final String FLAG_SERVER_STATE = "serverState";
 
     private static final String TASK_FRAGMENT_TAG = "taskFragment";
@@ -60,6 +58,10 @@ public class SageActivity
 
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
+    private SuperActivityToast infoToast;
+
+    private Drawable playIcon, stopIcon;
+    private Drawable shareIcon, shareEnableIcon;
 
     private CodeEditorFragment codeEditorFragment;
     private OutputViewFragment outputViewFragment;
@@ -68,7 +70,10 @@ public class SageActivity
 
     private SageSQLiteOpenHelper helper;
 
+    private String permalinkURL = null;
+
     private boolean isServerRunning = false;
+    private boolean isShareAvailable = false;
 
 
     private Cell cell;
@@ -181,69 +186,48 @@ public class SageActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
-        MenuItem refreshItem = menu.findItem(R.id.menu_refresh);
+        MenuItem shareItem = menu.findItem(R.id.menu_share);
         MenuItem runStateItem = menu.findItem(R.id.menu_run);
-        Drawable refreshIcon = getResources().getDrawable(R.drawable.ic_action_refresh);
-        Drawable playIcon = getResources().getDrawable(R.drawable.ic_action_av_play);
-        Drawable stopIcon = getResources().getDrawable(R.drawable.ic_action_av_stop);
+        if (playIcon == null) {
+            //Cache to avoid overhead
+            playIcon = getResources().getDrawable(R.drawable.ic_action_av_play);
+            stopIcon = getResources().getDrawable(R.drawable.ic_action_av_stop);
+            shareIcon = getResources().getDrawable(R.drawable.ic_action_social_share);
+            shareEnableIcon = getResources().getDrawable(R.drawable.ic_action_social_share_enabled);
+        }
         if (isServerRunning) {
-            refreshIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
             runStateItem.setIcon(stopIcon);
         } else {
             runStateItem.setIcon(playIcon);
         }
-        refreshItem.setEnabled(!isServerRunning);
-        refreshItem.setIcon(refreshIcon);
-
+        if (isShareAvailable && !isServerRunning) {
+            shareItem.setIcon(shareEnableIcon);
+        } else {
+            shareItem.setIcon(shareIcon);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
+        menuInflater.inflate(R.menu.menu_activity_sage, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.menu_refresh:
-                startExecution();
-                return true;
-            case R.id.menu_add: {
-                FragmentManager fm = this.getSupportFragmentManager();
-                NewCellDialogFragment dialog = NewCellDialogFragment.newInstance();
-                dialog.show(fm, DIALOG_NEW_CELL);
-                return true;
-            }
-            case R.id.menu_discard: {
-                FragmentManager fm = this.getSupportFragmentManager();
-                DeleteCellDialogFragment deleteDialogFragment = DeleteCellDialogFragment.newInstance(cell);
-                deleteDialogFragment.setOnCellDeleteListener(this);
-                deleteDialogFragment.show(fm, DIALOG_DISCARD_CELL);
-                return true;
-            }
-            case R.id.menu_share:
-                try {
-                    String shareURL = taskFragment.getShareURI().toString();
-                    Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.putExtra(Intent.EXTRA_TEXT, shareURL);
-                    startActivity(share);
-                } catch (Exception e) {
-                    Log.e(TAG, "Couldn't share for some reason... " + e.getLocalizedMessage());
-                    startExecution();
-                    Toast.makeText(this, "You must run the calculation first! Try sharing again.", Toast.LENGTH_SHORT).show();
-                }
-                return true;
             case R.id.menu_run:
                 startExecution();
                 return true;
+            case R.id.menu_save:
+                codeEditorFragment.saveCurrentInput();
+                return true;
+            case R.id.menu_share:
+                shareClicked();
+                return true;
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -252,6 +236,12 @@ public class SageActivity
     @Override
     public void onCellDeleted() {
         finish();
+    }
+
+    @Override
+    public void onRequestOutput() {
+        Log.i(TAG, "Output Requested");
+        outputViewFragment.saveOutputToImage();
     }
 
     @Subscribe
@@ -263,21 +253,53 @@ public class SageActivity
         }
     }
 
+    private void shareClicked() {
+        if (!isShareAvailable && !isServerRunning) {
+            showSuperToast(R.string.toast_share_unavailable);
+        } else if (isServerRunning) {
+            showSuperToast(R.string.toast_share_server_running);
+        } else {
+            ShareDialogFragment shareDialogFragment = ShareDialogFragment.getInstance(permalinkURL);
+            shareDialogFragment.show(getSupportFragmentManager(), DIALOG_SHARE);
+        }
+    }
+
+    private void showSuperToast(int resId) {
+        SuperToast superToast = new SuperToast(this);
+        superToast.setText(getString(resId));
+        superToast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
+        superToast.setDuration(SuperToast.Duration.SHORT);
+        superToast.show();
+    }
+
     private void startExecution() {
         if (isServerRunning) {
             //Computation already running, stop
             cancelComputation();
-
         } else {
+            //Invalidate share
+            isShareAvailable = false;
+            isServerRunning = false;
+            permalinkURL = null;
+            ActivityCompat.invalidateOptionsMenu(this);
             outputViewFragment.getOutputView().clear();
             codeEditorFragment.getCodeView().getEditorText(true);
         }
     }
 
     private void cancelComputation() {
+        isShareAvailable = false;
+        ActivityCompat.invalidateOptionsMenu(this);
         hideProgress();
         outputViewFragment.getOutputView().clear();
         taskFragment.cancel();
+    }
+
+    @Subscribe
+    public void onShareEvent(ShareAvailableEvent event) {
+        isShareAvailable = true;
+        permalinkURL = event.getShareURL();
+        ActivityCompat.invalidateOptionsMenu(this);
     }
 
     @Subscribe
