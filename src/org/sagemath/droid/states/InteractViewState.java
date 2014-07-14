@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class InteractViewState extends View.BaseSavedState {
 
     private ArrayList<View> addedViews;
-    private ArrayList<InteractControl> savedControls;
+    private InteractControl[] savedControls;
 
     public InteractViewState(Parcelable superState
             , ArrayList<View> addedViews) {
@@ -26,7 +26,7 @@ public class InteractViewState extends View.BaseSavedState {
     }
 
     private void saveViewData() {
-        savedControls = new ArrayList<InteractControl>();
+        ArrayList<InteractControl> controls = new ArrayList<InteractControl>();
         InteractControl control = null;
         for (View v : addedViews) {
             if (v instanceof InteractContinuousSlider) {
@@ -47,18 +47,19 @@ public class InteractViewState extends View.BaseSavedState {
                 control.setViewEnabled(selector.getSpinner().isEnabled());
             }
             if (control != null) {
-                savedControls.add(control);
+                controls.add(control);
             }
         }
+        savedControls = controls.toArray(new InteractControl[controls.size()]);
     }
 
-    public ArrayList<InteractControl> getSavedControls() {
+    public InteractControl[] getSavedControls() {
         return savedControls;
     }
 
     private InteractViewState(Parcel source) {
         super(source);
-        savedControls = (ArrayList<InteractControl>) source.readSerializable();
+        savedControls = (InteractControl[]) source.readArray(InteractControl.class.getClassLoader());
     }
 
     public static final Creator<InteractViewState> CREATOR = new Creator<InteractViewState>() {
@@ -81,6 +82,6 @@ public class InteractViewState extends View.BaseSavedState {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeSerializable(savedControls);
+        dest.writeArray(savedControls);
     }
 }
