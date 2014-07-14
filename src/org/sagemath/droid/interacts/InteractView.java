@@ -85,7 +85,7 @@ public class InteractView extends TableLayout {
         }
     }
 
-    public void addInteractsFromSavedState(ArrayList<InteractControl> savedControls) {
+    public void addInteractsFromSavedState(InteractControl[] savedControls) {
         addedViews.clear();
         for (InteractControl control : savedControls) {
             addInteract(control, true);
