@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import nl.qbusict.cupboard.QueryResultIterable;
 import org.sagemath.droid.R;
-import org.sagemath.droid.utils.FileXMLParser;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.utils.FileXMLParser;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -53,7 +53,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         InputStream inputStream = context.getResources().openRawResource(R.raw.cell_collection);
         FileXMLParser parser = new FileXMLParser();
         List<Cell> initialCells = parser.parse(inputStream);
-        Log.i(TAG, "Initial Cells" + initialCells.toString());
         addInitialCells(initialCells, db);
     }
 
@@ -65,7 +64,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public Long addCell(Cell cell) {
-        Log.d(TAG, "Adding a new cell");
         try {
             return cupboard().withDatabase(getWritableDatabase()).put(cell);
         } catch (Exception e) {
@@ -75,7 +73,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public void addCells(List<Cell> cells) {
-        Log.d(TAG, "Adding new cells: ");
         SQLiteDatabase db = null;
 
         try {
@@ -112,8 +109,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     public List<Cell> getCells() {
 
         List<Cell> list = null;
-        QueryResultIterable<Cell> itr = null;
-
         try {
 
             list = cupboard()
@@ -124,9 +119,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
         } catch (Exception e) {
             Log.e(TAG, e + "");
-        } finally {
-            if (itr != null)
-                itr.close();
         }
 
         return list;
@@ -140,14 +132,31 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
                     .withDatabase(getReadableDatabase())
                     .query(Cell.class)
                     .withSelection("cellGroup = ?", group)
+                    .orderBy("title asc")
                     .query()
                     .list();
-
-            Log.i(TAG, "Returning group:" + group + " " + list.toString());
-
         } catch (Exception e) {
             Log.e(TAG, e + "");
         }
+        list = getSortedByFavs(list);
+        return list;
+    }
+
+    public List<Cell> getQueryCells(String group, String titleQuery) {
+
+        List<Cell> list = null;
+        try {
+            list = cupboard()
+                    .withDatabase(getReadableDatabase())
+                    .query(Cell.class)
+                    .withSelection("cellGroup = ? LIKE = ?", group, titleQuery)
+                    .orderBy("title asc")
+                    .query()
+                    .list();
+        } catch (Exception e) {
+
+        }
+        list = getSortedByFavs(list);
         return list;
     }
 
@@ -180,8 +189,29 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    private List<Cell> getSortedByFavs(List<Cell> cells) {
+        ArrayList<Cell> favs = new ArrayList<>();
+        ArrayList<Cell> others = new ArrayList<>();
+
+        for (Cell cell : cells) {
+            if (cell.isFavorite())
+                favs.add(cell);
+            else
+                others.add(cell);
+        }
+
+        favs.addAll(others);
+        return favs;
+    }
+
     public void saveEditedCell(Cell cell) {
         cupboard().withDatabase(getWritableDatabase()).put(cell);
+    }
+
+    public void saveEditedCells(List<Cell> cells) {
+        for (Cell cell : cells) {
+            cupboard().withDatabase(getWritableDatabase()).put(cell);
+        }
     }
 
     public Cell getCellbyID(Long id) {
@@ -190,6 +220,25 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void deleteCell(Cell cell) {
         cupboard().withDatabase(getWritableDatabase()).delete(cell);
+    }
+
+    public boolean deleteCells(List<Cell> cells) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            for (Cell cell : cells) {
+                cupboard().withDatabase(getWritableDatabase()).delete(cell);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+            return false;
+        } finally {
+            db.endTransaction();
+        }
+
+        return true;
     }
 
 }
