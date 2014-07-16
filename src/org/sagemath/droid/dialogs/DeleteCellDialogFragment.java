@@ -7,8 +7,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import org.sagemath.droid.R;
-import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Cell;
+
+import java.util.ArrayList;
 
 /**
  * Created by Haven on 30-06-2014.
@@ -29,11 +30,11 @@ public class DeleteCellDialogFragment extends DialogFragment {
 
     private static final String ARG_CELL = "cell";
 
-    public static DeleteCellDialogFragment newInstance(Cell cell) {
+    public static DeleteCellDialogFragment newInstance(ArrayList<Cell> cells) {
 
         DeleteCellDialogFragment fragment = new DeleteCellDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_CELL, cell);
+        args.putParcelableArrayList(ARG_CELL, cells);
 
         fragment.setArguments(args);
         return fragment;
@@ -42,15 +43,16 @@ public class DeleteCellDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final Cell cell = getArguments().getParcelable(ARG_CELL);
+        final ArrayList<Cell> cells = getArguments().getParcelableArrayList(ARG_CELL);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setMessage(R.string.dialog_confirm_discard);
+        builder.setIcon(getResources().getDrawable(R.drawable.ic_alert_red));
+        builder.setTitle(getString(R.string.delete_dialog_title));
+        builder.setMessage(getResources().getQuantityString(R.plurals.delete_n_cells, cells.size(), cells.size())
+                + "\n\n" + getString(R.string.delete_cell_warning));
         builder.setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SageSQLiteOpenHelper.getInstance(getActivity()).deleteCell(cell);
                 listener.onCellDeleted();
             }
         });
