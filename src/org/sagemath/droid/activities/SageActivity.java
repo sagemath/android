@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.ToggleButton;
-import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.squareup.otto.Subscribe;
@@ -31,6 +30,7 @@ import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.gson.BaseReply;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.ChangeLog;
+import org.sagemath.droid.utils.ToastUtils;
 
 /**
  * SageActivity - handling of single cell display and input
@@ -58,7 +58,6 @@ public class SageActivity
 
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
-    private SuperActivityToast infoToast;
 
     private Drawable playIcon, stopIcon;
     private Drawable shareIcon, shareEnableIcon;
@@ -255,21 +254,13 @@ public class SageActivity
 
     private void shareClicked() {
         if (!isShareAvailable && !isServerRunning) {
-            showSuperToast(R.string.toast_share_unavailable);
+            ToastUtils.getAlertToast(this, R.string.toast_share_unavailable, SuperToast.Duration.SHORT).show();
         } else if (isServerRunning) {
-            showSuperToast(R.string.toast_share_server_running);
+            ToastUtils.getAlertToast(this, R.string.toast_share_server_running, SuperToast.Duration.SHORT).show();
         } else {
             ShareDialogFragment shareDialogFragment = ShareDialogFragment.getInstance(permalinkURL);
             shareDialogFragment.show(getSupportFragmentManager(), DIALOG_SHARE);
         }
-    }
-
-    private void showSuperToast(int resId) {
-        SuperToast superToast = new SuperToast(this);
-        superToast.setText(getString(resId));
-        superToast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
-        superToast.setDuration(SuperToast.Duration.SHORT);
-        superToast.show();
     }
 
     private void startExecution() {

@@ -21,19 +21,40 @@
     <string name="list_empty_text">Select a Group</string>
     <string name="group_empty_text">No Cells have been saved</string>
 
+    <string name="header_fav_text">FAVORITES</string>
+
+    <string name="delete_dialog_title">Delete Cell?</string>
+    <string name="choose_group_text">CHOOSE A GROUP</string>
+
     <string name="toast_cell_saved">Input saved successfully</string>
     <string name="toast_share_unavailable">You must run a computation first!</string>
     <string name="toast_link_copied">Link copied to ClipBoard</string>
     <string name="toast_image_generating">Please Wait, Generating Image…</string>
     <string name="toast_external_storage_unmounted">External Storage is not mounted,please try again</string>
     <string name="toast_share_server_running">Please wait for the current computation to finish</string>
+    <string name="toast_edit_multiple_error">You cannot edit multiple cells</string>
 
     <string name="dialog_share_title">Choose an Action…</string>
 
     <string name="menu_run">Run</string>
     <string name="menu_save">Save Current Input</string>
+    <string name="menu_toggle_favorite">Toggle Favorite</string>
+    <string name="menu_delete_selected">Delete Selected Items</string>
+    <string name="menu_edit_cell">Edit this Cell</string>
+
+    <plurals name="delete_n_cells">
+        <item quantity="one">Really delete this cell?</item>
+        <item quantity="other">Really delete these %d cells?</item>
+    </plurals>
+
+    <string name="delete_cell_warning">
+        <b>WARNING!</b>
+        This cannot be undone!
+    </string>
 
     <string name="fa_expand">&#xf065;</string>
     <string name="fa_collapse">&#xf066;</string>
+    <string name="fa_star">&#xf005;</string>
+    <string name="fa_star_outline">&#xf006;</string>
 
 </resources>
