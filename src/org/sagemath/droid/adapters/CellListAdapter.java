@@ -3,6 +3,8 @@ package org.sagemath.droid.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -16,6 +18,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Rasmi.Elasmar
@@ -28,11 +32,11 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
     private LayoutInflater inflater;
     private SparseBooleanArray checkedItems;
 
-    private boolean clearSelection = false;
-
     private Drawable backgroundDrawable;
 
     private List<Cell> cells;
+
+    private String searchQuery = null;
 
     public CellListAdapter(Context context, List<Cell> cells) {
         this.context = context;
@@ -61,6 +65,18 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
     public void updateCellList(List<Cell> cells) {
         Log.i(TAG, "Updating List with size: " + cells.size());
         this.cells = cells;
+        notifyDataSetChanged();
+    }
+
+    public void setQueryCells(List<Cell> queryCells, String query) {
+        cells = queryCells;
+        searchQuery = query;
+        notifyDataSetChanged();
+    }
+
+    public void queryReset(List<Cell> cells) {
+        this.cells = cells;
+        searchQuery = null;
         notifyDataSetChanged();
     }
 
@@ -120,21 +136,18 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
 
         Cell cell = cells.get(position);
 
-        viewHolder.titleView.setText(cell.getTitle());
+        viewHolder.titleView.setText(highlight(cell.getTitle(), searchQuery));
         viewHolder.descriptionView.setText(cell.getDescription());
         viewHolder.favorite.setText(cell.isFavorite() ? context.getString(R.string.fa_star) : context.getString(R.string.fa_star_outline));
 
-        if (clearSelection) {
-            view.setBackgroundDrawable(backgroundDrawable);
+        if (checkedItems.get(position)) {
+            Log.i(TAG, "Setting blue background");
+            view.setBackgroundDrawable(view.getResources().getDrawable(R.drawable.cell_selected_background));
         } else {
-            if (checkedItems.get(position)) {
-                Log.i(TAG, "Setting blue background");
-                view.setBackgroundDrawable(view.getResources().getDrawable(R.drawable.cell_selected_background));
-            } else {
-                Log.i(TAG, "Setting normal background");
-                view.setBackgroundDrawable(backgroundDrawable);
-            }
+            Log.i(TAG, "Setting normal background");
+            view.setBackgroundDrawable(backgroundDrawable);
         }
+
         return view;
     }
 
@@ -184,8 +197,24 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
         return checkedItems;
     }
 
-    public void resetSelection() {
-        clearSelection = false;
+    public Spannable highlight(String text, String searchQuery) {
+        Spannable highlight = Spannable.Factory.getInstance().newSpannable(text);
+
+        if (searchQuery == null) {
+            return highlight;
+        }
+
+        Pattern pattern = Pattern.compile("(?i)(" + searchQuery.trim().replaceAll("\\s+", "|") + ")");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            highlight.setSpan(
+                    new ForegroundColorSpan(context.getResources().getColor(R.color.holo_blue_light)),
+                    matcher.start(),
+                    matcher.end(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return highlight;
     }
 
     public void clearSelection() {
