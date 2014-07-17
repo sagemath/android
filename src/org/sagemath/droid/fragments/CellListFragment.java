@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView;
@@ -33,7 +35,9 @@ import java.util.List;
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
  */
-public class CellListFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
+public class CellListFragment extends BaseListFragment
+        implements AdapterView.OnItemClickListener
+        , SearchView.OnQueryTextListener {
     private static final String TAG = "SageDroid:CellListFragment";
 
     private static final String DIALOG_DELETE_CELL = "deleteCell";
@@ -180,6 +184,7 @@ public class CellListFragment extends BaseListFragment implements AdapterView.On
             isEditEnabled = true;
         }
 
+        setHasOptionsMenu(true);
         setContentShown(false);
     }
 
@@ -228,6 +233,17 @@ public class CellListFragment extends BaseListFragment implements AdapterView.On
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra(StringConstants.ID, cell.getID());
         startActivity(i);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        adapter.setQueryCells(helper.getQueryCells(group, query), query);
+        return true;
     }
 
     private void showDeleteCellDialog(final ActionMode mode) {
@@ -308,6 +324,39 @@ public class CellListFragment extends BaseListFragment implements AdapterView.On
         return adapter.getSelectedItemList().get(0);
     }
 
-    //TODO move the options menu here, don't let activity handle
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_cell_list, menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_search);
+
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+
+        //Collapse SearchView if focus is lost
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    MenuItemCompat.collapseActionView(searchItem);
+                    searchView.setQuery("", false);
+                }
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                adapter.queryReset(helper.getCellsWithGroup(group));
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 
 }

@@ -143,18 +143,18 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public List<Cell> getQueryCells(String group, String titleQuery) {
-
+        String queryFormat = "%" + titleQuery + "%";
         List<Cell> list = null;
         try {
             list = cupboard()
                     .withDatabase(getReadableDatabase())
                     .query(Cell.class)
-                    .withSelection("cellGroup = ? LIKE = ?", group, titleQuery)
+                    .withSelection("cellGroup = ? AND title LIKE ?", group, queryFormat)
                     .orderBy("title asc")
                     .query()
                     .list();
         } catch (Exception e) {
-
+            Log.e(TAG, e + "");
         }
         list = getSortedByFavs(list);
         return list;

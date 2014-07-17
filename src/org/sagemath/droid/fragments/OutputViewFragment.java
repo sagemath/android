@@ -20,8 +20,8 @@ import org.sagemath.droid.events.ProgressEvent;
 import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.utils.BusProvider;
-import org.sagemath.droid.view.OutputView;
-import org.sagemath.droid.view.OutputWebView;
+import org.sagemath.droid.views.OutputView;
+import org.sagemath.droid.views.OutputWebView;
 
 import java.io.File;
 import java.io.FileOutputStream;
