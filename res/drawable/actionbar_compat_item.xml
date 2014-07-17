@@ -16,8 +16,8 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/actionbar_compat_item_pressed"
-        android:state_pressed="true" />
+          android:state_pressed="true"/>
     <item android:drawable="@drawable/actionbar_compat_item_focused"
-        android:state_focused="true" />
-    <item android:drawable="@android:color/transparent" />
+          android:state_focused="true"/>
+    <item android:drawable="@android:color/transparent"/>
 </selector>

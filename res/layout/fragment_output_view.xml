@@ -5,14 +5,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <org.sagemath.droid.view.OutputView
+    <org.sagemath.droid.views.OutputView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:focusableInTouchMode="false"
             android:background="@drawable/bg_card"
             android:id="@+id/outputView">
-    </org.sagemath.droid.view.OutputView>
+    </org.sagemath.droid.views.OutputView>
 
     <ToggleButton
             android:layout_width="wrap_content"
