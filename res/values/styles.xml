@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="SectionHeader">
         <item name="android:drawableBottom">@drawable/section_header</item>
         <item name="android:drawablePadding">4dp</item>
@@ -8,5 +9,11 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/holo_blue_light</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="floatLabelEditTextAppearance" parent="android:Widget">
+        <item name="android:textColor">@color/holo_blue_light</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

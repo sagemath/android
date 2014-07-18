@@ -29,7 +29,7 @@ public class BaseListFragment extends Fragment {
         return container;
     }
 
-    public void setContentShown(boolean shown, boolean animate) {
+    public void setContentShown(boolean shown) {
         if (contentShown == shown) {
             return;
         }
@@ -40,14 +40,5 @@ public class BaseListFragment extends Fragment {
             container.setVisibility(View.INVISIBLE);
         }
     }
-
-    public void setContentShown(boolean shown) {
-        setContentShown(shown, true);
-    }
-
-    public void setContentShownNoAnimation(boolean shown) {
-        setContentShown(shown, false);
-    }
-
 
 }

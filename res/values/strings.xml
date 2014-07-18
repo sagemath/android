@@ -6,11 +6,11 @@
     <string name="history">History</string>
     <string name="add_new_title">Add New Cell</string>
     <string name="insert_title_label">Title</string>
-    <string name="insert_title_hint">Name this Cell.</string>
-    <string name="insert_desc_label">Description</string>
-    <string name="insert_desc_hint">Enter a description.</string>
+    <string name="insert_title_hint">Cell Name</string>
+    <string name="insert_desc_label">Cell Description</string>
+    <string name="insert_desc_hint">Cell Description</string>
     <string name="insert_group_label">Group</string>
-    <string name="insert_group_hint">Select a Group.</string>
+    <string name="insert_group_hint">Choose/Create a Group</string>
     <string name="insert_input_label">Input</string>
     <string name="insert_input_hint">Enter your calculation input.</string>
     <string name="dialog_confirm_discard">Really discard this cell?</string>
@@ -22,6 +22,18 @@
     <string name="group_empty_text">No Cells have been saved</string>
 
     <string name="header_fav_text">FAVORITES</string>
+
+    <string name="dialog_new_group_title">Create a new Group</string>
+    <string name="dialog_new_group_text_hint">Create a Group</string>
+    <string name="dialog_edit_cell_single_title">Edit Cell</string>
+    <string name="dialog_edit_cell_multiple_title">Edit Cells</string>
+    <string name="dialog_info_button_contentDescription">An empty group name will add the cell to the "Misc" group
+    </string>
+    <string name="dialog_edit_cell_multiple_group_hint">Edit Group Name(s)</string>
+    <string name="dialog_new_cell_title">Create a new Cell</string>
+    <string name="dialog_name_hint">Cell Name</string>
+    <string name="dialog_group_hint">Choose/Create a Group</string>
+    <string name="dialog_description_hint">Cell Description</string>
 
     <string name="delete_dialog_title">Delete Cell?</string>
     <string name="choose_group_text">CHOOSE A GROUP</string>
