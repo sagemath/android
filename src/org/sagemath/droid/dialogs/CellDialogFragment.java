@@ -326,7 +326,7 @@ public class CellDialogFragment extends DialogFragment {
                                 Cell cell = new Cell();
                                 cell.setTitle(titleEditText.getText().toString());
                                 cell.setGroup(groupEditText.getText().toString());
-                                cell.setDescription(groupEditText.getText().toString());
+                                cell.setDescription(descriptionEditText.getText().toString());
                                 helper.addCell(cell);
                                 listener.onActionCompleted();
                                 dismiss();
