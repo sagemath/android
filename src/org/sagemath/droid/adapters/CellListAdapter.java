@@ -141,10 +141,8 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
         viewHolder.favorite.setText(cell.isFavorite() ? context.getString(R.string.fa_star) : context.getString(R.string.fa_star_outline));
 
         if (checkedItems.get(position)) {
-            Log.i(TAG, "Setting blue background");
             view.setBackgroundDrawable(view.getResources().getDrawable(R.drawable.cell_selected_background));
         } else {
-            Log.i(TAG, "Setting normal background");
             view.setBackgroundDrawable(backgroundDrawable);
         }
 

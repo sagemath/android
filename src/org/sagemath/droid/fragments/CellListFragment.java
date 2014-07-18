@@ -2,7 +2,6 @@ package org.sagemath.droid.fragments;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -12,16 +11,15 @@ import android.view.*;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
-import com.github.johnpersano.supertoasts.SuperToast;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.adapters.CellListAdapter;
+import org.sagemath.droid.constants.IntConstants;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
-import org.sagemath.droid.dialogs.EditCellDialogFragment;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.utils.ToastUtils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.util.ArrayList;
@@ -43,10 +41,6 @@ public class CellListFragment extends BaseListFragment
     private static final String DIALOG_DELETE_CELL = "deleteCell";
     private static final String DIALOG_EDIT_CELL = "editCell";
     private static final String ARG_GROUP = "group";
-
-    private boolean isEditEnabled;
-
-    private Drawable enableEditIcon, disableEditIcon;
 
     private List<Cell> cells = new ArrayList<Cell>();
     private SageSQLiteOpenHelper helper;
@@ -125,21 +119,7 @@ public class CellListFragment extends BaseListFragment
 
                 @Override
                 public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
-                    Log.i(TAG, "In onPrepareActionMode");
-                    if (enableEditIcon == null) {
-                        enableEditIcon = getResources().getDrawable(R.drawable.ic_action_content_edit_enabled);
-                        disableEditIcon = getResources().getDrawable(R.drawable.ic_action_content_edit);
-                    }
-                    MenuItem editItem = menu.findItem(R.id.menu_edit);
-                    if (count == 1) {
-                        editItem.setIcon(enableEditIcon);
-                        isEditEnabled = true;
-                    } else {
-                        editItem.setIcon(disableEditIcon);
-                        isEditEnabled = false;
-                    }
-
-                    return true;
+                    return false;
                 }
 
                 @Override
@@ -174,14 +154,13 @@ public class CellListFragment extends BaseListFragment
                     adapter.setSelection(position, checked);
                     count = adapter.getSelectedItemCount();
                     mode.setTitle(String.valueOf(count));
-                    mode.invalidate();
+
                 }
             });
 
         } else {
             //Show default context menu
             registerForContextMenu(list);
-            isEditEnabled = true;
         }
 
         setHasOptionsMenu(true);
@@ -218,7 +197,7 @@ public class CellListFragment extends BaseListFragment
             case R.id.menu_edit:
                 Cell editCell = getEditCell();
                 if (editCell != null) {
-                    EditCellDialogFragment editDialog = EditCellDialogFragment.newInstance(editCell);
+                    CellDialogFragment editDialog = CellDialogFragment.newInstance(editCell);
                     editDialog.show(getActivity().getSupportFragmentManager(), DIALOG_EDIT_CELL);
                 }
                 break;
@@ -265,17 +244,15 @@ public class CellListFragment extends BaseListFragment
 
 
     private void showEditCellDialog() {
-        if (isEditEnabled) {
-            Cell editCell = getEditCell();
-            if (editCell != null) {
-                EditCellDialogFragment editDialog = EditCellDialogFragment.newInstance(editCell);
-                editDialog.show(getActivity().getSupportFragmentManager(), DIALOG_EDIT_CELL);
+        ArrayList<Cell> cells = adapter.getSelectedItemList();
+        CellDialogFragment dialog = CellDialogFragment.newInstance(cells, IntConstants.DIALOG_EDIT_CELL);
+        dialog.setOnActionCompleteListener(new CellDialogFragment.OnActionCompleteListener() {
+            @Override
+            public void onActionCompleted() {
+                refreshAdapter();
             }
-        } else {
-            ToastUtils.getAlertToast(getActivity()
-                    , R.string.toast_edit_multiple_error
-                    , SuperToast.Duration.LONG).show();
-        }
+        });
+        dialog.show(getActivity().getSupportFragmentManager(), DIALOG_EDIT_CELL);
     }
 
     public void refreshAdapter() {
@@ -292,7 +269,7 @@ public class CellListFragment extends BaseListFragment
         list.setAdapter(adapter);
         list.setEmptyView(emptyView);
 
-        setContentShownNoAnimation(true);
+        setContentShown(true);
     }
 
     public void switchToGroup(String group) {

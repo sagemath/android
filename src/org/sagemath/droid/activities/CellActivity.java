@@ -9,7 +9,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import org.sagemath.droid.R;
-import org.sagemath.droid.dialogs.NewCellDialogFragment;
+import org.sagemath.droid.constants.IntConstants;
+import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment.OnGroupSelectedListener;
 import org.sagemath.droid.fragments.CellListFragment;
@@ -74,7 +75,7 @@ public class CellActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_activity_cell, menu);
         return super.onCreateOptionsMenu(menu);
@@ -85,7 +86,7 @@ public class CellActivity
         switch (item.getItemId()) {
             case R.id.menu_add: {
                 FragmentManager fm = this.getSupportFragmentManager();
-                NewCellDialogFragment dialog = NewCellDialogFragment.newInstance();
+                CellDialogFragment dialog = CellDialogFragment.newInstance(null, IntConstants.DIALOG_NEW_CELL);
                 dialog.show(fm, DIALOG_NEW_CELL);
                 return true;
             }

@@ -1,14 +1,14 @@
 package org.sagemath.droid.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import org.sagemath.droid.R;
-import org.sagemath.droid.dialogs.NewCellDialogFragment;
+import org.sagemath.droid.constants.IntConstants;
+import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.fragments.CellListFragment;
 import org.sagemath.droid.utils.ChangeLog;
 
@@ -73,18 +73,16 @@ public class CellListActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Uri uri;
-        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.menu_add: {
                 FragmentManager fm = this.getSupportFragmentManager();
-                NewCellDialogFragment dialog = NewCellDialogFragment.newInstance();
-                dialog.setOnCellCreateListener(new NewCellDialogFragment.OnCellCreateListener() {
+                CellDialogFragment dialog = CellDialogFragment.newInstance(null, IntConstants.DIALOG_NEW_CELL);
+                dialog.setOnActionCompleteListener(new CellDialogFragment.OnActionCompleteListener() {
                     @Override
-                    public void onCellCreated() {
+                    public void onActionCompleted() {
                         cellListFragment.refreshAdapter();
                     }
                 });

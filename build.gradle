@@ -55,6 +55,7 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.+'
     compile 'com.android.support:appcompat-v7:19.1.+'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.castorflex.smoothprogressbar:library:0.5.1'
     compile 'se.emilsjolander:stickylistheaders:+'
     compile 'com.koushikdutta.async:androidasync:1.2.6'
