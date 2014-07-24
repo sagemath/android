@@ -5,4 +5,8 @@
     <color name="holo_blue_dark">#0099CC</color>
     <color name="holo_green">#669900</color>
     <color name="holo_red">#CC0000</color>
+    <color name="rating_yellow">#ffeb3b</color>
+    <color name="selection_blue">#33e2e5</color>
+    <color name="holo_green_light">#99CC00</color>
+    <color name="holo_green_dark">#669900</color>
 </resources>
