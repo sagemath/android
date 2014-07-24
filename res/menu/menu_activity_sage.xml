@@ -9,15 +9,22 @@
           app:showAsAction="always"
           android:orderInCategory="0"/>
 
+    <item
+            android:id="@+id/menu_insert"
+            android:title="@string/menu_insert_open"
+            android:icon="@drawable/ic_action_code"
+            app:showAsAction="always"
+            android:orderInCategory="1"/>
+
     <item android:id="@+id/menu_save"
           android:title="@string/menu_save"
           android:icon="@drawable/ic_action_content_save"
-          app:showAsAction="always"
-          android:orderInCategory="1"/>
+          app:showAsAction="ifRoom"
+          android:orderInCategory="2"/>
 
     <item android:id="@+id/menu_share"
           android:title="@string/menu_share"
           android:icon="@drawable/ic_action_social_share"
-          app:showAsAction="always"
-          android:orderInCategory="2"/>
+          app:showAsAction="ifRoom"
+          android:orderInCategory="3"/>
 </menu>

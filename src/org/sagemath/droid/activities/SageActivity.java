@@ -1,11 +1,13 @@
 package org.sagemath.droid.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,12 +23,15 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
+import org.sagemath.droid.dialogs.InsertDialogFragment;
+import org.sagemath.droid.dialogs.InsertSpinnerDialogFragment;
 import org.sagemath.droid.dialogs.ShareDialogFragment;
 import org.sagemath.droid.events.*;
 import org.sagemath.droid.fragments.AsyncTaskFragment;
 import org.sagemath.droid.fragments.CodeEditorFragment;
 import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.database.Inserts;
 import org.sagemath.droid.models.gson.BaseReply;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.ChangeLog;
@@ -46,11 +51,16 @@ public class SageActivity
         DeleteCellDialogFragment.OnCellDeleteListener,
         ToggleButton.OnCheckedChangeListener,
         AsyncTaskFragment.ServerCallbacks
-        , ShareDialogFragment.OnRequestOutputListener {
+        , ShareDialogFragment.OnRequestOutputListener
+        , PopupMenu.OnMenuItemClickListener
+        , InsertSpinnerDialogFragment.OnInsertSelectedListener {
     private static final String TAG = "SageDroid:SageActivity";
 
     private static final String DIALOG_SHARE = "shareDialog";
     private static final String FLAG_SERVER_STATE = "serverState";
+
+    private static final String ARG_ADD_INSERT = "newInsert";
+    private static final String ARG_PUT_INSERT = "addInsert";
 
     private static final String TASK_FRAGMENT_TAG = "taskFragment";
 
@@ -65,6 +75,7 @@ public class SageActivity
     private CodeEditorFragment codeEditorFragment;
     private OutputViewFragment outputViewFragment;
     private AsyncTaskFragment taskFragment;
+
     private View dividerView;
 
     private SageSQLiteOpenHelper helper;
@@ -220,6 +231,10 @@ public class SageActivity
             case R.id.menu_run:
                 startExecution();
                 return true;
+            case R.id.menu_insert:
+                View popUpView = findViewById(R.id.menu_insert);
+                showPopup(popUpView);
+                return true;
             case R.id.menu_save:
                 codeEditorFragment.saveCurrentInput();
                 return true;
@@ -230,6 +245,41 @@ public class SageActivity
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showPopup(View v) {
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.menu_insert_popup, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+
+        switch (menuItem.getItemId()) {
+            case R.id.menu_insert_spinner:
+                InsertSpinnerDialogFragment insertDialog = InsertSpinnerDialogFragment.newInstance();
+                insertDialog.show(getSupportFragmentManager(), ARG_PUT_INSERT);
+                insertDialog.setOnInsertSelectedListener(this);
+                break;
+
+            case R.id.menu_add_insert:
+                InsertDialogFragment dialog = InsertDialogFragment.newInstance(null);
+                dialog.show(getSupportFragmentManager(), ARG_ADD_INSERT);
+                break;
+
+            case R.id.menu_manage_insert:
+                startActivity(new Intent(this, ManageInsertActivity.class));
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onInsertSelected(Inserts insert) {
+        codeEditorFragment.getCodeView().paste(insert.getInsertText());
     }
 
     @Override

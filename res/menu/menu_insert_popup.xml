@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/menu_insert_spinner"
+            android:title="@string/menu_view_inserts"/>
+
+    <item
+            android:id="@+id/menu_add_insert"
+            android:title="@string/menu_add_insert"/>
+
+    <item
+            android:id="@+id/menu_manage_insert"
+            android:title="@string/menu_manage_inserts"/>
+</menu>
