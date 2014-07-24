@@ -64,7 +64,7 @@ public class CodeView extends WebView {
             public void run() {
                 loadUrl("javascript:getEditorText();");
             }
-        },500);
+        }, 500);
     }
 
     public void setEditorText(String text) {
@@ -76,7 +76,18 @@ public class CodeView extends WebView {
             public void run() {
                 loadUrl(String.format(functionCall, textToSet));
             }
-        },500);
+        }, 500);
+    }
+
+    public void paste(final String text) {
+        final String functionCall = "javascript:paste(\"%s\");";
+        final String textToSet = StringEscapeUtils.escapeJavaScript(text);
+        this.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadUrl(String.format(functionCall, textToSet));
+            }
+        }, 500);
     }
 
     private class CodeViewInputConnection extends BaseInputConnection {
