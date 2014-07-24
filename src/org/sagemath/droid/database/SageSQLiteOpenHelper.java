@@ -97,14 +97,14 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     private void addInitialInserts(SQLiteDatabase db) {
 
         Inserts insert1 = new Inserts();
-        insert1.insertDescription = "List Comprehension";
-        insert1.insertText = "[ i for i in range(0,10) ]";
-        insert1.isFavorite = false;
+        insert1.setInsertDescription("List Comprehension");
+        insert1.setInsertText("[ i for i in range(0,10) ]");
+        insert1.setFavorite(false);
 
         Inserts insert2 = new Inserts();
-        insert2.insertDescription = "For Loop";
-        insert2.insertText = "for i in range(0,10):";
-        insert2.isFavorite = false;
+        insert2.setInsertDescription("For Loop");
+        insert2.setInsertText("for i in range(0,10):");
+        insert2.setFavorite(false);
         cupboard().withDatabase(db).put(insert1, insert2);
     }
 

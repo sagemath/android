@@ -9,10 +9,10 @@ import android.os.Parcelable;
 public class Inserts implements Parcelable {
     private static final String TAG = "SageDroid:Inserts";
 
-    public Long _id;
-    public String insertDescription;
-    public String insertText;
-    public boolean isFavorite;
+    Long _id;
+    String insertDescription;
+    String insertText;
+    boolean isFavorite;
 
     public Inserts() {
 
