@@ -7,6 +7,8 @@ import android.util.Log;
 import nl.qbusict.cupboard.QueryResultIterable;
 import org.sagemath.droid.R;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.database.Groups;
+import org.sagemath.droid.models.database.Inserts;
 import org.sagemath.droid.utils.FileXMLParser;
 
 import java.io.InputStream;
@@ -30,6 +32,8 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     static {
         cupboard().register(Cell.class);
+        cupboard().register(Groups.class);
+        cupboard().register(Inserts.class);
     }
 
     public static SageSQLiteOpenHelper getInstance(Context context) {
@@ -49,17 +53,17 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "Creating tables");
         cupboard().withDatabase(db).createTables();
-        //TODO replace this, only for testing
         InputStream inputStream = context.getResources().openRawResource(R.raw.cell_collection);
         FileXMLParser parser = new FileXMLParser();
         List<Cell> initialCells = parser.parse(inputStream);
         addInitialCells(initialCells, db);
+        addInitialInserts(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Not sure if this is alright...
-        cupboard().withDatabase(getWritableDatabase()).dropAllTables();
+        //cupboard().withDatabase(getWritableDatabase()).dropAllTables();
         onCreate(getWritableDatabase());
     }
 
@@ -90,6 +94,20 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     }
 
+    private void addInitialInserts(SQLiteDatabase db) {
+
+        Inserts insert1 = new Inserts();
+        insert1.insertDescription = "List Comprehension";
+        insert1.insertText = "[ i for i in range(0,10) ]";
+        insert1.isFavorite = false;
+
+        Inserts insert2 = new Inserts();
+        insert2.insertDescription = "For Loop";
+        insert2.insertText = "for i in range(0,10):";
+        insert2.isFavorite = false;
+        cupboard().withDatabase(db).put(insert1, insert2);
+    }
+
     public void addInitialCells(List<Cell> cells, SQLiteDatabase db) {
         try {
             db.beginTransaction();
@@ -106,24 +124,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Cell> getCells() {
-
-        List<Cell> list = null;
-        try {
-
-            list = cupboard()
-                    .withDatabase(getReadableDatabase())
-                    .query(Cell.class)
-                    .query()
-                    .list();
-
-        } catch (Exception e) {
-            Log.e(TAG, e + "");
-        }
-
-        return list;
-    }
-
     public List<Cell> getCellsWithGroup(String group) {
 
         List<Cell> list = null;
@@ -138,7 +138,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.e(TAG, e + "");
         }
-        list = getSortedByFavs(list);
+        list = sortCellsByFavorite(list);
         return list;
     }
 
@@ -156,7 +156,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.e(TAG, e + "");
         }
-        list = getSortedByFavs(list);
+        list = sortCellsByFavorite(list);
         return list;
     }
 
@@ -189,7 +189,100 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    private List<Cell> getSortedByFavs(List<Cell> cells) {
+    public List<Inserts> getQueryInserts(String query) {
+        String queryInsert = "%" + query + "%";
+        List<Inserts> inserts = null;
+
+        try {
+            inserts = cupboard()
+                    .withDatabase(getReadableDatabase())
+                    .query(Inserts.class)
+                    .withSelection("insertDescription LIKE ?", queryInsert)
+                    .orderBy("insertDescription asc")
+                    .query()
+                    .list();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+        return inserts;
+    }
+
+    public List<Inserts> getInserts() {
+
+        List<Inserts> inserts = null;
+
+        try {
+            inserts = cupboard()
+                    .withDatabase(getReadableDatabase())
+                    .query(Inserts.class)
+                    .orderBy("insertDescription asc")
+                    .query()
+                    .list();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+
+        if (inserts != null) {
+            inserts = sortInsertsByFavorite(inserts);
+        }
+
+        return inserts;
+    }
+
+    public void addInsert(Inserts insert) {
+        try {
+            cupboard().withDatabase(getWritableDatabase()).put(insert);
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+    }
+
+    public boolean addInsert(List<Inserts> inserts) {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.beginTransaction();
+            for (Inserts insert : inserts) {
+                cupboard().withDatabase(db).put(inserts);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+            return false;
+        } finally {
+            db.endTransaction();
+            return true;
+        }
+    }
+
+    public void deleteInsert(Inserts insert) {
+        try {
+            cupboard().withDatabase(getWritableDatabase()).delete(insert);
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+    }
+
+    public boolean deleteInsert(List<Inserts> inserts) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            for (Inserts insert : inserts) {
+                Log.i(TAG, "Deleting:" + insert);
+                cupboard().withDatabase(db).delete(insert);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+            return false;
+        } finally {
+            db.endTransaction();
+        }
+
+        return true;
+    }
+
+    private List<Cell> sortCellsByFavorite(List<Cell> cells) {
         ArrayList<Cell> favs = new ArrayList<>();
         ArrayList<Cell> others = new ArrayList<>();
 
@@ -198,6 +291,22 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
                 favs.add(cell);
             else
                 others.add(cell);
+        }
+
+        favs.addAll(others);
+        return favs;
+    }
+
+    private List<Inserts> sortInsertsByFavorite(List<Inserts> inserts) {
+        ArrayList<Inserts> favs = new ArrayList<>();
+        ArrayList<Inserts> others = new ArrayList<>();
+
+        for (Inserts insert : inserts) {
+            if (insert.isFavorite()) {
+                favs.add(insert);
+            } else {
+                others.add(insert);
+            }
         }
 
         favs.addAll(others);
