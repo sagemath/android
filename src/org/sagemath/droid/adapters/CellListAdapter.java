@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.utils.Highlighter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
     private SparseBooleanArray checkedItems;
 
     private Drawable backgroundDrawable;
+    private Highlighter highlighter;
 
     private List<Cell> cells;
 
@@ -43,6 +45,7 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
         this.cells = cells;
         checkedItems = new SparseBooleanArray();
         inflater = LayoutInflater.from(context);
+        highlighter = new Highlighter(context);
         fontAwesome = Typeface.createFromAsset(context.getAssets(), "fontawesome-webfont.ttf");
     }
 
@@ -53,9 +56,8 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
 
         public void initFavorite() {
             favorite.setTypeface(fontAwesome);
-            favorite.setTextColor(context.getResources().getColor(R.color.holo_blue_light));
+            favorite.setTextColor(context.getResources().getColor(R.color.holo_green_light));
         }
-
     }
 
     private class HeaderViewHolder {
@@ -136,7 +138,7 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
 
         Cell cell = cells.get(position);
 
-        viewHolder.titleView.setText(highlight(cell.getTitle(), searchQuery));
+        viewHolder.titleView.setText(highlighter.highlight(cell.getTitle(), searchQuery));
         viewHolder.descriptionView.setText(cell.getDescription());
         viewHolder.favorite.setText(cell.isFavorite() ? context.getString(R.string.fa_star) : context.getString(R.string.fa_star_outline));
 
