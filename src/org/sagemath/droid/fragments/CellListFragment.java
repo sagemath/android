@@ -113,7 +113,7 @@ public class CellListFragment extends BaseListFragment
                 @Override
                 public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
                     MenuInflater menuInflater = mode.getMenuInflater();
-                    menuInflater.inflate(R.menu.menu_cell_list_action_mode, menu);
+                    menuInflater.inflate(R.menu.menu_action_mode, menu);
                     return true;
                 }
 
@@ -127,16 +127,16 @@ public class CellListFragment extends BaseListFragment
 
 
                     switch (item.getItemId()) {
-                        case R.id.menu_toggle_fav:
+                        case R.id.menu_action_toggle_fav:
                             toggleFavorites(getAdapter().getSelectedItemList());
                             mode.finish();
                             break;
 
-                        case R.id.menu_delete:
+                        case R.id.menu_action_delete:
                             showDeleteCellDialog(mode);
                             break;
 
-                        case R.id.menu_edit:
+                        case R.id.menu_action_edit:
                             showEditCellDialog();
                             mode.finish();
                             break;
@@ -172,17 +172,17 @@ public class CellListFragment extends BaseListFragment
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         //Inflate the same menu, only the actions are different
-        inflater.inflate(R.menu.menu_cell_list_action_mode, menu);
+        inflater.inflate(R.menu.menu_action_mode, menu);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_toggle_fav:
+            case R.id.menu_action_toggle_fav:
                 toggleFavorites(getAdapter().getSelectedItemList());
                 break;
 
-            case R.id.menu_delete:
+            case R.id.menu_action_delete:
                 ArrayList<Cell> cellsToDelete = adapter.getSelectedItemList();
                 DeleteCellDialogFragment deleteDialog = DeleteCellDialogFragment.newInstance(cellsToDelete);
                 deleteDialog.setOnCellDeleteListener(new DeleteCellDialogFragment.OnCellDeleteListener() {
@@ -194,7 +194,7 @@ public class CellListFragment extends BaseListFragment
                 deleteDialog.show(getActivity().getSupportFragmentManager(), DIALOG_DELETE_CELL);
                 break;
 
-            case R.id.menu_edit:
+            case R.id.menu_action_edit:
                 Cell editCell = getEditCell();
                 if (editCell != null) {
                     CellDialogFragment editDialog = CellDialogFragment.newInstance(editCell);

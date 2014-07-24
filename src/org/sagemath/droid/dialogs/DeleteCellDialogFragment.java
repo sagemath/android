@@ -49,7 +49,7 @@ public class DeleteCellDialogFragment extends DialogFragment {
         builder.setIcon(getResources().getDrawable(R.drawable.ic_alert_red));
         builder.setTitle(getString(R.string.delete_dialog_title));
         builder.setMessage(getResources().getQuantityString(R.plurals.delete_n_cells, cells.size(), cells.size())
-                + "\n\n" + getString(R.string.delete_cell_warning));
+                + "\n\n" + getString(R.string.delete_warning));
         builder.setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
