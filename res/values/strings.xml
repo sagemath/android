@@ -14,6 +14,7 @@
     <string name="insert_input_label">Input</string>
     <string name="insert_input_hint">Enter your calculation input.</string>
     <string name="dialog_confirm_discard">Really discard this cell?</string>
+    <string name="ok">OK</string>
     <string name="discard">Discard</string>
     <string name="cancel">Cancel</string>
     <string name="edit_title">Edit title/description</string>
@@ -34,7 +35,13 @@
     <string name="dialog_name_hint">Cell Name</string>
     <string name="dialog_group_hint">Choose/Create a Group</string>
     <string name="dialog_description_hint">Cell Description</string>
-
+    <string name="dialog_insert_title">Current Inserts</string>
+    <string name="dialog_manage_insert_checkbox_prompt">Set Favorite?</string>
+    <string name="dialog_manage_insert_description_hint">Insert Description</string>
+    <string name="dialog_manage_insert_text_hint">Insert Text</string>
+    <string name="dialog_new_insert_title">Create a new insert</string>
+    <string name="dialog_edit_insert_title">Edit this Insert</string>
+    <string name="dialog_delete_insert_title">Delete Insert(s) ?</string>
     <string name="delete_dialog_title">Delete Cell?</string>
     <string name="choose_group_text">CHOOSE A GROUP</string>
 
@@ -53,13 +60,27 @@
     <string name="menu_toggle_favorite">Toggle Favorite</string>
     <string name="menu_delete_selected">Delete Selected Items</string>
     <string name="menu_edit_cell">Edit this Cell</string>
+    <string name="menu_edit_insert">Edit this Insert</string>
+    <string name="menu_delete_insert">Delete this Insert</string>
+    <string name="menu_insert_open">Open Inserts Menu</string>
+    <string name="menu_view_inserts">Select an Insert</string>
+    <string name="menu_add_insert">Add a new Insert</string>
+    <string name="menu_manage_inserts">Manage Inserts</string>
+    <string name="menu_search_inserts">Search Inserts</string>
+
+    <string name="manage_inserts_empty_text">You have no inserts saved</string>
+
+    <plurals name="delete_n_inserts">
+        <item quantity="one">Really delete this insert?</item>
+        <item quantity="other">Really delete these %d inserts?</item>
+    </plurals>
 
     <plurals name="delete_n_cells">
         <item quantity="one">Really delete this cell?</item>
         <item quantity="other">Really delete these %d cells?</item>
     </plurals>
 
-    <string name="delete_cell_warning">
+    <string name="delete_warning">
         <b>WARNING!</b>
         This cannot be undone!
     </string>
