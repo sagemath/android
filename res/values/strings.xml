@@ -3,6 +3,7 @@
 
     <string name="hello">Hello World, SageActivity!</string>
     <string name="app_name">Sage</string>
+    <string name="app_name_long">Sage For Android</string>
     <string name="history">History</string>
     <string name="add_new_title">Add New Cell</string>
     <string name="insert_title_label">Title</string>
@@ -24,6 +25,10 @@
 
     <string name="header_fav_text">FAVORITES</string>
 
+    <string name="activity_help_title">Help</string>
+    <string name="activity_settings_title">Settings</string>
+    <string name="activity_manage_inserts_title">Manage Inserts</string>
+
     <string name="dialog_new_group_title">Create a new Group</string>
     <string name="dialog_new_group_text_hint">Create a Group</string>
     <string name="dialog_edit_cell_single_title">Edit Cell</string>
@@ -42,7 +47,7 @@
     <string name="dialog_new_insert_title">Create a new insert</string>
     <string name="dialog_edit_insert_title">Edit this Insert</string>
     <string name="dialog_delete_insert_title">Delete Insert(s) ?</string>
-    <string name="delete_dialog_title">Delete Cell?</string>
+    <string name="delete_dialog_title">Delete Cell?</string>    
     <string name="choose_group_text">CHOOSE A GROUP</string>
 
     <string name="toast_cell_saved">Input saved successfully</string>
@@ -67,6 +72,19 @@
     <string name="menu_add_insert">Add a new Insert</string>
     <string name="menu_manage_inserts">Manage Inserts</string>
     <string name="menu_search_inserts">Search Inserts</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_help">Help</string>
+
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_changelog_title">CHANGELOG</string>
+    <string name="help_about_title">ABOUT</string>
+
+    <string name="preference_dialog_title">Choose Font Size</string>
+    <string name="pref_font_title">CodeView Font Size</string>
+    <string name="pref_font_summary">Change the font size of the code editor</string>
+
+    <!-- Do not change this -->
+    <string name="git_link_text"><![CDATA[<a href="https://github.com/sagemath/android">GitHub Repo</a>]]></string>
 
     <string name="manage_inserts_empty_text">You have no inserts saved</string>
 
@@ -85,9 +103,12 @@
         This cannot be undone!
     </string>
 
+    <string name="changelog_row_prefix_bug">[b]BugFix:[/b]</string>
+
     <string name="fa_expand">&#xf065;</string>
     <string name="fa_collapse">&#xf066;</string>
     <string name="fa_star">&#xf005;</string>
     <string name="fa_star_outline">&#xf006;</string>
+    <string name="fa_github">&#xf09b;</string>
 
 </resources>
