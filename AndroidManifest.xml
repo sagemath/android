@@ -23,7 +23,13 @@
                 android:windowSoftInputMode="adjustPan">
         </activity>
 
-        <activity android:name=".activities.ManageInsertActivity"/>
+        <activity android:name=".activities.ManageInsertActivity"
+                  android:label="@string/activity_manage_inserts_title"/>
+
+        <activity android:name=".activities.HelpActivity"
+                  android:label="@string/activity_help_title"/>
+        <activity android:name=".activities.SettingsActivity"
+                  android:label="@string/activity_settings_title"/>
 
         <activity
                 android:name=".activities.CellActivity">
