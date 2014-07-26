@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import org.sagemath.droid.models.database.Cell;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class BaseFragment extends Fragment {
     protected Cell cell;

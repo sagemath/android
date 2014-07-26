@@ -6,7 +6,7 @@ import android.util.Log;
 import static org.sagemath.droid.constants.StringConstants.*;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class UrlUtils {
 

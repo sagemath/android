@@ -3,7 +3,7 @@ package org.sagemath.droid.models.gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  * Reply having a String to be displayed as HTML
  */
 public class HtmlReply extends BaseReply {

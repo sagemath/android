@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class Values implements Parcelable {
 

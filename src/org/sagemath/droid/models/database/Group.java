@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Haven on 19-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class Group implements Parcelable {
     private static final String TAG = "SageDroid:Groups";

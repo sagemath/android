@@ -3,7 +3,7 @@ package org.sagemath.droid.events;
 import org.sagemath.droid.models.gson.InteractReply;
 
 /**
- * Created by Haven on 09-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class InteractUpdateEvent {
     private InteractReply reply;

@@ -1,7 +1,7 @@
 package org.sagemath.droid.models.gson;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class WebSocketResponse extends BaseResponse {
 

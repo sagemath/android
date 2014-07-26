@@ -4,6 +4,10 @@ import android.content.Context;
 import android.widget.LinearLayout;
 import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
+/**
+ * @author Rasmi Elsamar
+ * @author Nikhil Peter Raj
+ */
 public abstract class InteractControlBase 
     	extends LinearLayout {
 	private final static String TAG = "SageDroid:InteractControlBase";

@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class OutputViewFragment extends BaseFragment {
     private static String TAG = "SageDroid:OutputViewFragment";

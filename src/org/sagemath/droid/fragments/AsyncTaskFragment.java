@@ -39,7 +39,7 @@ import java.net.URI;
 import java.util.ArrayList;
 
 /**
- * Created by Haven on 11-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class AsyncTaskFragment extends Fragment {
 

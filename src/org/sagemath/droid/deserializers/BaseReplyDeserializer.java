@@ -8,7 +8,7 @@ import org.sagemath.droid.models.gson.BaseReply;
 import java.lang.reflect.Type;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class BaseReplyDeserializer implements JsonDeserializer<BaseReply> {
 

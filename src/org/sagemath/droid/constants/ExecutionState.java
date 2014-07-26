@@ -1,5 +1,8 @@
 package org.sagemath.droid.constants;
 
+/**
+ * @author Nikhil Peter Raj
+ */
 public class ExecutionState {
     public static final int ERROR = 0x000300;
     public static final int IDLE = 0x000301;

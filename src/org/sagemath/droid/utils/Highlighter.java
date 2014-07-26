@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Haven on 24-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class Highlighter {
 

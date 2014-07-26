@@ -13,7 +13,7 @@ import org.sagemath.droid.utils.BusProvider;
 import java.util.ArrayList;
 
 /**
- * Created by Haven on 22-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class DeleteInsertDialogFragment extends DialogFragment {
     private static final String TAG = "SageDroid:DeleteInsertDialogFragment";

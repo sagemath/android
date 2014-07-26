@@ -14,7 +14,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.utils.BusProvider;
 
 /**
- * Created by Haven on 13-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ShareDialogFragment extends DialogFragment {
     private static final String TAG = "SageDroid:ShareDialogFragment";

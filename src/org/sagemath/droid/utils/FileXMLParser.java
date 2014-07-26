@@ -20,7 +20,7 @@ import java.util.UUID;
 
 /**
  * @author Rasmi.Elasmar
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class FileXMLParser {
     private static final String TAG = "SageDroid:CellCollectionXMLParser";

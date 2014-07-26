@@ -3,7 +3,7 @@ package org.sagemath.droid.utils;
 import com.squareup.otto.Bus;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class BusProvider {
 

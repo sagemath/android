@@ -1,5 +1,8 @@
 package org.sagemath.droid.constants;
 
+/**
+ * @author Nikhil Peter Raj
+ */
 public class MessageType {
     public static final int ERROR = 0x000100;
     public static final int PYOUT = 0x000101;

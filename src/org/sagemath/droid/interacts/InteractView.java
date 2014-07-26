@@ -14,6 +14,10 @@ import org.sagemath.droid.utils.BusProvider;
 
 import java.util.ArrayList;
 
+/**
+ * @author Rasmi Elsamar
+ * @author Nikhil Peter Raj
+ */
 public class InteractView extends TableLayout {
     private final static String TAG = "SageDroid:InteractView";
 

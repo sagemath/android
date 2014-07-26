@@ -11,7 +11,7 @@ import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 import java.util.ArrayList;
 
 /**
- * Created by Haven on 02-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class InteractViewState extends View.BaseSavedState {
 

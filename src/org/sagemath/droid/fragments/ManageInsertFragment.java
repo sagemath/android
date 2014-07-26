@@ -22,7 +22,7 @@ import org.sagemath.droid.utils.ToastUtils;
 import java.util.ArrayList;
 
 /**
- * Created by Haven on 19-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ManageInsertFragment extends ListFragment implements SearchView.OnQueryTextListener {
     private static final String TAG = "SageDroid:ManageInsertFragment";

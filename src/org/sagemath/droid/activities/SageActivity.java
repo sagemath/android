@@ -34,7 +34,6 @@ import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.database.Inserts;
 import org.sagemath.droid.models.gson.BaseReply;
 import org.sagemath.droid.utils.BusProvider;
-import org.sagemath.droid.utils.ChangeLog;
 import org.sagemath.droid.utils.ToastUtils;
 
 /**
@@ -43,6 +42,7 @@ import org.sagemath.droid.utils.ToastUtils;
  * @author vbraun
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
+ * @author Nikhil Peter Raj
  */
 public class SageActivity
         extends
@@ -63,8 +63,6 @@ public class SageActivity
     private static final String ARG_PUT_INSERT = "addInsert";
 
     private static final String TASK_FRAGMENT_TAG = "taskFragment";
-
-    private ChangeLog changeLog;
 
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
@@ -124,11 +122,6 @@ public class SageActivity
             outputViewFragment.setCell(cell);
             Log.i(TAG, "Got cell " + cell.toString());
         }
-
-        changeLog = new ChangeLog(this);
-        if (changeLog.firstRun())
-            changeLog.getLogDialog().show();
-
 
         cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
         cellProgressBar.setVisibility(View.INVISIBLE);
@@ -240,6 +233,12 @@ public class SageActivity
                 return true;
             case R.id.menu_share:
                 shareClicked();
+                return true;
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
 
 

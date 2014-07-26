@@ -7,7 +7,7 @@ import android.util.Log;
 import nl.qbusict.cupboard.QueryResultIterable;
 import org.sagemath.droid.R;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.models.database.Groups;
+import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.models.database.Inserts;
 import org.sagemath.droid.utils.FileXMLParser;
 
@@ -18,7 +18,7 @@ import java.util.List;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = "SageDroid:SageSQLiteOpenHelper";
@@ -32,7 +32,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     static {
         cupboard().register(Cell.class);
-        cupboard().register(Groups.class);
+        cupboard().register(Group.class);
         cupboard().register(Inserts.class);
     }
 

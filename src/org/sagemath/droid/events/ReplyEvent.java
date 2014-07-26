@@ -3,7 +3,7 @@ package org.sagemath.droid.events;
 import org.sagemath.droid.models.gson.BaseReply;
 
 /**
- * Created by Haven on 12-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ReplyEvent {
     private BaseReply reply;

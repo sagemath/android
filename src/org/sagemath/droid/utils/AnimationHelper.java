@@ -10,7 +10,7 @@ import com.nineoldandroids.view.animation.AnimatorProxy;
 import org.sagemath.droid.R;
 
 /**
- * Created by Haven on 19-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class AnimationHelper {
 

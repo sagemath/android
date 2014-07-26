@@ -4,7 +4,7 @@ import android.net.Uri;
 import org.sagemath.droid.utils.UrlUtils;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class PermalinkResponse extends BaseResponse{
 

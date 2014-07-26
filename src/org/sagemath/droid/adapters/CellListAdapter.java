@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Rasmi.Elasmar
+ * @author Nikhil Peter Raj
  */
 public class CellListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
     private static final String TAG = "SageDroid:CellListAdapter";
