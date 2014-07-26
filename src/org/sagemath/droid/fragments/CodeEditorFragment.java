@@ -20,7 +20,7 @@ import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.views.CodeView;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class CodeEditorFragment extends BaseFragment {
     private static final String TAG = "SageDroid:CodeEditorFragment";

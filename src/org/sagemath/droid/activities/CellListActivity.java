@@ -10,7 +10,6 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.constants.IntConstants;
 import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.fragments.CellListFragment;
-import org.sagemath.droid.utils.ChangeLog;
 
 
 /**
@@ -24,7 +23,6 @@ public class CellListActivity extends ActionBarActivity {
     private static String ARG_GROUP = "group";
 
     private static final String DIALOG_NEW_CELL = "newCell";
-    private ChangeLog changeLog;
     private String group;
 
     private CellListFragment cellListFragment;
@@ -53,10 +51,6 @@ public class CellListActivity extends ActionBarActivity {
 
         setTitle(group);
 
-        changeLog = new ChangeLog(this);
-        if (changeLog.firstRun())
-            changeLog.getLogDialog().show();
-
     }
 
     @Override
@@ -74,10 +68,7 @@ public class CellListActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.menu_add: {
+            case R.id.menu_add:
                 FragmentManager fm = this.getSupportFragmentManager();
                 CellDialogFragment dialog = CellDialogFragment.newInstance(null, IntConstants.DIALOG_NEW_CELL);
                 dialog.setOnActionCompleteListener(new CellDialogFragment.OnActionCompleteListener() {
@@ -88,7 +79,12 @@ public class CellListActivity extends ActionBarActivity {
                 });
                 dialog.show(fm, DIALOG_NEW_CELL);
                 return true;
-            }
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

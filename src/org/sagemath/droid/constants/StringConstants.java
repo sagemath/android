@@ -1,7 +1,7 @@
 package org.sagemath.droid.constants;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class StringConstants {
 

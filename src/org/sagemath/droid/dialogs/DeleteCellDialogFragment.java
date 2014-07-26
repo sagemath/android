@@ -12,7 +12,7 @@ import org.sagemath.droid.models.database.Cell;
 import java.util.ArrayList;
 
 /**
- * Created by Haven on 30-06-2014.
+ * @author Nikhil Peter Raj
  */
 public class DeleteCellDialogFragment extends DialogFragment {
 

@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+/**
+ * @author Nikhil Peter Raj
+ */
 public class Request implements Parcelable {
     private static final String EXECUTE_REQUEST = "execute_request";
     //private static final String

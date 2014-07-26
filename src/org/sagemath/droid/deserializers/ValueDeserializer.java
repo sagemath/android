@@ -9,9 +9,10 @@ import org.sagemath.droid.models.gson.Values;
 import java.lang.reflect.Type;
 
 /**
- * @author Haven
- *         This Deserializer required is due to the fact that the key "values" can have value either a JSONArray
- *         or an int
+ * This Deserializer required is due to the fact that the key "values" can have value either a JSONArray
+ * or an int
+ *
+ * @author Nikhil Peter Raj
  */
 public class ValueDeserializer implements JsonDeserializer<Values> {
 

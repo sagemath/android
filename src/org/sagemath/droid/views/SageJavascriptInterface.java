@@ -7,7 +7,7 @@ import org.sagemath.droid.events.CodeReceivedEvent;
 import org.sagemath.droid.utils.BusProvider;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class SageJavascriptInterface {
     private static String TAG = "SageDroid:JavaScriptInterface";

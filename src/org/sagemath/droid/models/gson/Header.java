@@ -6,6 +6,9 @@ import org.sagemath.droid.constants.MessageType;
 
 import java.util.UUID;
 
+/**
+ * @author Nikhil Peter Raj
+ */
 public class Header implements Parcelable {
 
     //---STATIC VARIABLES---

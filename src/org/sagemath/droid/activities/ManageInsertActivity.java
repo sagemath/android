@@ -6,7 +6,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.fragments.ManageInsertFragment;
 
 /**
- * Created by Haven on 19-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ManageInsertActivity extends ActionBarActivity {
     private static final String TAG = "SageDroid:ManageInsertActivity";

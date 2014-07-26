@@ -15,6 +15,7 @@ import java.util.List;
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
+ * @author Nikhil Peter Raj
  */
 public class CellGroupsAdapter extends ArrayAdapter<String> {
     private final Context context;

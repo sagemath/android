@@ -7,7 +7,7 @@ import org.sagemath.droid.models.gson.InteractReply.SageInteract;
 import java.lang.reflect.Type;
 
 /**
- * Created by Haven on 30-05-2014.
+ * @author Nikhil Peter Raj
  */
 public class InteractDataDeserializer implements JsonDeserializer<InteractData> {
 

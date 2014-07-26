@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Haven on 21-05-2014.
+ * @author Nikhil Peter Raj
  */
 public class CellDialogFragment extends DialogFragment {
 

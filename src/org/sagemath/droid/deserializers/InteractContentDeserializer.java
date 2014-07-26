@@ -7,6 +7,9 @@ import org.sagemath.droid.models.gson.InteractReply.InteractData;
 
 import java.lang.reflect.Type;
 
+/**
+ * @author Nikhil Peter Raj
+ */
 public class InteractContentDeserializer implements JsonDeserializer<InteractContent> {
 
     private static String KEY_SOURCE = "source";

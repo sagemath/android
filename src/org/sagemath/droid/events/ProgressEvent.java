@@ -1,7 +1,7 @@
 package org.sagemath.droid.events;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ProgressEvent {
     private String progressState;

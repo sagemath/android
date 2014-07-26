@@ -4,7 +4,7 @@ import android.content.Context;
 import com.github.johnpersano.supertoasts.SuperToast;
 
 /**
- * Created by Haven on 15-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ToastUtils {
 

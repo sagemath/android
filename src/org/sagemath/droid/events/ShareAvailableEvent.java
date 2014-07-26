@@ -1,7 +1,7 @@
 package org.sagemath.droid.events;
 
 /**
- * Created by Haven on 13-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class ShareAvailableEvent {
     private String shareURL;

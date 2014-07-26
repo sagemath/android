@@ -20,6 +20,10 @@ import org.sagemath.droid.states.OutputBlockState;
 import org.sagemath.droid.states.OutputViewState;
 import org.sagemath.droid.utils.BusProvider;
 
+/**
+ * @author Rasmi Elsamar
+ * @author Nikhil Peter Raj
+ */
 public class OutputView
         extends LinearLayout {
     private final static String TAG = "SageDroid:OutputView";

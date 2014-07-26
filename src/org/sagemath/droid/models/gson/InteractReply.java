@@ -9,7 +9,7 @@ import org.sagemath.droid.constants.ControlType;
 import java.util.ArrayList;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class InteractReply extends BaseReply {
 

@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.UUID;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class Cell implements Parcelable {
 

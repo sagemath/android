@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import org.sagemath.droid.R;
 
 /**
- * Created by Haven on 16-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class BaseListFragment extends Fragment {
     private boolean contentShown;

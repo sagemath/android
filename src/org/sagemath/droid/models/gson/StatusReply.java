@@ -3,7 +3,7 @@ package org.sagemath.droid.models.gson;
 import org.sagemath.droid.constants.ExecutionState;
 
 /**
- *
+ * @author Nikhil Peter Raj
  */
 public class StatusReply extends BaseReply {
 

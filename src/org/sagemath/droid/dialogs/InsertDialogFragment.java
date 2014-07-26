@@ -18,7 +18,7 @@ import org.sagemath.droid.models.database.Inserts;
 import org.sagemath.droid.utils.AnimationHelper;
 
 /**
- * Created by Haven on 19-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class InsertDialogFragment extends DialogFragment {
     private static final String TAG = "SageDroid:NewInsertDialogFragment";

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class SageClearReply extends BaseReply {
 

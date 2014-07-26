@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class SageInteractDeserializer implements JsonDeserializer<SageInteract> {
     private static final String TAG = "SageDroid:SageInteractDeserializer";

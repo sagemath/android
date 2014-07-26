@@ -14,7 +14,6 @@ import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment.OnGroupSelectedListener;
 import org.sagemath.droid.fragments.CellListFragment;
-import org.sagemath.droid.utils.ChangeLog;
 import org.sagemath.droid.utils.SimpleEula;
 
 /**
@@ -28,8 +27,6 @@ public class CellActivity
         implements OnGroupSelectedListener {
     private final static String TAG = "SageDroid:CellActivity";
     private static final String DIALOG_NEW_CELL = "newCell";
-
-    private ChangeLog changeLog;
 
     private CellGroupsFragment groupsFragment;
     private CellListFragment listFragment;
@@ -45,10 +42,6 @@ public class CellActivity
             e.printStackTrace();
             //this.finish();
         }
-
-        changeLog = new ChangeLog(this);
-        if (changeLog.firstRun())
-            changeLog.getLogDialog().show();
 
         groupsFragment = (CellGroupsFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cell_groups_fragment);
@@ -75,7 +68,7 @@ public class CellActivity
     }
 
     @Override
-     public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_activity_cell, menu);
         return super.onCreateOptionsMenu(menu);
@@ -90,6 +83,12 @@ public class CellActivity
                 dialog.show(fm, DIALOG_NEW_CELL);
                 return true;
             }
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
