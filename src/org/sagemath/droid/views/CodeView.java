@@ -2,6 +2,8 @@ package org.sagemath.droid.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,12 +15,14 @@ import android.webkit.WebView;
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
- * Created by Haven on 08-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class CodeView extends WebView {
     private static final String TAG = "Test:CodeView";
 
     private static final String INTERFACE_NAME = "JavaScriptInterface";
+
+    private String PREFS_FONT_SIZE = "font_size";
 
     private SageJavascriptInterface javaScriptInterface;
 
@@ -38,7 +42,8 @@ public class CodeView extends WebView {
         javaScriptInterface = new SageJavascriptInterface((Activity) getContext());
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(false);
-        this.getSettings().setDefaultFixedFontSize(16);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        this.getSettings().setDefaultFixedFontSize(prefs.getInt(PREFS_FONT_SIZE, 16));
         this.getSettings().setUseWideViewPort(true);
         this.getSettings().setLoadWithOverviewMode(true);
         this.addJavascriptInterface(javaScriptInterface, INTERFACE_NAME);
