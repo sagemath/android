@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import nl.qbusict.cupboard.QueryResultIterable;
 import org.sagemath.droid.R;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.database.Group;
@@ -29,6 +28,8 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sagedroid.db";
 
     private Context context;
+
+    private List<Group> currentGroups;
 
     static {
         cupboard().register(Cell.class);
@@ -55,7 +56,10 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         cupboard().withDatabase(db).createTables();
         InputStream inputStream = context.getResources().openRawResource(R.raw.cell_collection);
         FileXMLParser parser = new FileXMLParser();
-        List<Cell> initialCells = parser.parse(inputStream);
+        parser.parse(inputStream);
+        List<Cell> initialCells = parser.getIntitalCells();
+        List<Group> initialGroups = parser.getInitialGroups();
+        addInitialGroups(initialGroups, db);
         addInitialCells(initialCells, db);
         addInitialInserts(db);
     }
@@ -64,16 +68,26 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Not sure if this is alright...
         //cupboard().withDatabase(getWritableDatabase()).dropAllTables();
+        Log.i(TAG, "In onUpgrade");
         onCreate(getWritableDatabase());
     }
 
     public Long addCell(Cell cell) {
+        Log.i(TAG, "Adding cell: " + cell);
         try {
+            currentGroups = getGroups();
+            if (currentGroups.contains(cell.getGroup())) {
+                cell.setGroup(currentGroups.get(currentGroups.indexOf(cell.getGroup())));
+            }
             return cupboard().withDatabase(getWritableDatabase()).put(cell);
         } catch (Exception e) {
             Log.e(TAG, "Unable to add cell: " + e);
         }
         return null;
+    }
+
+    private void reRegisterEntity(Class clazz) {
+        cupboard().register(clazz);
     }
 
     public void addCells(List<Cell> cells) {
@@ -108,11 +122,12 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         cupboard().withDatabase(db).put(insert1, insert2);
     }
 
-    public void addInitialCells(List<Cell> cells, SQLiteDatabase db) {
+    public void addInitialGroups(List<Group> groups, SQLiteDatabase db) {
+        Log.i(TAG, "Adding Initial Groups" + groups.toString());
         try {
             db.beginTransaction();
-            for (Cell cell : cells) {
-                cupboard().withDatabase(db).put(cell);
+            for (Group group : groups) {
+                cupboard().withDatabase(db).put(group);
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {
@@ -124,14 +139,37 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Cell> getCellsWithGroup(String group) {
+    public void addInitialCells(List<Cell> cells, SQLiteDatabase db) {
+        try {
+            currentGroups = getGroups(db);
+            db.beginTransaction();
+            for (Cell cell : cells) {
+                if (!currentGroups.contains(cell.getGroup())) {
+                    cupboard().withDatabase(db).put(cell);
+                } else {
+                    Group group = currentGroups.get(currentGroups.indexOf(cell.getGroup()));
+                    cell.setGroup(group);
+                    cupboard().withDatabase(db).put(cell);
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+            }
+        }
+    }
+
+    public List<Cell> getCellsWithGroup(Group group) {
 
         List<Cell> list = null;
         try {
             list = cupboard()
                     .withDatabase(getReadableDatabase())
                     .query(Cell.class)
-                    .withSelection("cellGroup = ?", group)
+                    .withSelection("cellGroup = ?", String.valueOf(group.getId()))
                     .orderBy("title asc")
                     .query()
                     .list();
@@ -142,14 +180,14 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public List<Cell> getQueryCells(String group, String titleQuery) {
+    public List<Cell> getQueryCells(Group group, String titleQuery) {
         String queryFormat = "%" + titleQuery + "%";
         List<Cell> list = null;
         try {
             list = cupboard()
                     .withDatabase(getReadableDatabase())
                     .query(Cell.class)
-                    .withSelection("cellGroup = ? AND title LIKE ?", group, queryFormat)
+                    .withSelection("cellGroup = ? AND title LIKE ?", String.valueOf(group.getId()), queryFormat)
                     .orderBy("title asc")
                     .query()
                     .list();
@@ -160,33 +198,71 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public List<String> getGroups() {
-
-        List<String> list = null;
-        QueryResultIterable<Cell> itr = null;
-
+    public List<Group> getGroups(SQLiteDatabase db) {
+        List<Group> list = null;
         try {
-            itr = cupboard()
-                    .withDatabase(getReadableDatabase())
-                    .query(Cell.class)
-                    .withProjection("cellGroup")
+            list = cupboard()
+                    .withDatabase(db)
+                    .query(Group.class)
                     .orderBy("cellGroup asc")
                     .distinct()
-                    .query();
-
-            list = new ArrayList<String>();
-
-            for (Cell cell : itr) {
-                list.add(cell.getGroup());
-            }
-
-            Log.d(TAG, "Returning Groups" + list.toString());
-
-        } finally {
-            if (itr != null)
-                itr.close();
+                    .query()
+                    .list();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
         }
         return list;
+    }
+
+    public List<Group> getGroups() {
+
+        List<Group> list = null;
+        try {
+            list = cupboard()
+                    .withDatabase(getReadableDatabase())
+                    .query(Group.class)
+                    .orderBy("cellGroup asc")
+                    .distinct()
+                    .query()
+                    .list();
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+        return list;
+    }
+
+    public void addGroup(Group group) {
+        try {
+            //If the group is duplicate, discard
+            List<Group> currentGroups = getGroups();
+            if (!currentGroups.contains(group))
+                cupboard().withDatabase(getWritableDatabase()).put(group);
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+    }
+
+    public void deleteGroup(Group group) {
+        try {
+            //Delete all cells with this group
+
+            List<Cell> cells = getCellsWithGroup(group);
+            Log.i(TAG, "Deleting " + cells.size() + "cells and group: " + group.getCellGroup());
+            deleteCells(cells);
+
+            //Delete the group
+            cupboard().withDatabase(getWritableDatabase()).delete(group);
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
+    }
+
+    public void saveGroup(Group group) {
+        try {
+            cupboard().withDatabase(getWritableDatabase()).put(group);
+        } catch (Exception e) {
+            Log.e(TAG, e + "");
+        }
     }
 
     public List<Inserts> getQueryInserts(String query) {
@@ -314,12 +390,18 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public void saveEditedCell(Cell cell) {
+
+        currentGroups = getGroups();
+        if (currentGroups.contains(cell.getGroup())) {
+            cell.setGroup(currentGroups.get(currentGroups.indexOf(cell.getGroup())));
+        }
         cupboard().withDatabase(getWritableDatabase()).put(cell);
+
     }
 
     public void saveEditedCells(List<Cell> cells) {
         for (Cell cell : cells) {
-            cupboard().withDatabase(getWritableDatabase()).put(cell);
+            saveEditedCell(cell);
         }
     }
 

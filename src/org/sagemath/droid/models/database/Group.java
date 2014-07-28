@@ -13,7 +13,10 @@ public class Group implements Parcelable {
     String cellGroup;
 
     public Group() {
+    }
 
+    public Group(String group) {
+        this.cellGroup = group;
     }
 
     public Long getId() {
@@ -30,6 +33,20 @@ public class Group implements Parcelable {
 
     public void setCellGroup(String cellGroup) {
         this.cellGroup = cellGroup;
+    }
+
+    public String toString() {
+        return "Group: " + cellGroup;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Group) {
+            Group compare = (Group) o;
+            return compare.getCellGroup().equals(cellGroup);
+        } else {
+            return false;
+        }
     }
 
     private Group(Parcel in) {
