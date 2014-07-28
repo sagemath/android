@@ -13,7 +13,7 @@ public class Cell implements Parcelable {
 
     Long _id;
     String uuid;
-    String cellGroup;
+    Group cellGroup;
     String title;
     String description;
     String input;
@@ -32,7 +32,7 @@ public class Cell implements Parcelable {
     private Cell(Parcel in) {
         _id = in.readLong();
         uuid = in.readString();
-        cellGroup = in.readString();
+        cellGroup = in.readParcelable(Group.class.getClassLoader());
         title = in.readString();
         description = in.readString();
         input = in.readString();
@@ -49,7 +49,7 @@ public class Cell implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(_id);
         dest.writeString(uuid);
-        dest.writeString(cellGroup);
+        dest.writeParcelable(cellGroup,flags);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeString(input);
@@ -103,11 +103,11 @@ public class Cell implements Parcelable {
         this.uuid = uuid.toString();
     }
 
-    public String getGroup() {
+    public Group getGroup() {
         return cellGroup;
     }
 
-    public void setGroup(String cellGroup) {
+    public void setGroup(Group cellGroup) {
         this.cellGroup = cellGroup;
     }
 

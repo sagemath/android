@@ -3,6 +3,7 @@ package org.sagemath.droid.utils;
 
 import android.util.Log;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.database.Group;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -14,7 +15,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,12 +29,14 @@ public class FileXMLParser {
     private static final String TAG = "SageDroid:CellCollectionXMLParser";
 
     private Document dom;
-    private LinkedList<Cell> data;
+    private List<Cell> cells;
+    private List<Group> groups;
 
 
-     void parseXML(InputStream inputStream) {
+    void parseXML(InputStream inputStream) {
         dom = null;
-        data = new LinkedList<Cell>();
+        cells = new LinkedList<>();
+        groups = new ArrayList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -46,12 +51,18 @@ public class FileXMLParser {
         }
     }
 
-
-    public  LinkedList<Cell> parse(InputStream inputStream) {
+    public void parse(InputStream inputStream) {
         parseXML(inputStream);
         if (dom != null)
             parseDocument();
-        return data;
+    }
+
+    public List<Cell> getIntitalCells() {
+        return cells;
+    }
+
+    public List<Group> getInitialGroups() {
+        return groups;
     }
 
     private void parseDocument() {
@@ -61,14 +72,14 @@ public class FileXMLParser {
             for (int i = 0; i < nl.getLength(); i++) {
                 Element element = (Element) nl.item(i);
                 Cell cell = getCellData(element);
-                data.add(cell);
+                cells.add(cell);
             }
         }
     }
 
     private Cell getCellData(Element cellElement) {
         Cell cell = new Cell();
-        cell.setGroup(getTextValue(cellElement, "group"));
+        cell.setGroup(getGroup(cellElement, "group"));
         cell.setTitle(getTextValue(cellElement, "title"));
         cell.setDescription(getTextValue(cellElement, "description"));
         cell.setInput(getTextValue(cellElement, "input"));
@@ -76,6 +87,19 @@ public class FileXMLParser {
         cell.setUUID(getUuidValue(cellElement, "uuid"));
         cell.setFavorite(getBooleanValue(cellElement, "favorite"));
         return cell;
+    }
+
+    private Group getGroup(Element element, String tagName) {
+        Group group = null;
+        NodeList nl = element.getElementsByTagName(tagName);
+        if (nl != null && nl.getLength() > 0) {
+            group = new Group();
+            Element el = (Element) nl.item(0);
+            group.setCellGroup(el.getFirstChild().getNodeValue());
+            if (!groups.contains(group))
+                groups.add(group);
+        }
+        return group;
     }
 
 
