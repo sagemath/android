@@ -16,6 +16,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.constants.IntConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.AnimationHelper;
 import org.sagemath.droid.views.FloatLabelLayout;
 
@@ -53,7 +54,7 @@ public class CellDialogFragment extends DialogFragment {
     private AutoCompleteTextView groupEditText;
     private ImageButton emptyInfoButton;
 
-    private List<String> cellGroups;
+    private List<Group> cellGroups;
     private ArrayAdapter<String> adapter;
     private String[] groupChoices;
 
@@ -135,9 +136,13 @@ public class CellDialogFragment extends DialogFragment {
         });
 
         cellGroups = helper.getGroups();
-        groupChoices = new String[cellGroups.size()];
-        cellGroups.toArray(groupChoices);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
+        ArrayList<String> groupStrings = new ArrayList<>();
+        for (Group group : cellGroups) {
+            groupStrings.add(group.getCellGroup());
+        }
+        groupChoices = new String[groupStrings.size()];
+        groupStrings.toArray(groupChoices);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
         groupEditText.setAdapter(adapter);
 
         groupEditText.addTextChangedListener(new TextWatcher() {
@@ -176,7 +181,7 @@ public class CellDialogFragment extends DialogFragment {
                     builder.setTitle(R.string.dialog_edit_cell_single_title);
                     Cell cell = cells.get(0);
                     titleEditText.setText(cell.getTitle());
-                    groupEditText.setText(cell.getGroup());
+                    groupEditText.setText(cell.getGroup().getCellGroup());
                     descriptionEditText.setText(cell.getDescription());
                 } else {
                     nameContainer.setVisibility(View.GONE);
@@ -235,8 +240,9 @@ public class CellDialogFragment extends DialogFragment {
                                     Cell cell = cells.get(0);
                                     cell.setTitle(titleEditText.getText().toString());
                                     cell.setDescription(descriptionEditText.getText().toString());
-                                    cell.setGroup(groupEditText.getText().toString());
-
+                                    Group group = new Group(groupEditText.getText().toString());
+                                    cell.setGroup(group);
+                                    helper.addGroup(group);
                                     helper.saveEditedCell(cell);
                                     listener.onActionCompleted();
                                     dismiss();
@@ -255,10 +261,11 @@ public class CellDialogFragment extends DialogFragment {
                                     }
                                 } else {
 
-                                    String group = groupEditText.getText().toString();
+                                    Group group = new Group(groupEditText.getText().toString());
                                     for (Cell cell : cells) {
                                         cell.setGroup(group);
                                     }
+                                    helper.saveGroup(group);
                                     helper.saveEditedCells(cells);
                                     listener.onActionCompleted();
                                     dismiss();
@@ -281,8 +288,10 @@ public class CellDialogFragment extends DialogFragment {
 
                                 Cell cell = new Cell();
                                 cell.setTitle(titleEditText.getText().toString());
-                                cell.setGroup(groupEditText.getText().toString());
+                                Group group = new Group(groupEditText.getText().toString());
+                                cell.setGroup(group);
                                 cell.setDescription(descriptionEditText.getText().toString());
+                                helper.addGroup(group);
                                 helper.addCell(cell);
                                 listener.onActionCompleted();
                                 dismiss();

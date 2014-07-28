@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.adapters.CellListAdapter;
@@ -20,6 +20,7 @@ import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.database.Group;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.util.ArrayList;
@@ -44,11 +45,11 @@ public class CellListFragment extends BaseListFragment
 
     private List<Cell> cells = new ArrayList<Cell>();
     private SageSQLiteOpenHelper helper;
-    private String group;
+    private Group group;
 
     private CellListAdapter adapter;
     private StickyListHeadersListView list;
-    private TextView emptyView;
+    private LinearLayout emptyView;
 
     public CellListFragment() {
         helper = SageSQLiteOpenHelper.getInstance(getActivity());
@@ -61,13 +62,14 @@ public class CellListFragment extends BaseListFragment
             Log.i(TAG, "Updating Cells with group:" + group);
             cells = helper.getCellsWithGroup(group);
             adapter.updateCellList(cells);
+            list.setEmptyView(emptyView);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(ARG_GROUP, group);
+        outState.putParcelable(ARG_GROUP, group);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class CellListFragment extends BaseListFragment
         Log.i(TAG, "In onCreate");
         super.onCreate(savedInstanceState);
         if ((savedInstanceState != null) && (savedInstanceState.getString(ARG_GROUP) != null)) {
-            this.group = savedInstanceState.getString(ARG_GROUP);
+            this.group = savedInstanceState.getParcelable(ARG_GROUP);
         }
     }
 
@@ -88,7 +90,7 @@ public class CellListFragment extends BaseListFragment
         list = (StickyListHeadersListView) view.findViewById(R.id.cell_list);
         list.setOnItemClickListener(this);
 
-        emptyView = (TextView) view.findViewById(R.id.cell_list_empty);
+        emptyView = (LinearLayout) view.findViewById(R.id.cell_list_empty);
 
         return root;
     }
@@ -261,18 +263,17 @@ public class CellListFragment extends BaseListFragment
         }
     }
 
-    public void setGroup(String group) {
+    public void setGroup(Group group) {
         this.group = group;
-        getActivity().setTitle(group);
+        getActivity().setTitle(group.getCellGroup());
         cells = helper.getCellsWithGroup(group);
         adapter = new CellListAdapter(getActivity(), cells);
         list.setAdapter(adapter);
         list.setEmptyView(emptyView);
-
         setContentShown(true);
     }
 
-    public void switchToGroup(String group) {
+    public void switchToGroup(Group group) {
         cells.clear();
         if (group == null)
             group = helper.getGroups().get(0);

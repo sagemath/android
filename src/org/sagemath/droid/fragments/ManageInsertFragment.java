@@ -137,7 +137,7 @@ public class ManageInsertFragment extends ListFragment implements SearchView.OnQ
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_context, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_cell_context, menu);
     }
 
     @Override
