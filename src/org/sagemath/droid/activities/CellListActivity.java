@@ -10,6 +10,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.constants.IntConstants;
 import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.fragments.CellListFragment;
+import org.sagemath.droid.models.database.Group;
 
 
 /**
@@ -23,7 +24,7 @@ public class CellListActivity extends ActionBarActivity {
     private static String ARG_GROUP = "group";
 
     private static final String DIALOG_NEW_CELL = "newCell";
-    private String group;
+    private Group group;
 
     private CellListFragment cellListFragment;
 
@@ -39,24 +40,24 @@ public class CellListActivity extends ActionBarActivity {
         if (intent == null)
             cellListFragment.switchToGroup(null);
         else {
-            group = intent.getStringExtra(CellActivity.INTENT_SWITCH_GROUP);
+            group = intent.getParcelableExtra(CellActivity.INTENT_SWITCH_GROUP);
             Log.i(TAG, "Got group:" + group);
             cellListFragment.setGroup(group);
         }
 
         if (savedInstanceState != null) {
-            group = savedInstanceState.getString(ARG_GROUP);
+            group = savedInstanceState.getParcelable(ARG_GROUP);
             cellListFragment.setGroup(group);
         }
 
-        setTitle(group);
+        setTitle(group.getCellGroup());
 
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(ARG_GROUP, group);
+        outState.putParcelable(ARG_GROUP, group);
     }
 
     @Override

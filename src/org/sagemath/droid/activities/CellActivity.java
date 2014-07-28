@@ -2,18 +2,13 @@ package org.sagemath.droid.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import org.sagemath.droid.R;
-import org.sagemath.droid.constants.IntConstants;
-import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CellGroupsFragment.OnGroupSelectedListener;
 import org.sagemath.droid.fragments.CellListFragment;
+import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.SimpleEula;
 
 /**
@@ -26,7 +21,7 @@ public class CellActivity
         extends ActionBarActivity
         implements OnGroupSelectedListener {
     private final static String TAG = "SageDroid:CellActivity";
-    private static final String DIALOG_NEW_CELL = "newCell";
+    private static final String DIALOG_NEW_GROUP = "newGroup";
 
     private CellGroupsFragment groupsFragment;
     private CellListFragment listFragment;
@@ -55,7 +50,7 @@ public class CellActivity
     public static final String INTENT_SWITCH_GROUP = "intent_switch_group";
 
     @Override
-    public void onGroupSelected(String group) {
+    public void onGroupSelected(Group group) {
         CellListFragment listFragment = (CellListFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
         if (listFragment == null || !listFragment.isInLayout()) {
@@ -65,32 +60,6 @@ public class CellActivity
         } else {
             listFragment.setGroup(group);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_activity_cell, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_add: {
-                FragmentManager fm = this.getSupportFragmentManager();
-                CellDialogFragment dialog = CellDialogFragment.newInstance(null, IntConstants.DIALOG_NEW_CELL);
-                dialog.show(fm, DIALOG_NEW_CELL);
-                return true;
-            }
-            case R.id.menu_help:
-                startActivity(new Intent(this, HelpActivity.class));
-                return true;
-            case R.id.menu_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 }
