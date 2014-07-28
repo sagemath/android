@@ -20,7 +20,7 @@
     <string name="cancel">Cancel</string>
     <string name="edit_title">Edit title/description</string>
     <string name="info_disconnected">Server Disconnected</string>
-    <string name="list_empty_text">Select a Group</string>
+    <string name="cell_list_empty_text">This group has no cells!</string>
     <string name="group_empty_text">No Cells have been saved</string>
 
     <string name="header_fav_text">FAVORITES</string>
@@ -47,7 +47,11 @@
     <string name="dialog_new_insert_title">Create a new insert</string>
     <string name="dialog_edit_insert_title">Edit this Insert</string>
     <string name="dialog_delete_insert_title">Delete Insert(s) ?</string>
-    <string name="delete_dialog_title">Delete Cell?</string>    
+    <string name="delete_dialog_title">Delete Cell?</string>
+    <string name="group_new_dialog_title">Create Group</string>
+    <string name="group_edit_dialog_title">Edit Group</string>
+    <string name="group_delete_title">Delete Group?</string>
+    <string name="group_dialog_hint">Group Name</string>
     <string name="choose_group_text">CHOOSE A GROUP</string>
 
     <string name="toast_cell_saved">Input saved successfully</string>
@@ -73,6 +77,8 @@
     <string name="menu_manage_inserts">Manage Inserts</string>
     <string name="menu_search_inserts">Search Inserts</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_group_edit">Edit this Group</string>
+    <string name="menu_group_delete">Delete this group</string>
     <string name="menu_help">Help</string>
 
     <string name="help_faq_title">FAQ</string>
@@ -97,6 +103,10 @@
         <item quantity="one">Really delete this cell?</item>
         <item quantity="other">Really delete these %d cells?</item>
     </plurals>
+
+    <string name="delete_group_warning">Really delete this group and all cells associated with it ?\n\n
+        <b>WARNING!</b>This cannot be undone
+    </string>
 
     <string name="delete_warning">
         <b>WARNING!</b>
