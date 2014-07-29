@@ -4,7 +4,7 @@
                 android:layout_height="wrap_content">
 
     <CheckBox
-            android:id="@+id/favorite"
+            android:id="@+id/cellFavorite"
             style="?android:style/Widget.CompoundButton.Star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -15,20 +15,20 @@
 
 
     <TextView
-            android:id="@+id/cell_title"
+            android:id="@+id/cellTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/favorite"
+            android:layout_toLeftOf="@id/cellFavorite"
             android:textSize="24dp">
     </TextView>
 
     <TextView
-            android:id="@+id/cell_description"
+            android:id="@+id/cellDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cell_title"
+            android:layout_below="@id/cellTitle"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:paddingTop="4dp"

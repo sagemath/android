@@ -33,6 +33,7 @@ import java.util.List;
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
+ * @author Nikhil Peter Raj
  */
 public class CellListFragment extends BaseListFragment
         implements AdapterView.OnItemClickListener
@@ -60,8 +61,7 @@ public class CellListFragment extends BaseListFragment
         super.onResume();
         if (group != null && adapter != null) {
             Log.i(TAG, "Updating Cells with group:" + group);
-            cells = helper.getCellsWithGroup(group);
-            adapter.updateCellList(cells);
+            adapter.refreshAdapter(group);
             list.setEmptyView(emptyView);
         }
     }
@@ -195,7 +195,7 @@ public class CellListFragment extends BaseListFragment
                 deleteDialog.setOnCellDeleteListener(new DeleteCellDialogFragment.OnCellDeleteListener() {
                     @Override
                     public void onCellDeleted() {
-                        refreshAdapter();
+                        adapter.refreshAdapter(group);
                     }
                 });
                 deleteDialog.show(getActivity().getSupportFragmentManager(), DIALOG_DELETE_CELL);
@@ -241,7 +241,7 @@ public class CellListFragment extends BaseListFragment
             public void onCellDeleted() {
                 Log.i(TAG, "Deleting " + cellsToDelete.size() + " cells");
                 if (helper.deleteCells(cellsToDelete)) {
-                    refreshAdapter();
+                    adapter.refreshAdapter(group);
                     mode.finish();
                 }
             }
@@ -256,7 +256,7 @@ public class CellListFragment extends BaseListFragment
         dialog.setOnActionCompleteListener(new CellDialogFragment.OnActionCompleteListener() {
             @Override
             public void onActionCompleted() {
-                refreshAdapter();
+                adapter.refreshAdapter(group);
             }
         });
         dialog.show(getActivity().getSupportFragmentManager(), DIALOG_EDIT_CELL);
@@ -264,7 +264,7 @@ public class CellListFragment extends BaseListFragment
 
     public void refreshAdapter() {
         if (group != null) {
-            adapter.updateCellList(helper.getCellsWithGroup(group));
+            adapter.refreshAdapter(group);
         }
     }
 
@@ -272,7 +272,7 @@ public class CellListFragment extends BaseListFragment
         this.group = group;
         getActivity().setTitle(group.getCellGroup());
         cells = helper.getCellsWithGroup(group);
-        adapter = new CellListAdapter(getActivity(), cells);
+        adapter = new CellListAdapter(getActivity(), group);
         list.setAdapter(adapter);
         list.setEmptyView(emptyView);
         setContentShown(true);
@@ -300,14 +300,14 @@ public class CellListFragment extends BaseListFragment
             cell.setFavorite(!cell.isFavorite());
         }
         helper.saveEditedCells(itemsToModify);
-        refreshAdapter();
+        adapter.refreshAdapter(group);
     }
 
     public void toggleFavorites(int position) {
         Cell cell = cells.get(position);
         cell.setFavorite(!cell.isFavorite());
         helper.saveEditedCell(cell);
-        refreshAdapter();
+        adapter.refreshAdapter(group);
     }
 
     @Override
