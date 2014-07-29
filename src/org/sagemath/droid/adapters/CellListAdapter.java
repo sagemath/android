@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import org.sagemath.droid.R;
+import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Cell;
+import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.Highlighter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -39,21 +42,26 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
 
     private List<Cell> cells;
 
+    private SageSQLiteOpenHelper helper;
+    private Group group;
+
     private String searchQuery = null;
 
-    public CellListAdapter(Context context, List<Cell> cells) {
+    public CellListAdapter(Context context, Group group) {
         this.context = context;
-        this.cells = cells;
+        this.group = group;
         checkedItems = new SparseBooleanArray();
         inflater = LayoutInflater.from(context);
         highlighter = new Highlighter(context);
+        helper = SageSQLiteOpenHelper.getInstance(context);
+        refreshAdapter(group);
         fontAwesome = Typeface.createFromAsset(context.getAssets(), "fontawesome-webfont.ttf");
     }
 
     private class ViewHolder {
         public TextView titleView;
         public TextView descriptionView;
-        public TextView favorite;
+        public Button favorite;
 
         public void initFavorite() {
             favorite.setTypeface(fontAwesome);
@@ -63,6 +71,10 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
 
     private class HeaderViewHolder {
         public TextView headerView;
+    }
+
+    public void refreshAdapter(Group group) {
+        updateCellList(helper.getCellsWithGroup(group));
     }
 
     public void updateCellList(List<Cell> cells) {
@@ -124,9 +136,9 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
         if (convertView == null) {
             view = inflater.inflate(R.layout.item_cell_list, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.titleView = (TextView) view.findViewById(R.id.cell_title);
-            viewHolder.descriptionView = (TextView) view.findViewById(R.id.cell_description);
-            viewHolder.favorite = (TextView) view.findViewById(R.id.favorite);
+            viewHolder.titleView = (TextView) view.findViewById(R.id.cellTitle);
+            viewHolder.descriptionView = (TextView) view.findViewById(R.id.cellDescription);
+            viewHolder.favorite = (Button) view.findViewById(R.id.cellFavorite);
             viewHolder.initFavorite();
             view.setTag(viewHolder);
             if (backgroundDrawable == null) {
@@ -137,11 +149,20 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Cell cell = cells.get(position);
+        final Cell cell = cells.get(position);
 
         viewHolder.titleView.setText(highlighter.highlight(cell.getTitle(), searchQuery));
         viewHolder.descriptionView.setText(cell.getDescription());
         viewHolder.favorite.setText(cell.isFavorite() ? context.getString(R.string.fa_star) : context.getString(R.string.fa_star_outline));
+
+        viewHolder.favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cell.setFavorite(!cell.isFavorite());
+                helper.saveEditedCell(cell);
+                refreshAdapter(group);
+            }
+        });
 
         if (checkedItems.get(position)) {
             view.setBackgroundDrawable(view.getResources().getDrawable(R.drawable.cell_selected_background));
