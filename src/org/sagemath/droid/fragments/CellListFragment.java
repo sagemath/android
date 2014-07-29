@@ -43,7 +43,7 @@ public class CellListFragment extends BaseListFragment
     private static final String DIALOG_EDIT_CELL = "editCell";
     private static final String ARG_GROUP = "group";
 
-    private List<Cell> cells = new ArrayList<Cell>();
+    private List<Cell> cells = new ArrayList<>();
     private SageSQLiteOpenHelper helper;
     private Group group;
 
@@ -179,13 +179,18 @@ public class CellListFragment extends BaseListFragment
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
         switch (item.getItemId()) {
             case R.id.menu_action_toggle_fav:
-                toggleFavorites(getAdapter().getSelectedItemList());
+                toggleFavorites(info.position);
                 break;
 
             case R.id.menu_action_delete:
-                ArrayList<Cell> cellsToDelete = adapter.getSelectedItemList();
+                Cell cell = (Cell) adapter.getItem(info.position);
+                ArrayList<Cell> cellsToDelete = new ArrayList<>();
+                cellsToDelete.add(cell);
                 DeleteCellDialogFragment deleteDialog = DeleteCellDialogFragment.newInstance(cellsToDelete);
                 deleteDialog.setOnCellDeleteListener(new DeleteCellDialogFragment.OnCellDeleteListener() {
                     @Override
@@ -197,7 +202,7 @@ public class CellListFragment extends BaseListFragment
                 break;
 
             case R.id.menu_action_edit:
-                Cell editCell = getEditCell();
+                Cell editCell = (Cell) adapter.getItem(info.position);
                 if (editCell != null) {
                     CellDialogFragment editDialog = CellDialogFragment.newInstance(editCell);
                     editDialog.show(getActivity().getSupportFragmentManager(), DIALOG_EDIT_CELL);
@@ -298,8 +303,11 @@ public class CellListFragment extends BaseListFragment
         refreshAdapter();
     }
 
-    public Cell getEditCell() {
-        return adapter.getSelectedItemList().get(0);
+    public void toggleFavorites(int position) {
+        Cell cell = cells.get(position);
+        cell.setFavorite(!cell.isFavorite());
+        helper.saveEditedCell(cell);
+        refreshAdapter();
     }
 
     @Override
