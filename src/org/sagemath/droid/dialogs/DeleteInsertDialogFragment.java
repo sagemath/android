@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import org.sagemath.droid.R;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Inserts;
@@ -15,21 +14,10 @@ import java.util.ArrayList;
 /**
  * @author Nikhil Peter Raj
  */
-public class DeleteInsertDialogFragment extends DialogFragment {
+public class DeleteInsertDialogFragment extends BaseDeleteDialogFragment {
     private static final String TAG = "SageDroid:DeleteInsertDialogFragment";
 
     private static final String ARG_INSERTS = "inserts";
-
-    //TODO refactor so all Delete dialogs extend base interface
-    public interface OnDeleteListener {
-        public void onDelete();
-    }
-
-    private OnDeleteListener listener;
-
-    public void setOnDeleteListener(OnDeleteListener listener) {
-        this.listener = listener;
-    }
 
     private ArrayList<Inserts> inserts;
 

@@ -12,6 +12,7 @@ import org.sagemath.droid.activities.HelpActivity;
 import org.sagemath.droid.activities.SettingsActivity;
 import org.sagemath.droid.adapters.CellGroupsAdapter;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.dialogs.BaseDeleteDialogFragment;
 import org.sagemath.droid.dialogs.DeleteGroupDialogFragment;
 import org.sagemath.droid.dialogs.GroupDialogFragment;
 import org.sagemath.droid.models.database.Group;
@@ -135,9 +136,9 @@ public class CellGroupsFragment extends ListFragment {
 
             case R.id.menu_group_delete:
                 DeleteGroupDialogFragment deleteDialog = DeleteGroupDialogFragment.newInstance(group);
-                deleteDialog.setOnGroupDeleteListener(new DeleteGroupDialogFragment.OnGroupDeleteListener() {
+                deleteDialog.setOnDeleteListener(new BaseDeleteDialogFragment.OnDeleteListener() {
                     @Override
-                    public void onGroupDeleted() {
+                    public void onDelete() {
                         groups = helper.getGroups();
                         adapter.refreshAdapter(groups);
                     }

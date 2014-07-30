@@ -17,6 +17,7 @@ import org.sagemath.droid.adapters.CellListAdapter;
 import org.sagemath.droid.constants.IntConstants;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
+import org.sagemath.droid.dialogs.BaseDeleteDialogFragment;
 import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
 import org.sagemath.droid.models.database.Cell;
@@ -192,9 +193,9 @@ public class CellListFragment extends BaseListFragment
                 ArrayList<Cell> cellsToDelete = new ArrayList<>();
                 cellsToDelete.add(cell);
                 DeleteCellDialogFragment deleteDialog = DeleteCellDialogFragment.newInstance(cellsToDelete);
-                deleteDialog.setOnCellDeleteListener(new DeleteCellDialogFragment.OnCellDeleteListener() {
+                deleteDialog.setOnDeleteListener(new BaseDeleteDialogFragment.OnDeleteListener() {
                     @Override
-                    public void onCellDeleted() {
+                    public void onDelete() {
                         adapter.refreshAdapter(group);
                     }
                 });
@@ -235,10 +236,10 @@ public class CellListFragment extends BaseListFragment
     private void showDeleteCellDialog(final ActionMode mode) {
         final ArrayList<Cell> cellsToDelete = adapter.getSelectedItemList();
         DeleteCellDialogFragment deleteDialog = DeleteCellDialogFragment.newInstance(cellsToDelete);
-        deleteDialog.setOnCellDeleteListener(new DeleteCellDialogFragment.OnCellDeleteListener() {
+        deleteDialog.setOnDeleteListener(new BaseDeleteDialogFragment.OnDeleteListener() {
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
-            public void onCellDeleted() {
+            public void onDelete() {
                 Log.i(TAG, "Deleting " + cellsToDelete.size() + " cells");
                 if (helper.deleteCells(cellsToDelete)) {
                     adapter.refreshAdapter(group);

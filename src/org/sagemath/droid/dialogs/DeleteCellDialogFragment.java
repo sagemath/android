@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import org.sagemath.droid.R;
 import org.sagemath.droid.models.database.Cell;
 
@@ -14,17 +13,7 @@ import java.util.ArrayList;
 /**
  * @author Nikhil Peter Raj
  */
-public class DeleteCellDialogFragment extends DialogFragment {
-
-    public interface OnCellDeleteListener {
-        public void onCellDeleted();
-    }
-
-    private OnCellDeleteListener listener;
-
-    public void setOnCellDeleteListener(OnCellDeleteListener listener) {
-        this.listener = listener;
-    }
+public class DeleteCellDialogFragment extends BaseDeleteDialogFragment {
 
     private static final String TAG = "SageDroid:DeleteCellDialogFragment";
 
@@ -53,7 +42,7 @@ public class DeleteCellDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onCellDeleted();
+                listener.onDelete();
             }
         });
         builder.setNegativeButton(R.string.cancel, null);

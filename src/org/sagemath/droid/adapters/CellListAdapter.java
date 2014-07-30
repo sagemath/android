@@ -3,8 +3,6 @@ package org.sagemath.droid.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.text.Spannable;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -22,8 +20,6 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Rasmi.Elasmar
@@ -217,26 +213,6 @@ public class CellListAdapter extends BaseAdapter implements StickyListHeadersAda
 
     private SparseBooleanArray getSelectedItems() {
         return checkedItems;
-    }
-
-    public Spannable highlight(String text, String searchQuery) {
-        Spannable highlight = Spannable.Factory.getInstance().newSpannable(text);
-
-        if (searchQuery == null) {
-            return highlight;
-        }
-
-        Pattern pattern = Pattern.compile("(?i)(" + searchQuery.trim().replaceAll("\\s+", "|") + ")");
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()) {
-            highlight.setSpan(
-                    new ForegroundColorSpan(context.getResources().getColor(R.color.holo_blue_light)),
-                    matcher.start(),
-                    matcher.end(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-
-        return highlight;
     }
 
     public void clearSelection() {
