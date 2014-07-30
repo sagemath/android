@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,27 +25,12 @@ import java.util.List;
 /**
  * @author Nikhil Peter Raj
  */
-public class CellDialogFragment extends DialogFragment {
-
-    public interface OnActionCompleteListener {
-        public void onActionCompleted();
-    }
-
-    public void setOnActionCompleteListener(OnActionCompleteListener listener) {
-        this.listener = listener;
-    }
-
-    private OnActionCompleteListener listener;
-
+public class CellDialogFragment extends BaseActionDialogFragment {
 
     private static final String TAG = "SageDroid:EditCellDialogFragment";
 
     private static final String ARG_CELL = "Cell";
     private static final String ARG_TYPE = "cellType";
-
-    public interface OnCellEditListener {
-        public void onCellEdited();
-    }
 
     private FloatLabelLayout nameContainer, descriptionContainer;
     private LinearLayout groupContainer, dialogContainer;

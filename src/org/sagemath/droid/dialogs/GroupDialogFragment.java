@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -19,18 +18,8 @@ import org.sagemath.droid.utils.AnimationHelper;
 /**
  * @author Nikhil Peter Raj
  */
-public class GroupDialogFragment extends DialogFragment {
+public class GroupDialogFragment extends BaseActionDialogFragment {
     private static final String TAG = "SageDroid:GroupDialogFragment";
-
-    public interface OnActionCompleteListener {
-        public void onActionCompleted();
-    }
-
-    private OnActionCompleteListener listener;
-
-    public void setOnActionCompleteListener(OnActionCompleteListener listener) {
-        this.listener = listener;
-    }
 
     private static final String ARG_GROUP = "group";
 

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import org.sagemath.droid.R;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Group;
@@ -12,22 +11,12 @@ import org.sagemath.droid.models.database.Group;
 /**
  * @author Nikhil Peter Raj
  */
-public class DeleteGroupDialogFragment extends DialogFragment {
+public class DeleteGroupDialogFragment extends BaseDeleteDialogFragment {
     private static final String TAG = "SageDroid:DeleteGroupDialogFragment";
 
     private static final String ARG_GROUP = "group";
 
     private Group group;
-
-    public interface OnGroupDeleteListener {
-        public void onGroupDeleted();
-    }
-
-    private OnGroupDeleteListener listener;
-
-    public void setOnGroupDeleteListener(OnGroupDeleteListener listener) {
-        this.listener = listener;
-    }
 
     public static DeleteGroupDialogFragment newInstance(Group group) {
         DeleteGroupDialogFragment fragment = new DeleteGroupDialogFragment();
@@ -52,7 +41,7 @@ public class DeleteGroupDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 SageSQLiteOpenHelper.getInstance(getActivity()).deleteGroup(group);
                 if (listener != null) {
-                    listener.onGroupDeleted();
+                    listener.onDelete();
                 }
             }
         });

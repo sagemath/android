@@ -48,7 +48,7 @@ public class SageActivity
         extends
         ActionBarActivity
         implements
-        DeleteCellDialogFragment.OnCellDeleteListener,
+        DeleteCellDialogFragment.OnDeleteListener,
         ToggleButton.OnCheckedChangeListener,
         AsyncTaskFragment.ServerCallbacks
         , ShareDialogFragment.OnRequestOutputListener
@@ -282,7 +282,7 @@ public class SageActivity
     }
 
     @Override
-    public void onCellDeleted() {
+    public void onDelete() {
         finish();
     }
 
