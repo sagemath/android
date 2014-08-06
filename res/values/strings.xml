@@ -21,7 +21,8 @@
     <string name="cancel">Cancel</string>
     <string name="edit_title">Edit title/description</string>
     <string name="info_disconnected">Server Disconnected</string>
-    <string name="cell_list_empty_text">This group has no cells!</string>
+    <string name="cell_list_empty_text">This group has no cells.</string>
+    <string name="cell_group_empty_text">You have no groups.</string>
     <string name="group_empty_text">No Cells have been saved</string>
 
     <string name="header_fav_text">FAVORITES</string>
