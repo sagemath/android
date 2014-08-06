@@ -4,6 +4,7 @@
     <string name="hello">Hello World, SageActivity!</string>
     <string name="app_name">Sage</string>
     <string name="app_name_long">Sage For Android</string>
+    <string name="main_menu_title">Main Menu</string>
     <string name="history">History</string>
     <string name="add_new_title">Add New Cell</string>
     <string name="insert_title_label">Title</string>

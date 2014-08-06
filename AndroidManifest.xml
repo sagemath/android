@@ -32,7 +32,8 @@
                   android:label="@string/activity_settings_title"/>
 
         <activity
-                android:name=".activities.CellActivity">
+                android:name=".activities.CellActivity"
+                android:label="@string/main_menu_title">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
