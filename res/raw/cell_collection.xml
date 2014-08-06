@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cell_collection>
     <cell>
-        <group>My Worksheets</group>
-        <title>Example</title>
-        <rank>1</rank>
-        <description><![CDATA[
-You can change the title and this description by long-pressing on this list item.
- 		]]></description>
-        <input>1+1</input>
-        <uuid>5b0ef1d9-5a65-4212-98da-690d49cd9de6</uuid>
-        <favorite>false</favorite>
-    </cell>
-
-
-    <cell>
-        <group>My Worksheets</group>
+        <group>Examples</group>
         <title>Another cell</title>
         <rank>0</rank>
         <description>Another description</description>
@@ -25,8 +12,8 @@ You can change the title and this description by long-pressing on this list item
 
 
     <cell>
-        <group>Interacts</group>
-        <title>Simple interact</title>
+        <group>Examples</group>
+        <title>A Simple interact</title>
         <rank>30</rank>
         <description>An example of a control using the simple syntax.</description>
         <input><![CDATA[
@@ -40,8 +27,8 @@ def f(n=(1..10)):
 
 
     <cell>
-        <group>Interacts</group>
-        <title>Graphics output</title>
+        <group>Examples</group>
+        <title>Simple Graphics Output</title>
         <rank>10</rank>
         <description><![CDATA[
 A slider that controls a 2d plot. Move the slider around to change the plot.
@@ -61,8 +48,8 @@ def f(n=ContinuousSlider(
 
 
     <cell>
-        <group>Interacts</group>
-        <title>Complicated interact</title>
+        <group>Examples</group>
+        <title>A Complicated interact</title>
         <rank>20</rank>
         <description><![CDATA[
 Multiple interactive controls that work together to produce an output. The output is returned both as a HTML element and as a print()'ed string.  
@@ -86,7 +73,7 @@ def f(a=ContinuousSlider(interval=(-2,2)),
 
 
     <cell>
-        <group>Calculus</group>
+        <group>Examples</group>
         <title>Taylor Series</title>
         <rank>0</rank>
         <description>An interactive demonstration of the Taylor series truncated at different degrees.</description>
@@ -105,18 +92,6 @@ def _(order=(1..12)):
   show(dot + p + pt, ymin = -.5, ymax = 1)
 		]]></input>
         <uuid>18b4bba6-f0cb-42a2-80c8-976a2ac195c6</uuid>
-        <favorite>true</favorite>
-    </cell>
-
-    <cell>
-        <group>History</group>
-        <title>History Item 1</title>
-        <rank>0</rank>
-        <description>Testing a history item.</description>
-        <input><![CDATA[
-1+1
-		]]></input>
-        <uuid>18b4bba6-f0cb-44a2-80c8-976a2ac195c6</uuid>
         <favorite>true</favorite>
     </cell>
 
