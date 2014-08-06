@@ -33,7 +33,6 @@
                 android:gravity="center"
                 android:visibility="visible"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textStyle="bold"
                 android:text="@string/cell_list_empty_text"
                 />
 
