@@ -90,7 +90,6 @@ public class InteractDiscreteSlider
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        if (interactView != null)
-            interactView.notifyChange(this);
+        interactView.notifyChange(this);
     }
 }
