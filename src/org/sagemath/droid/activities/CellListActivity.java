@@ -18,6 +18,7 @@ import org.sagemath.droid.models.database.Group;
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
+ * @author Nikhil Peter Raj
  */
 public class CellListActivity extends ActionBarActivity {
     private static final String TAG = "SageDroid:CellListActivity";
@@ -34,7 +35,7 @@ public class CellListActivity extends ActionBarActivity {
         setContentView(R.layout.fragment_cell_list);
 
         cellListFragment = (CellListFragment)
-                getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
+                getSupportFragmentManager().findFragmentById(R.id.cellListFragment);
 
         Intent intent = getIntent();
         if (intent == null)
@@ -50,7 +51,7 @@ public class CellListActivity extends ActionBarActivity {
             cellListFragment.setGroup(group);
         }
 
-        setTitle(group.getCellGroup());
+        getSupportActionBar().setTitle(group.getCellGroup());
 
     }
 

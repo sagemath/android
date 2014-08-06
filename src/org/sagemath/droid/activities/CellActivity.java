@@ -11,6 +11,8 @@ import org.sagemath.droid.fragments.CellListFragment;
 import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.SimpleEula;
 
+import java.util.Stack;
+
 /**
  * CellActivity - main activity, first screen
  *
@@ -29,6 +31,9 @@ public class CellActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Stack<Integer> stack;
+
         setContentView(R.layout.activity_cell);
         try {
             new SimpleEula(this).new EulaTask().execute();
@@ -39,11 +44,11 @@ public class CellActivity
         }
 
         groupsFragment = (CellGroupsFragment)
-                getSupportFragmentManager().findFragmentById(R.id.cell_groups_fragment);
+                getSupportFragmentManager().findFragmentById(R.id.cellGroupFragment);
         groupsFragment.setOnGroupSelected(this);
 
         listFragment = (CellListFragment)
-                getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
+                getSupportFragmentManager().findFragmentById(R.id.cellListFragment);
 
     }
 
@@ -52,7 +57,7 @@ public class CellActivity
     @Override
     public void onGroupSelected(Group group) {
         CellListFragment listFragment = (CellListFragment)
-                getSupportFragmentManager().findFragmentById(R.id.cell_list_fragment);
+                getSupportFragmentManager().findFragmentById(R.id.cellListFragment);
         if (listFragment == null || !listFragment.isInLayout()) {
             Intent i = new Intent(getApplicationContext(), CellListActivity.class);
             i.putExtra(INTENT_SWITCH_GROUP, group);

@@ -3,5 +3,5 @@
           xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:name="org.sagemath.droid.fragments.CellListFragment"
-          android:id="@+id/cell_list_fragment" tools:layout="@layout/layout_cell_list">
+          android:id="@+id/cellListFragment" tools:layout="@layout/layout_cell_list">
 </fragment>

@@ -9,7 +9,7 @@
             android:name="org.sagemath.droid.fragments.CellGroupsFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/cell_groups_fragment" tools:layout="@layout/cell_groups_layout">
+            android:id="@+id/cellGroupFragment" tools:layout="@layout/cell_groups_layout">
             
     </fragment>
 </LinearLayout>   
