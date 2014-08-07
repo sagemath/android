@@ -28,6 +28,7 @@ import org.sagemath.droid.dialogs.InsertSpinnerDialogFragment;
 import org.sagemath.droid.dialogs.ShareDialogFragment;
 import org.sagemath.droid.events.*;
 import org.sagemath.droid.fragments.AsyncTaskFragment;
+import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CodeEditorFragment;
 import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
@@ -82,6 +83,7 @@ public class SageActivity
 
     private boolean isServerRunning = false;
     private boolean isShareAvailable = false;
+    private boolean isPlayground = false;
 
 
     private Cell cell;
@@ -93,15 +95,19 @@ public class SageActivity
         helper = SageSQLiteOpenHelper.getInstance(this);
         BusProvider.getInstance().register(this);
 
-        Long cellID = getIntent().getLongExtra(StringConstants.ID, -1);
-
         setContentView(R.layout.activity_sage);
+
+        cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
+        cellProgressBar.setVisibility(View.INVISIBLE);
 
         dividerView = findViewById(R.id.dividerView);
         codeEditorFragment = (CodeEditorFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.codeFragment);
         outputViewFragment = (OutputViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.outputFragment);
+
+        codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
+        outputViewFragment.getOutputViewToggleButton().setOnCheckedChangeListener(this);
 
         if (getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG) == null) {
             taskFragment = AsyncTaskFragment.getInstance();
@@ -113,30 +119,25 @@ public class SageActivity
             taskFragment = (AsyncTaskFragment) getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG);
         }
 
-        codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
-        outputViewFragment.getOutputViewToggleButton().setOnCheckedChangeListener(this);
+        Intent intent = getIntent();
+        if (intent.hasExtra(CellGroupsFragment.KEY_GROUP_PLAYGROUND)) {
+            //Playground setup
+            setTitle(getString(R.string.group_playground));
+            isPlayground = true;
+        } else if (intent.hasExtra(StringConstants.ID)) {
 
-        if (cellID != -1) {
-            cell = helper.getCellbyID(cellID);
-            codeEditorFragment.setCell(cell);
-            outputViewFragment.setCell(cell);
-            Log.i(TAG, "Got cell " + cell.toString());
-        }
+            Long cellID = intent.getLongExtra(StringConstants.ID, -1);
 
-        cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
-        cellProgressBar.setVisibility(View.INVISIBLE);
-
-        setTitle(cell.getTitle());
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getBoolean(FLAG_SERVER_STATE)) {
-                //Server was running when an orientation change occurred
-                //cancelComputation();
-                showProgress();
-                //startExecution();
+            if (cellID != -1) {
+                cell = helper.getCellbyID(cellID);
+                codeEditorFragment.setCell(cell);
+                outputViewFragment.setCell(cell);
+                Log.i(TAG, "Got cell " + cell.toString());
             }
-        }
 
+            setTitle(cell.getTitle());
+
+        }
     }
 
     @Override
@@ -191,6 +192,7 @@ public class SageActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem shareItem = menu.findItem(R.id.menu_share);
         MenuItem runStateItem = menu.findItem(R.id.menu_run);
+        MenuItem saveItem = menu.findItem(R.id.menu_save);
         if (playIcon == null) {
             //Cache to avoid overhead
             playIcon = getResources().getDrawable(R.drawable.ic_action_av_play);
@@ -198,6 +200,11 @@ public class SageActivity
             shareIcon = getResources().getDrawable(R.drawable.ic_action_social_share);
             shareEnableIcon = getResources().getDrawable(R.drawable.ic_action_social_share_enabled);
         }
+
+        if (isPlayground) {
+            saveItem.setEnabled(false);
+        }
+
         if (isServerRunning) {
             runStateItem.setIcon(stopIcon);
         } else {

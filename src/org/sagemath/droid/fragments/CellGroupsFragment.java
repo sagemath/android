@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.HelpActivity;
+import org.sagemath.droid.activities.SageActivity;
 import org.sagemath.droid.activities.SettingsActivity;
 import org.sagemath.droid.adapters.CellGroupsAdapter;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
@@ -34,6 +35,8 @@ public class CellGroupsFragment extends ListFragment {
     private static final String ARG_DELETE_GROUP_DIALOG = "deleteGroupDialog";
     private static final String DIALOG_NEW_GROUP = "newGroup";
 
+    public static final String KEY_GROUP_PLAYGROUND = "playgroundGroup";
+
     private SageSQLiteOpenHelper helper;
 
     public interface OnGroupSelectedListener {
@@ -49,7 +52,13 @@ public class CellGroupsFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView parent, View view, int position, long id) {
         Group group = groups.get(position);
-        listener.onGroupSelected(group);
+        if (group.getCellGroup().equals(getString(R.string.group_playground))) {
+            Intent intent = new Intent(getActivity(), SageActivity.class);
+            intent.putExtra(KEY_GROUP_PLAYGROUND, true);
+            startActivity(intent);
+        } else {
+            listener.onGroupSelected(group);
+        }
     }
 
     protected List<Group> groups;

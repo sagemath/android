@@ -11,8 +11,6 @@ import org.sagemath.droid.fragments.CellListFragment;
 import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.SimpleEula;
 
-import java.util.Stack;
-
 /**
  * CellActivity - main activity, first screen
  *
@@ -33,8 +31,6 @@ public class CellActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Stack<Integer> stack;
-
         setContentView(R.layout.activity_cell);
         try {
             new SimpleEula(this).new EulaTask().execute();
@@ -43,6 +39,8 @@ public class CellActivity
             e.printStackTrace();
             //this.finish();
         }
+
+        getSupportActionBar().setTitle(R.string.main_menu_title);
 
         groupsFragment = (CellGroupsFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cellGroupFragment);
