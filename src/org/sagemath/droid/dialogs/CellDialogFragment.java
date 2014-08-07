@@ -32,17 +32,11 @@ public class CellDialogFragment extends BaseActionDialogFragment {
     private static final String ARG_CELL = "Cell";
     private static final String ARG_TYPE = "cellType";
 
-    private FloatLabelLayout nameContainer, descriptionContainer;
     private LinearLayout groupContainer, dialogContainer;
     private EditText titleEditText, descriptionEditText;
     private AutoCompleteTextView groupEditText;
     private ImageButton emptyInfoButton;
 
-    private List<Group> cellGroups;
-    private ArrayAdapter<String> adapter;
-    private String[] groupChoices;
-
-    private Cell currentCell;
     private ArrayList<Cell> cells;
     private int type;
 
@@ -83,11 +77,8 @@ public class CellDialogFragment extends BaseActionDialogFragment {
         return false;
     }
 
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        currentCell = getArguments().getParcelable(ARG_CELL);
 
         cells = getArguments().getParcelableArrayList(ARG_CELL);
         type = getArguments().getInt(ARG_TYPE);
@@ -96,8 +87,8 @@ public class CellDialogFragment extends BaseActionDialogFragment {
 
         View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_cell_general, null);
 
-        nameContainer = (FloatLabelLayout) dialogView.findViewById(R.id.nameContainer);
-        descriptionContainer = (FloatLabelLayout) dialogView.findViewById(R.id.descriptionContainer);
+        FloatLabelLayout nameContainer = (FloatLabelLayout) dialogView.findViewById(R.id.nameContainer);
+        FloatLabelLayout descriptionContainer = (FloatLabelLayout) dialogView.findViewById(R.id.descriptionContainer);
 
         groupContainer = (LinearLayout) dialogView.findViewById(R.id.groupContainer);
         dialogContainer = (LinearLayout) dialogView.findViewById(R.id.dialogContainer);
@@ -119,14 +110,14 @@ public class CellDialogFragment extends BaseActionDialogFragment {
             }
         });
 
-        cellGroups = helper.getGroups();
+        List<Group> cellGroups = helper.getGroups();
         ArrayList<String> groupStrings = new ArrayList<>();
         for (Group group : cellGroups) {
             groupStrings.add(group.getCellGroup());
         }
-        groupChoices = new String[groupStrings.size()];
+        String[] groupChoices = new String[groupStrings.size()];
         groupStrings.toArray(groupChoices);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, groupChoices);
         groupEditText.setAdapter(adapter);
 
         groupEditText.addTextChangedListener(new TextWatcher() {
@@ -201,6 +192,7 @@ public class CellDialogFragment extends BaseActionDialogFragment {
 
             switch (type) {
                 case IntConstants.DIALOG_NEW_GROUP:
+                    //TODO remove this
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -224,7 +216,12 @@ public class CellDialogFragment extends BaseActionDialogFragment {
                                     Cell cell = cells.get(0);
                                     cell.setTitle(titleEditText.getText().toString());
                                     cell.setDescription(descriptionEditText.getText().toString());
-                                    Group group = new Group(groupEditText.getText().toString());
+                                    Group group;
+                                    if (TextUtils.isEmpty(groupEditText.getText())) {
+                                        group = new Group(getString(R.string.group_misc));
+                                    } else {
+                                        group = new Group(groupEditText.getText().toString());
+                                    }
                                     cell.setGroup(group);
                                     helper.addGroup(group);
                                     helper.saveEditedCell(cell);
@@ -272,7 +269,12 @@ public class CellDialogFragment extends BaseActionDialogFragment {
 
                                 Cell cell = new Cell();
                                 cell.setTitle(titleEditText.getText().toString());
-                                Group group = new Group(groupEditText.getText().toString());
+                                Group group;
+                                if (TextUtils.isEmpty(groupEditText.getText().toString())) {
+                                    group = new Group(getString(R.string.group_misc));
+                                } else {
+                                    group = new Group(groupEditText.getText().toString());
+                                }
                                 cell.setGroup(group);
                                 cell.setDescription(descriptionEditText.getText().toString());
                                 helper.addGroup(group);

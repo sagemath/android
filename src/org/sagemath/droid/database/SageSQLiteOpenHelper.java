@@ -125,6 +125,10 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     public void addInitialGroups(List<Group> groups, SQLiteDatabase db) {
         Log.i(TAG, "Adding Initial Groups" + groups.toString());
         try {
+            //Add playground
+            Group playgroundGroup = new Group(context.getString(R.string.group_playground));
+            cupboard().withDatabase(db).put(playgroundGroup);
+
             db.beginTransaction();
             for (Group group : groups) {
                 cupboard().withDatabase(db).put(group);

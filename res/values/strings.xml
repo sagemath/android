@@ -25,6 +25,9 @@
     <string name="cell_group_empty_text">You have no groups.</string>
     <string name="group_empty_text">No Cells have been saved</string>
 
+    <string name="group_misc">Miscellaneous</string>
+    <string name="group_playground">Playground</string>
+
     <string name="header_fav_text">FAVORITES</string>
 
     <string name="activity_help_title">Help</string>
@@ -35,7 +38,7 @@
     <string name="dialog_new_group_text_hint">Create a Group</string>
     <string name="dialog_edit_cell_single_title">Edit Cell</string>
     <string name="dialog_edit_cell_multiple_title">Edit Cells</string>
-    <string name="dialog_info_button_contentDescription">An empty group name will add the cell to the "Misc" group
+    <string name="dialog_info_button_contentDescription">An empty group name will add the cell to the Miscellaneous group
     </string>
     <string name="dialog_edit_cell_multiple_group_hint">Edit Group Name(s)</string>
     <string name="dialog_new_cell_title">Create a new Cell</string>
