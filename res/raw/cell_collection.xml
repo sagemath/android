@@ -2,17 +2,6 @@
 <cell_collection>
     <cell>
         <group>Examples</group>
-        <title>Another cell</title>
-        <rank>0</rank>
-        <description>Another description</description>
-        <input>1+1+1</input>
-        <uuid>ca4ce7b1-8f98-4769-b646-b3692fd48ec9</uuid>
-        <favorite>false</favorite>
-    </cell>
-
-
-    <cell>
-        <group>Examples</group>
         <title>A Simple interact</title>
         <rank>30</rank>
         <description>An example of a control using the simple syntax.</description>
