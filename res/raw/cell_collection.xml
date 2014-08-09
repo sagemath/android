@@ -14,6 +14,18 @@ def f(n=(1..10)):
         <favorite>false</favorite>
     </cell>
 
+    <cell>
+        <group>Examples</group>
+        <title>A Simple Plot</title>
+        <rank>30</rank>
+        <description>An example of a graphical output.</description>
+        <input><![CDATA[
+var('a')
+polar_plot(a,(a,0,1))
+    	]]></input>
+        <uuid>e572ff61-f254-45e9-82e9-e7a94799c3cf</uuid>
+        <favorite>false</favorite>
+    </cell>
 
     <cell>
         <group>Examples</group>
