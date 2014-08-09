@@ -33,6 +33,7 @@
                 android:layout_weight="0"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
+                android:padding="5dp"
                 android:background="@android:color/transparent"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
