@@ -361,9 +361,9 @@ public class SageActivity
             @Override
             public void run() {
                 toast = new SuperCardToast(SageActivity.this);
-                toast.setText(getResources().getString(R.string.info_disconnected));
+                toast.setText(getResources().getString(R.string.toast_info_disconnected));
                 toast.setBackground(SuperToast.Background.RED);
-                toast.setTextColor(Color.WHITE);
+                toast.setTextColor(Color.BLACK);
                 toast.setDuration(3000);
                 toast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
                 toast.setSwipeToDismiss(true);

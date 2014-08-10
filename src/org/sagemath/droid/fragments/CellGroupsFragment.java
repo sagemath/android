@@ -1,12 +1,17 @@
 package org.sagemath.droid.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.*;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import com.github.johnpersano.supertoasts.SuperCardToast;
+import com.github.johnpersano.supertoasts.SuperToast;
 import org.sagemath.droid.R;
 import org.sagemath.droid.activities.HelpActivity;
 import org.sagemath.droid.activities.SageActivity;
@@ -39,6 +44,9 @@ public class CellGroupsFragment extends ListFragment {
 
     private SageSQLiteOpenHelper helper;
 
+    private TextView playgroundItem;
+    private ImageButton playgroundInfoButton;
+
     public interface OnGroupSelectedListener {
         public void onGroupSelected(Group group);
     }
@@ -52,13 +60,7 @@ public class CellGroupsFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView parent, View view, int position, long id) {
         Group group = groups.get(position);
-        if (group.getCellGroup().equals(getString(R.string.group_playground))) {
-            Intent intent = new Intent(getActivity(), SageActivity.class);
-            intent.putExtra(KEY_GROUP_PLAYGROUND, true);
-            startActivity(intent);
-        } else {
-            listener.onGroupSelected(group);
-        }
+        listener.onGroupSelected(group);
     }
 
     protected List<Group> groups;
@@ -84,7 +86,11 @@ public class CellGroupsFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_cell_group, container, false);
+        View view = inflater.inflate(R.layout.layout_cell_group, container, false);
+        playgroundItem = (TextView) view.findViewById(R.id.playgroundItem);
+        playgroundInfoButton = (ImageButton) view.findViewById(R.id.playgroundInfo);
+
+        return view;
     }
 
     @Override
@@ -92,6 +98,20 @@ public class CellGroupsFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         registerForContextMenu(getListView());
+        playgroundItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SageActivity.class);
+                intent.putExtra(KEY_GROUP_PLAYGROUND, true);
+                startActivity(intent);
+            }
+        });
+        playgroundInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPlaygroundInfoToast();
+            }
+        });
     }
 
     @Override
@@ -159,5 +179,15 @@ public class CellGroupsFragment extends ListFragment {
                 return super.onContextItemSelected(item);
         }
 
+    }
+
+    private void showPlaygroundInfoToast() {
+        SuperCardToast toast = new SuperCardToast(getActivity());
+        toast.setText(getString(R.string.toast_playground_info));
+        toast.setIcon(R.drawable.ic_action_about, SuperToast.IconPosition.LEFT);
+        toast.setBackground(SuperToast.Background.GREEN);
+        toast.setTextColor(Color.BLACK);
+        toast.setDuration(3000);
+        toast.show();
     }
 }
