@@ -66,15 +66,11 @@ public class CellDialogFragment extends BaseActionDialogFragment {
     }
 
     private boolean isCellTitleEmpty() {
-        if (TextUtils.isEmpty(titleEditText.getText()))
-            return true;
-        return false;
+        return TextUtils.isEmpty(titleEditText.getText());
     }
 
-    private boolean isCellGroupEmpty() {
-        if (TextUtils.isEmpty(groupEditText.getText()))
-            return true;
-        return false;
+    private boolean isCellGroupPlayground() {
+        return groupEditText.getText().toString().equalsIgnoreCase(getString(R.string.group_playground));
     }
 
     @Override
@@ -206,7 +202,7 @@ public class CellDialogFragment extends BaseActionDialogFragment {
                         positiveButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (isCellTitleEmpty()) {
+                                if (isCellTitleEmpty() || isCellGroupPlayground()) {
                                     if (AnimationHelper.isIcsOrAbove()) {
                                         AnimationHelper.Nope(dialogContainer).start();
                                     } else {
@@ -259,7 +255,7 @@ public class CellDialogFragment extends BaseActionDialogFragment {
                     positiveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (isCellTitleEmpty()) {
+                            if (isCellTitleEmpty() || isCellGroupPlayground()) {
                                 if (AnimationHelper.isIcsOrAbove()) {
                                     AnimationHelper.Nope(dialogContainer).start();
                                 } else {
