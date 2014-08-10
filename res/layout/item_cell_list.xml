@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingLeft="8dp"
+              android:paddingRight="4dp"
+              android:paddingTop="4dp"
+              android:paddingBottom="4dp"
+              android:orientation="vertical">
+
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="5dp"
+                  android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/cellTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:text="hello"
+                android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+
+        <Button
+                android:id="@+id/cellFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="0"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="5dp"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/cellDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hello"
+            android:textAppearance="?android:textAppearanceSmall"
+            >
+    </TextView>
+
+</LinearLayout>

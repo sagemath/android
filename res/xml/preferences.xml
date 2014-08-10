@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <org.sagemath.droid.views.SeekBarDialogPreference
+            android:key="font_size"
+            android:title="@string/pref_font_title"
+            android:summary="@string/pref_font_summary"
+            android:defaultValue="18"/>
+
+    <Preference
+            android:title="@string/menu_manage_inserts"
+            android:key="manage_insert"/>
+
+
+</PreferenceScreen>

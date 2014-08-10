@@ -29,6 +29,7 @@ release.properties
 ant.properties
 
 # Eclipse project files
+.settings
 .classpath
 .project
 
@@ -53,3 +54,4 @@ gradle.properties
 #Maven
 target
 pom.xml.*
+*.jks

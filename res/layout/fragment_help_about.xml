@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:scrollbars="vertical">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/icon"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name_long"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textStyle="bold"/>
+
+                <TextView
+                        android:id="@+id/helpAboutVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@android:style/TextAppearance.Small"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gitIconText"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:textAppearanceMedium"/>
+
+            <org.sufficientlysecure.htmltextview.HtmlTextView
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="6dp"
+                    android:id="@+id/gitLinkText"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <org.sufficientlysecure.htmltextview.HtmlTextView
+                android:id="@+id/helpAboutText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?android:textAppearanceSmall"/>
+
+    </LinearLayout>
+
+</ScrollView>

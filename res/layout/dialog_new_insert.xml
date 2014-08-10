@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <org.sagemath.droid.views.FloatLabelLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:floatLabelTextAppearance="@style/floatLabelEditTextAppearance">
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/dialog_manage_insert_description_hint"
+                android:id="@+id/insertDesc"/>
+
+    </org.sagemath.droid.views.FloatLabelLayout>
+
+    <org.sagemath.droid.views.FloatLabelLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:floatLabelTextAppearance="@style/floatLabelEditTextAppearance">
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/dialog_manage_insert_text_hint"
+                android:id="@+id/insertText"/>
+
+    </org.sagemath.droid.views.FloatLabelLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:paddingTop="8dp"
+                android:paddingLeft="6dp"
+                android:text="@string/dialog_manage_insert_checkbox_prompt"
+                android:paddingBottom="8dp"
+                android:textAppearance="?android:textAppearanceMedium"/>
+
+        <CheckBox android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0"
+                  android:padding="2dp"
+                  android:id="@+id/insertFavoriteCheck"
+                  android:layout_gravity="center"
+                  android:gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

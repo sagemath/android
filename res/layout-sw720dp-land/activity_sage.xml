@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_container"
+            android:layout_weight="0"
+            android:orientation="vertical"/>
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cell_progress"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_weight="0"
+            android:indeterminate="true"
+            app:spb_sections_count="4"
+            app:spb_interpolator="spb_interpolator_accelerate"
+            app:spb_speed="1.0"
+            app:spb_reversed="false"
+            app:spb_mirror_mode="false"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+        <fragment
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/codeFragment"
+                android:layout_weight="1"
+                android:name="org.sagemath.droid.fragments.CodeEditorFragment"
+                tools:layout="@layout/fragment_code_editor"/>
+
+        <View android:layout_width="2dp" android:layout_height="match_parent"
+              android:background="@color/dark_gray"
+              android:id="@+id/dividerView"
+              android:layout_weight="0"/>
+
+        <fragment
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/outputFragment"
+                android:name="org.sagemath.droid.fragments.OutputViewFragment"
+                tools:layout="@layout/fragment_output_view"/>
+
+    </LinearLayout>
+</LinearLayout>
