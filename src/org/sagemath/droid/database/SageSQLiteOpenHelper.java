@@ -86,28 +86,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    private void reRegisterEntity(Class clazz) {
-        cupboard().register(clazz);
-    }
-
-    public void addCells(List<Cell> cells) {
-        SQLiteDatabase db = null;
-
-        try {
-            db = getWritableDatabase();
-            db.beginTransaction();
-            for (Cell cell : cells) {
-                cupboard().withDatabase(db).put(cell);
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            if (db != null) {
-                db.endTransaction();
-            }
-        }
-
-    }
-
     private void addInitialInserts(SQLiteDatabase db) {
 
         Inserts insert1 = new Inserts();
@@ -125,9 +103,6 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     public void addInitialGroups(List<Group> groups, SQLiteDatabase db) {
         Log.i(TAG, "Adding Initial Groups" + groups.toString());
         try {
-            //Add playground
-            Group playgroundGroup = new Group(context.getString(R.string.group_playground));
-            cupboard().withDatabase(db).put(playgroundGroup);
 
             db.beginTransaction();
             for (Group group : groups) {
