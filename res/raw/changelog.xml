@@ -2,6 +2,14 @@
 
 <changelog bulletedList="true">
 
+    <changelogversion versionName="0.9.5 Beta" changeDate="Aug 8,2014">
+        <changelogimprovement>Tablet layouts</changelogimprovement>
+        <changelogimprovement>Better UI,Dialogs and Animations</changelogimprovement>
+        <changelogimprovement>Added playground for quick run &amp; share</changelogimprovement>
+        <changelogimprovement>Added Help Screen,FAQs and Attributions</changelogimprovement>
+        <changelogbug>Misc Fixes</changelogbug>
+    </changelogversion>
+
     <changelogversion versionName="0.9.4 Beta" changeDate="Jun 24,2014">
         <changelogimprovement>Better Progress Indicator</changelogimprovement>
         <changelogimprovement>Notification on Server Disconnect for Interacts</changelogimprovement>
