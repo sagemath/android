@@ -8,6 +8,7 @@
         <changelogimprovement>Added playground for quick run &amp; share</changelogimprovement>
         <changelogimprovement>Added Help Screen,FAQs and Attributions</changelogimprovement>
         <changelogbug>Misc Fixes</changelogbug>
+        <changelogtext>[b]Internal:[/b] Many,many improvements; refer git commits for full list</changelogtext>
     </changelogversion>
 
     <changelogversion versionName="0.9.4 Beta" changeDate="Jun 24,2014">
