@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools" android:orientation="horizontal"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
+              android:orientation="vertical"
               android:baselineAligned="false"
               android:layout_height="match_parent">
 
-    <fragment
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_height="match_parent"
-            android:name="org.sagemath.droid.fragments.CellGroupsFragment"
-            android:id="@+id/cellGroupFragment" tools:layout="@layout/layout_cell_group"/>
+    <LinearLayout
+            android:id="@+id/card_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="vertical"/>
 
-    <fragment
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="7"
-            android:name="org.sagemath.droid.fragments.CellListFragment"
-            android:id="@+id/cellListFragment" tools:layout="@layout/layout_cell_list"/>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+        <fragment
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="match_parent"
+                android:name="org.sagemath.droid.fragments.CellGroupsFragment"
+                android:id="@+id/cellGroupFragment" tools:layout="@layout/layout_cell_group"/>
+
+        <fragment
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:name="org.sagemath.droid.fragments.CellListFragment"
+                android:id="@+id/cellListFragment" tools:layout="@layout/layout_cell_list"/>
+
+    </LinearLayout>
 
 </LinearLayout>
