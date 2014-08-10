@@ -11,7 +11,7 @@ import org.sagemath.droid.deserializers.*;
  * Base Reply from the Server
  * All *Reply classes should extend this
  *
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class BaseReply {
     private static final String TAG = "SageDroid:BaseReply";

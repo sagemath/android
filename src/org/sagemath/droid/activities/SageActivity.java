@@ -1,38 +1,41 @@
 package org.sagemath.droid.activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.CompoundButton;
+import android.widget.ProgressBar;
+import android.widget.ToggleButton;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 import com.github.johnpersano.supertoasts.SuperToast;
-import junit.framework.Assert;
-import org.sagemath.droid.OutputView;
+import com.squareup.otto.Subscribe;
 import org.sagemath.droid.R;
-import org.sagemath.droid.SageSingleCell;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.DeleteCellDialogFragment;
-import org.sagemath.droid.dialogs.NewCellDialogFragment;
+import org.sagemath.droid.dialogs.InsertDialogFragment;
+import org.sagemath.droid.dialogs.InsertSpinnerDialogFragment;
+import org.sagemath.droid.dialogs.ShareDialogFragment;
+import org.sagemath.droid.events.*;
+import org.sagemath.droid.fragments.AsyncTaskFragment;
+import org.sagemath.droid.fragments.CellGroupsFragment;
+import org.sagemath.droid.fragments.CodeEditorFragment;
+import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.models.gson.InteractReply;
-import org.sagemath.droid.utils.ChangeLog;
+import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.gson.BaseReply;
+import org.sagemath.droid.utils.BusProvider;
+import org.sagemath.droid.utils.ToastUtils;
 
 /**
  * SageActivity - handling of single cell display and input
@@ -40,41 +43,47 @@ import org.sagemath.droid.utils.ChangeLog;
  * @author vbraun
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
+ * @author Nikhil Peter Raj
  */
 public class SageActivity
         extends
         ActionBarActivity
         implements
-        Button.OnClickListener,
-        OutputView.onSageListener,
-        SageSingleCell.OnSageDisconnectListener,
-        AdapterView.OnItemSelectedListener,
-        DeleteCellDialogFragment.OnCellDeleteListener {
+        DeleteCellDialogFragment.OnDeleteListener,
+        ToggleButton.OnCheckedChangeListener,
+        AsyncTaskFragment.ServerCallbacks
+        , ShareDialogFragment.OnRequestOutputListener
+        , PopupMenu.OnMenuItemClickListener
+        , InsertSpinnerDialogFragment.OnInsertSelectedListener {
     private static final String TAG = "SageDroid:SageActivity";
 
-    private static final String DIALOG_NEW_CELL = "newCell";
-    private static final String DIALOG_DISCARD_CELL = "discardCell";
-    private static final String ARG_HTML = "html";
-    private static final String ARG_BUNDLE = "bundle";
+    private static final String DIALOG_SHARE = "shareDialog";
+    private static final String FLAG_SERVER_STATE = "serverState";
 
-    protected static final int INSERT_FOR_LOOP = 1;
-    protected static final int INSERT_LIST_COMPREHENSION = 2;
+    private static final String ARG_ADD_INSERT = "newInsert";
+    private static final String ARG_PUT_INSERT = "addInsert";
 
-    private ChangeLog changeLog;
+    private static final String TASK_FRAGMENT_TAG = "taskFragment";
 
-    private EditText input;
-    private Button roundBracket, squareBracket, curlyBracket;
-    private ImageButton runButton;
-    private Spinner insertSpinner;
-    private OutputView outputView;
     private ProgressBar cellProgressBar;
     private SuperCardToast toast;
 
+    private Drawable playIcon, stopIcon;
+    private Drawable shareIcon, shareEnableIcon;
+
+    private CodeEditorFragment codeEditorFragment;
+    private OutputViewFragment outputViewFragment;
+    private AsyncTaskFragment taskFragment;
+
+    private View dividerView;
+
     private SageSQLiteOpenHelper helper;
 
-    private static SageSingleCell server;
+    private String permalinkURL = null;
 
     private boolean isServerRunning = false;
+    private boolean isShareAvailable = false;
+    private boolean isPlayground = false;
 
 
     private Cell cell;
@@ -83,220 +92,278 @@ public class SageActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(progressBroadcastReceiver, new IntentFilter(StringConstants.PROGRESS_INTENT));
-        server = new SageSingleCell(this);
         helper = SageSQLiteOpenHelper.getInstance(this);
+        BusProvider.getInstance().register(this);
 
-        Long cellID = getIntent().getLongExtra(StringConstants.ID, -1);
+        setContentView(R.layout.activity_sage);
 
-        if (cellID != -1) {
-            cell = helper.getCellbyID(cellID);
-            Log.i(TAG, "Got cell " + cell.toString());
-        }
-
-        setContentView(R.layout.main);
-
-        changeLog = new ChangeLog(this);
-        if (changeLog.firstRun())
-            changeLog.getLogDialog().show();
-
-        input = (EditText) findViewById(R.id.sage_input);
-        roundBracket = (Button) findViewById(R.id.bracket_round);
-        squareBracket = (Button) findViewById(R.id.bracket_square);
-        curlyBracket = (Button) findViewById(R.id.bracket_curly);
-        runButton = (ImageButton) findViewById(R.id.button_run);
-        outputView = (OutputView) findViewById(R.id.sage_output);
-        insertSpinner = (Spinner) findViewById(R.id.insert_text);
         cellProgressBar = (ProgressBar) findViewById(R.id.cell_progress);
         cellProgressBar.setVisibility(View.INVISIBLE);
-        server.setOnSageListener(outputView);
-        server.setOnSageDisconnectListener(this);
 
-        outputView.setOnSageListener(this);
-        outputView.setCell(cell);
-        insertSpinner.setOnItemSelectedListener(this);
-        roundBracket.setOnClickListener(this);
-        squareBracket.setOnClickListener(this);
-        curlyBracket.setOnClickListener(this);
-        runButton.setOnClickListener(this);
+        dividerView = findViewById(R.id.dividerView);
+        codeEditorFragment = (CodeEditorFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.codeFragment);
+        outputViewFragment = (OutputViewFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.outputFragment);
 
-        try {
-            Log.i(TAG, "Cell group is: " + cell.getGroup());
-            Log.i(TAG, "Cell title is: " + cell.getTitle());
-            Log.i(TAG, "Cell uuid is: " + cell.getUUID().toString());
-            //Log.i(TAG, "Starting new SageActivity with HTML: " + cell.getHtmlData());
-        } catch (Exception e) {
+        codeEditorFragment.getCodeViewToggleButton().setOnCheckedChangeListener(this);
+        outputViewFragment.getOutputViewToggleButton().setOnCheckedChangeListener(this);
+
+        if (getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG) == null) {
+            taskFragment = AsyncTaskFragment.getInstance();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(taskFragment, TASK_FRAGMENT_TAG)
+                    .commit();
+        } else {
+            taskFragment = (AsyncTaskFragment) getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG);
         }
 
-        setTitle(cell.getTitle());
-        input.setText(cell.getInput());
-        boolean isInputEmpty = getIntent().getBooleanExtra(StringConstants.FLAG_INPUT_EMPTY, true);
-        if (!isInputEmpty) {
-            runButton();
-        }
+        Intent intent = getIntent();
+        if (intent.hasExtra(CellGroupsFragment.KEY_GROUP_PLAYGROUND)) {
+            //Playground setup
+            setTitle(getString(R.string.group_playground));
+            isPlayground = true;
+        } else if (intent.hasExtra(StringConstants.ID)) {
 
+            Long cellID = intent.getLongExtra(StringConstants.ID, -1);
+
+            if (cellID != -1) {
+                cell = helper.getCellbyID(cellID);
+                codeEditorFragment.setCell(cell);
+                outputViewFragment.setCell(cell);
+                Log.i(TAG, "Got cell " + cell.toString());
+            }
+
+            setTitle(cell.getTitle());
+
+        }
+    }
+
+    @Override
+    public void onReply(BaseReply reply) {
+        BusProvider.getInstance().post(new ReplyEvent(reply));
+    }
+
+    @Override
+    public void onComputationFinished() {
+        hideProgress();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        switch (buttonView.getId()) {
+            case R.id.codeViewStateToggleButton:
+                if (isChecked)
+                    performFragmentResize(R.id.codeFragment, R.id.outputFragment);
+                else
+                    performFragmentRestore();
+                break;
+
+            case R.id.outputViewStateToggleButton:
+                if (isChecked)
+                    performFragmentResize(R.id.outputFragment, R.id.codeFragment);
+                else
+                    performFragmentRestore();
+                break;
+        }
+    }
+
+    private void performFragmentResize(int expand, int collapse) {
+        dividerView.setVisibility(View.GONE);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .hide(manager.findFragmentById(collapse))
+                .show(manager.findFragmentById(expand))
+                .commit();
+    }
+
+    private void performFragmentRestore() {
+        dividerView.setVisibility(View.VISIBLE);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .show(manager.findFragmentById(R.id.codeFragment))
+                .show(manager.findFragmentById(R.id.outputFragment))
+                .commit();
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem shareItem = menu.findItem(R.id.menu_share);
+        MenuItem runStateItem = menu.findItem(R.id.menu_run);
+        MenuItem saveItem = menu.findItem(R.id.menu_save);
+        if (playIcon == null) {
+            //Cache to avoid overhead
+            playIcon = getResources().getDrawable(R.drawable.ic_action_av_play);
+            stopIcon = getResources().getDrawable(R.drawable.ic_action_av_stop);
+            shareIcon = getResources().getDrawable(R.drawable.ic_action_social_share);
+            shareEnableIcon = getResources().getDrawable(R.drawable.ic_action_social_share_enabled);
+        }
 
-        MenuItem refreshItem = menu.findItem(R.id.menu_refresh);
-        Drawable refreshIcon = getResources().getDrawable(R.drawable.ic_action_refresh);
-        if (isServerRunning)
-            refreshIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+        if (isPlayground) {
+            saveItem.setEnabled(false);
+        }
 
-        refreshItem.setEnabled(!isServerRunning);
-        refreshItem.setIcon(refreshIcon);
-
+        if (isServerRunning) {
+            runStateItem.setIcon(stopIcon);
+        } else {
+            runStateItem.setIcon(playIcon);
+        }
+        if (isShareAvailable && !isServerRunning) {
+            shareItem.setIcon(shareEnableIcon);
+        } else {
+            shareItem.setIcon(shareIcon);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
+        menuInflater.inflate(R.menu.menu_activity_sage, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Uri uri;
-        Intent intent;
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
+            case R.id.menu_run:
+                startExecution();
                 return true;
-            case R.id.menu_refresh:
-                runButton();
+            case R.id.menu_insert:
+                View popUpView = findViewById(R.id.menu_insert);
+                showPopup(popUpView);
                 return true;
-            case R.id.menu_add: {
-                FragmentManager fm = this.getSupportFragmentManager();
-                NewCellDialogFragment dialog = NewCellDialogFragment.newInstance();
-                dialog.show(fm, DIALOG_NEW_CELL);
-                return true;
-            }
-            case R.id.menu_discard: {
-                FragmentManager fm = this.getSupportFragmentManager();
-                DeleteCellDialogFragment deleteDialogFragment = DeleteCellDialogFragment.newInstance(cell);
-                deleteDialogFragment.setOnCellDeleteListener(this);
-                deleteDialogFragment.show(fm, DIALOG_DISCARD_CELL);
-                return true;
-            }
-            case R.id.menu_search:
-                Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
+            case R.id.menu_save:
+                codeEditorFragment.saveCurrentInput();
                 return true;
             case R.id.menu_share:
-                try {
-                    String shareURL = server.getShareURI().toString();
-                    Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.putExtra(Intent.EXTRA_TEXT, shareURL);
-                    startActivity(share);
-                } catch (Exception e) {
-                    Log.e(TAG, "Couldn't share for some reason... " + e.getLocalizedMessage());
-                    runButton();
-                    Toast.makeText(this, "You must run the calculation first! Try sharing again.", Toast.LENGTH_SHORT).show();
-                }
+                shareClicked();
                 return true;
-            case R.id.menu_changelog:
-                changeLog.getFullLogDialog().show();
+            case R.id.menu_help:
+                startActivity(new Intent(this, HelpActivity.class));
                 return true;
-            case R.id.menu_about_sage:
-                uri = Uri.parse("http://www.sagemath.org");
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
-            case R.id.menu_manual_user:
-                uri = Uri.parse("http://www.sagemath.org/doc/tutorial/");
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-                return true;
-            case R.id.menu_manual_dev:
-                uri = Uri.parse("http://www.sagemath.org/doc/reference/");
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-                return true;
-            case R.id.menu_clean_history:
-                //TODO Remove this
-                return true;
+
+
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void showPopup(View v) {
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.menu_insert_popup, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.show();
+    }
+
     @Override
-    public void onCellDeleted() {
+    public boolean onMenuItemClick(MenuItem menuItem) {
+
+        switch (menuItem.getItemId()) {
+            case R.id.menu_insert_spinner:
+                InsertSpinnerDialogFragment insertDialog = InsertSpinnerDialogFragment.newInstance();
+                insertDialog.show(getSupportFragmentManager(), ARG_PUT_INSERT);
+                insertDialog.setOnInsertSelectedListener(this);
+                break;
+
+            case R.id.menu_add_insert:
+                InsertDialogFragment dialog = InsertDialogFragment.newInstance(null);
+                dialog.show(getSupportFragmentManager(), ARG_ADD_INSERT);
+                break;
+
+            case R.id.menu_manage_insert:
+                startActivity(new Intent(this, ManageInsertActivity.class));
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onInsertSelected(Inserts insert) {
+        codeEditorFragment.getCodeView().paste(insert.getInsertText());
+    }
+
+    @Override
+    public void onDelete() {
         finish();
     }
 
     @Override
-    public void onClick(View v) {
-        int cursor = input.getSelectionStart();
-        switch (v.getId()) {
-            case R.id.button_run:
-                runButton();
-                break;
-            case R.id.bracket_round:
-                input.getText().insert(cursor, "(  )");
-                input.setSelection(cursor + 2);
-                break;
-            case R.id.bracket_square:
-                input.getText().insert(cursor, "[  ]");
-                input.setSelection(cursor + 2);
-                break;
-            case R.id.bracket_curly:
-                input.getText().insert(cursor, "{  }");
-                input.setSelection(cursor + 2);
-                break;
+    public void onRequestOutput() {
+        Log.i(TAG, "Output Requested");
+        outputViewFragment.saveOutputToImage();
+    }
+
+    @Subscribe
+    public void onRun(CodeReceivedEvent event) {
+        if (event.isForRun()) {
+            Log.i(TAG, "Received Query: " + event.getReceivedCode());
+            String query = event.getReceivedCode();
+            taskFragment.query(query);
         }
     }
 
-
-    private void runButton() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-        try {
-            if (!cell.getGroup().equals("History")) {
-                outputView.clear();
-                Log.i(TAG, "Called outputView.clear()!");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error clearing output...");
+    private void shareClicked() {
+        if (!isShareAvailable && !isServerRunning) {
+            ToastUtils.getAlertToast(this, R.string.toast_share_unavailable, SuperToast.Duration.SHORT).show();
+        } else if (isServerRunning) {
+            ToastUtils.getAlertToast(this, R.string.toast_share_server_running, SuperToast.Duration.SHORT).show();
+        } else {
+            ShareDialogFragment shareDialogFragment = ShareDialogFragment.getInstance(permalinkURL);
+            shareDialogFragment.show(getSupportFragmentManager(), DIALOG_SHARE);
         }
-
-        String currentInput = input.getText().toString();
-        Assert.assertNotNull(currentInput);
-        server.query(currentInput);
-        outputView.enableInteractViews();
-        cell.setInput(currentInput);
-        helper.saveEditedCell(cell);
-        // saveCurrentToHistory();
     }
 
-    @Override
-    public void onSageFinishedListener() {
-        outputView.enableInteractViews();
+    private void startExecution() {
+        if (isServerRunning) {
+            //Computation already running, stop
+            cancelComputation();
+        } else {
+            //Invalidate share
+            isShareAvailable = false;
+            isServerRunning = false;
+            permalinkURL = null;
+            ActivityCompat.invalidateOptionsMenu(this);
+            outputViewFragment.getOutputView().clear();
+            codeEditorFragment.getCodeView().getEditorText(true);
+        }
+    }
+
+    private void cancelComputation() {
+        isShareAvailable = false;
+        ActivityCompat.invalidateOptionsMenu(this);
+        hideProgress();
+        outputViewFragment.getOutputView().clear();
+        taskFragment.cancel();
+    }
+
+    @Subscribe
+    public void onShareEvent(ShareAvailableEvent event) {
+        isShareAvailable = true;
+        permalinkURL = event.getShareURL();
+        ActivityCompat.invalidateOptionsMenu(this);
+    }
+
+    @Subscribe
+    public void onInteractFinished(InteractFinishEvent event) {
         hideProgress();
     }
 
-    @Override
-    public void onSageInteractListener(InteractReply interact, String name, Object value) {
-        Log.i(TAG, "onSageInteractListener: " + name + " = " + value);
-        showProgress();
-        outputView.disableInteractViews();
-        server.updateInteract(interact, name, value);
-        Log.i(TAG, "onSageInteractListener() called!");
-    }
-
-    @Override
-    public void onServerDisconnect() {
+    @Subscribe
+    public void onInteractDisconnected(ServerDisconnectEvent event) {
+        Log.i(TAG, "Interact Disconnected, Showing Message");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                outputView.disableInteractViews();
                 toast = new SuperCardToast(SageActivity.this);
-                toast.setText(getResources().getString(R.string.info_disconnected));
+                toast.setText(getResources().getString(R.string.toast_info_disconnected));
                 toast.setBackground(SuperToast.Background.RED);
-                toast.setTextColor(Color.WHITE);
+                toast.setTextColor(Color.BLACK);
                 toast.setDuration(3000);
                 toast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
                 toast.setSwipeToDismiss(true);
@@ -306,62 +373,52 @@ public class SageActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(FLAG_SERVER_STATE, isServerRunning);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3) {
-        if (parent != insertSpinner)
-            return;
-        int cursor = input.getSelectionStart();
-        switch (position) {
-            case INSERT_FOR_LOOP:
-                input.getText().append("\nfor i in range(0,10):\n     ");
-                input.setSelection(input.getText().length());
-                break;
-            case INSERT_LIST_COMPREHENSION:
-                input.getText().insert(cursor, "[ i for i in range(0,10) ]");
-                input.setSelection(cursor + 2, cursor + 3);
-                break;
-        }
-        parent.setSelection(0);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
     public void showProgress() {
-        cellProgressBar.setVisibility(View.VISIBLE);
-        isServerRunning = true;
-        input.setEnabled(false);
-        ActivityCompat.invalidateOptionsMenu(this);
+        if (!cellProgressBar.isShown()) {
+            cellProgressBar.setVisibility(View.VISIBLE);
+            isServerRunning = true;
+            ActivityCompat.invalidateOptionsMenu(this);
+        }
     }
 
     public void hideProgress() {
-        cellProgressBar.setVisibility(View.INVISIBLE);
-        isServerRunning = false;
-        input.setEnabled(true);
-        ActivityCompat.invalidateOptionsMenu(this);
+        if (cellProgressBar.isShown()) {
+            cellProgressBar.setVisibility(View.INVISIBLE);
+            isServerRunning = false;
+            ActivityCompat.invalidateOptionsMenu(this);
+        }
     }
 
-    private BroadcastReceiver progressBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean progressStart = intent.getBooleanExtra(StringConstants.ARG_PROGRESS_START, false);
-            boolean progressEnd = intent.getBooleanExtra(StringConstants.ARG_PROGRESS_END, false);
-
-            Log.i(TAG, "Received Broadcast");
-
-            if (progressStart) {
-                showProgress();
-            } else if (progressEnd) {
-                hideProgress();
-            }
+    @Subscribe
+    public void onProgressUpdate(ProgressEvent progressEvent) {
+        Log.i(TAG, "Received Progress Update: " + progressEvent.getProgressState());
+        if (progressEvent.getProgressState().equals(StringConstants.ARG_PROGRESS_START)) {
+            showProgress();
+        } else if (progressEvent.getProgressState().equals(StringConstants.ARG_PROGRESS_END)) {
+            hideProgress();
         }
-    };
+    }
 
 }

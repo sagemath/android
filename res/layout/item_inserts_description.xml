@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:baselineAligned="true"
+              android:paddingTop="6dp"
+              android:paddingBottom="6dp"
+              android:paddingLeft="3dp"
+              android:paddingRight="3dp"
+              android:background="@drawable/list_item_selector"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="0dp"
+                android:id="@+id/insertName"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginLeft="6dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textAppearance="?android:textAppearanceMedium"/>
+        
+        <Button
+                android:layout_width="wrap_content"
+                android:id="@+id/insertFav"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layout_weight="0"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/insertText"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

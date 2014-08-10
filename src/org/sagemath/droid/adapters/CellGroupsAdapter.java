@@ -4,9 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 import org.sagemath.droid.R;
+import org.sagemath.droid.models.database.Group;
 
 import java.util.List;
 
@@ -15,30 +16,50 @@ import java.util.List;
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan
+ * @author Nikhil Peter Raj
  */
-public class CellGroupsAdapter extends ArrayAdapter<String> {
+public class CellGroupsAdapter extends BaseAdapter {
     private final Context context;
 
-    private List<String> groups;
+    private List<Group> groups;
 
-    public CellGroupsAdapter(Context context, List<String> groups) {
-        super(context, R.layout.cell_groups_item, groups);
+    private LayoutInflater inflater;
+
+    public CellGroupsAdapter(Context context, List<Group> groups) {
         this.context = context;
         this.groups = groups;
+        inflater = LayoutInflater.from(context);
+    }
 
+    public void refreshAdapter(List<Group> groups) {
+        this.groups = groups;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return groups.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return groups.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView item;
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            item = (TextView) inflater.inflate(R.layout.cell_groups_item, parent, false);
+            item = (TextView) inflater.inflate(R.layout.item_cell_group, parent, false);
         } else {
             item = (TextView) convertView;
         }
-        item.setText(groups.get(position));
+        item.setText(groups.get(position).getCellGroup());
         return item;
     }
 

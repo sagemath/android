@@ -6,12 +6,18 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TableLayout;
 import org.sagemath.droid.constants.ControlType;
+import org.sagemath.droid.events.InteractUpdateEvent;
 import org.sagemath.droid.models.gson.InteractReply;
 import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 import org.sagemath.droid.models.gson.InteractReply.SageInteract;
+import org.sagemath.droid.utils.BusProvider;
 
 import java.util.ArrayList;
 
+/**
+ * @author Rasmi Elsamar
+ * @author Nikhil Peter Raj
+ */
 public class InteractView extends TableLayout {
     private final static String TAG = "SageDroid:InteractView";
 
@@ -23,20 +29,15 @@ public class InteractView extends TableLayout {
     public InteractView(Context context) {
         super(context);
         this.context = context;
+        BusProvider.getInstance().register(this);
         addedViews = new ArrayList<View>();
         setLayoutParams(new LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT));
     }
 
-    public interface OnInteractListener {
-        public void onInteractListener(InteractReply interact, String name, Object value);
-    }
-
-    private OnInteractListener listener;
-
-    public void setOnInteractListener(OnInteractListener listener) {
-        this.listener = listener;
+    public void unregister() {
+        BusProvider.getInstance().unregister(this);
     }
 
     private InteractReply interactReply;
@@ -88,7 +89,7 @@ public class InteractView extends TableLayout {
         }
     }
 
-    public void addInteractsFromSavedState(ArrayList<InteractControl> savedControls) {
+    public void addInteractsFromSavedState(InteractControl[] savedControls) {
         addedViews.clear();
         for (InteractControl control : savedControls) {
             addInteract(control, true);
@@ -152,7 +153,9 @@ public class InteractView extends TableLayout {
     }
 
     protected void notifyChange(InteractControlBase view) {
-        listener.onInteractListener(interactReply, view.getVariableName(), view.getValue());
+        if (view != null) {
+            BusProvider.getInstance().post(new InteractUpdateEvent(interactReply, view.getVariableName(), view.getValue()));
+        }
     }
 
     public ArrayList<View> getAddedViews() {

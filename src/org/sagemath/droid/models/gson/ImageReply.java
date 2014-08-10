@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import org.sagemath.droid.utils.UrlUtils;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  *         Reply which contains an image name
  */
 public class ImageReply extends BaseReply {

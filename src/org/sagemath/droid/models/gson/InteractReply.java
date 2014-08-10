@@ -1,5 +1,7 @@
 package org.sagemath.droid.models.gson;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.sagemath.droid.constants.ControlType;
@@ -7,7 +9,7 @@ import org.sagemath.droid.constants.ControlType;
 import java.util.ArrayList;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
 public class InteractReply extends BaseReply {
 
@@ -122,7 +124,7 @@ public class InteractReply extends BaseReply {
         }
     }
 
-    public static class InteractControl {
+    public static class InteractControl implements Parcelable {
 
         private static final String STR_SLIDER = "slider";
         private static final String STR_SELECTOR = "selector";
@@ -298,6 +300,62 @@ public class InteractReply extends BaseReply {
 
         public void setViewEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        private InteractControl(Parcel in) {
+            gson = new Gson();
+            varName = in.readString();
+            intSavedValue = in.readInt();
+            stringSavedValue = in.readString();
+            enabled = in.readInt() == 1;
+            update = in.readInt() == 1;
+            raw = in.readInt() == 1;
+            control_type = in.readString();
+            display_value = in.readInt() == 1;
+            value_labels = in.createStringArray();
+            values = in.readParcelable(Values.class.getClassLoader());
+            _default = in.readInt();
+            range = in.createIntArray();
+            subtype = in.readString();
+            label = in.readString();
+            step = in.readInt();
+
+        }
+
+        public static final Creator<InteractControl> CREATOR = new Creator<InteractControl>() {
+            @Override
+            public InteractControl createFromParcel(Parcel source) {
+                return new InteractControl(source);
+            }
+
+            @Override
+            public InteractControl[] newArray(int size) {
+                return new InteractControl[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(varName);
+            dest.writeInt(intSavedValue);
+            dest.writeString(stringSavedValue);
+            dest.writeInt(enabled ? 1 : 0);
+            dest.writeInt(update ? 1 : 0);
+            dest.writeInt(raw ? 1 : 0);
+            dest.writeString(control_type);
+            dest.writeInt(display_value ? 1 : 0);
+            dest.writeStringArray(value_labels);
+            dest.writeParcelable(values, flags);
+            dest.writeInt(_default);
+            dest.writeIntArray(range);
+            dest.writeString(subtype);
+            dest.writeString(label);
+            dest.writeInt(step);
         }
     }
 

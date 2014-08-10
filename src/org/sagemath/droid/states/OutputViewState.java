@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.view.View;
 
 /**
- * Created by Haven on 02-07-2014.
+ * @author Nikhil Peter Raj
  */
 public class OutputViewState extends View.BaseSavedState {
 

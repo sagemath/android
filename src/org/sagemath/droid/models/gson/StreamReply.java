@@ -1,7 +1,7 @@
 package org.sagemath.droid.models.gson;
 
 /**
- * Created by Haven on 29-05-2014.
+ * @author Nikhil Peter Raj
  */
 public class StreamReply extends BaseReply {
     private StreamContent content;

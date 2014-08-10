@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <org.sagemath.droid.views.OutputView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:focusableInTouchMode="false"
+            android:background="@drawable/bg_card"
+            android:id="@+id/outputView">
+    </org.sagemath.droid.views.OutputView>
+
+    <ToggleButton
+            android:layout_width="wrap_content"
+            android:id="@+id/outputViewStateToggleButton"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textOn="@string/fa_collapse"
+            android:textOff="@string/fa_expand"
+            android:gravity="center"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingRight="12dp"
+            android:paddingLeft="4dp"
+            android:paddingBottom="6dp"
+            android:focusableInTouchMode="true"
+            android:textColor="@drawable/toggle_selector"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:background="@null"
+            android:contentDescription="Expand/Collapse Editor"
+            android:layout_alignParentRight="true"/>
+
+
+</RelativeLayout>

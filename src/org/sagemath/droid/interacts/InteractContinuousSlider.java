@@ -10,6 +10,10 @@ import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 import java.util.Arrays;
 
+/**
+ * @author Rasmi Elsamar
+ * @author Nikhil Peter Raj
+ */
 public class InteractContinuousSlider
         extends InteractControlBase
         implements OnSeekBarChangeListener {

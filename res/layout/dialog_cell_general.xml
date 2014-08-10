@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingBottom="12dp"
+              android:id="@+id/dialogContainer"
+              android:orientation="vertical">
+    <org.sagemath.droid.views.FloatLabelLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:id="@+id/nameContainer"
+            app:floatLabelTextAppearance="@style/floatLabelEditTextAppearance">
+
+        <EditText
+                android:id="@+id/insert_cell_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/insert_title_hint"/>
+
+    </org.sagemath.droid.views.FloatLabelLayout>
+
+    <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:id="@+id/groupContainer"
+            android:baselineAligned="true"
+            android:orientation="horizontal">
+
+        <org.sagemath.droid.views.FloatLabelLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:floatLabelTextAppearance="@style/floatLabelEditTextAppearance">
+
+            <AutoCompleteTextView
+                    android:id="@+id/insert_cell_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/insert_group_hint"/>
+
+        </org.sagemath.droid.views.FloatLabelLayout>
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:id="@+id/emptyInfoButton"
+                android:background="@null"
+                android:paddingLeft="2dp"
+                android:paddingRight="6dp"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ic_action_about"
+                android:contentDescription="@string/dialog_info_button_contentDescription"
+                android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <org.sagemath.droid.views.FloatLabelLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:id="@+id/descriptionContainer"
+            app:floatLabelTextAppearance="@style/floatLabelEditTextAppearance">
+
+        <EditText
+                android:id="@+id/insert_cell_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/insert_desc_hint"/>
+
+    </org.sagemath.droid.views.FloatLabelLayout>
+
+
+</LinearLayout>

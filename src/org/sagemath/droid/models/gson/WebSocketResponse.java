@@ -1,9 +1,9 @@
 package org.sagemath.droid.models.gson;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
-public class WebSocketResponse {
+public class WebSocketResponse extends BaseResponse {
 
     private String id;
     private String ws_url;

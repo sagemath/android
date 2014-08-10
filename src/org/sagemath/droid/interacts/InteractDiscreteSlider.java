@@ -11,6 +11,10 @@ import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * @author Rasmi Elsamar
+ * @author Nikhil Peter Raj
+ */
 public class InteractDiscreteSlider
         extends InteractControlBase
         implements OnSeekBarChangeListener {

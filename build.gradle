@@ -8,11 +8,24 @@ buildscript {
     }
 }
 
-apply plugin: "android"
+apply plugin: "com.android.application"
+
+//Shamelessly copied from philm
+def versionMajor = 0 //Major change external and internal
+def versionMinor = 9 //Major Internal Change
+def versionPatch = 5 //Moderate internal change
+def versionBuild = 0 //Quickfixes and random bugfixes
 
 android {
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        minSdkVersion 8
+        targetSdkVersion 19
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -20,7 +33,6 @@ android {
     }
 
     signingConfigs {
-
         release {
             storeFile file(RELEASE_STORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
@@ -30,6 +42,11 @@ android {
     }
 
     buildTypes {
+
+        debug{
+            versionNameSuffix "-debug"
+        }
+
         release {
             signingConfig signingConfigs.release
         }
@@ -40,22 +57,29 @@ android {
             manifest.srcFile "AndroidManifest.xml"
             java.srcDir "src"
             res.srcDir "res"
+            assets.srcDir "assets"
+
         }
     }
 }
 
-dependencies {
-    repositories {
-        mavenCentral()
-        maven { url 'http://repo1.maven.org/maven2' }
-    }
+repositories {
+    mavenCentral()
+    maven { url 'http://repo1.maven.org/maven2' }
+}
 
+dependencies {
     compile 'com.android.support:support-v4:19.1.+'
     compile 'com.android.support:appcompat-v7:19.1.+'
+    compile project(":libs:html-textview")
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.castorflex.smoothprogressbar:library:0.5.1'
-    compile 'com.koushikdutta.async:androidasync:1.2.6'
+    compile 'se.emilsjolander:stickylistheaders:2.5.0'
+    compile 'com.koushikdutta.async:androidasync:1.3.7'
     compile 'com.github.johnpersano:supertoasts:1.3.4@aar'
-    compile 'commons-io:commons-io:20030203.000550'
+    compile 'org.apache.directory.studio:org.apache.commons.lang:2.6'
+    compile 'com.squareup:otto:1.3.5'
     compile 'nl.qbusict:cupboard:2.0.1'
+    compile 'com.github.gabrielemariotti.changeloglib:library:1.5.1'
 }

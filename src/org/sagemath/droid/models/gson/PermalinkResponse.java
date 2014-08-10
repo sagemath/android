@@ -4,9 +4,9 @@ import android.net.Uri;
 import org.sagemath.droid.utils.UrlUtils;
 
 /**
- * @author Haven
+ * @author Nikhil Peter Raj
  */
-public class PermalinkResponse {
+public class PermalinkResponse extends BaseResponse{
 
     private String query;
     private String zip;
