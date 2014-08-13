@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
- * View with ProgressBar that displays discrete values
+ * View with {@linkplain android.widget.SeekBar} that displays discrete values
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

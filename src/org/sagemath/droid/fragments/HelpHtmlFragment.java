@@ -22,7 +22,7 @@ public class HelpHtmlFragment extends Fragment {
     int htmlFile;
 
 
-    static HelpHtmlFragment newInstance(int htmlFile) {
+    public static HelpHtmlFragment newInstance(int htmlFile) {
         HelpHtmlFragment f = new HelpHtmlFragment();
 
         // Supply html raw file input as an argument.

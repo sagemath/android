@@ -20,7 +20,8 @@ import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.views.CodeView;
 
 /**
- * Fragment which shows the Code Editor
+ * Fragment which hosts the {@linkplain org.sagemath.droid.views.CodeView}
+ *
  * @author Nikhil Peter Raj
  */
 public class CodeEditorFragment extends BaseFragment {
