@@ -11,6 +11,8 @@ import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 import java.util.ArrayList;
 
 /**
+ * The {@linkplain android.view.View.BaseSavedState} for {@linkplain org.sagemath.droid.interacts.InteractView}
+ *
  * @author Nikhil Peter Raj
  */
 public class InteractViewState extends View.BaseSavedState {

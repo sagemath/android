@@ -1,6 +1,8 @@
 package org.sagemath.droid.constants;
 
 /**
+ * Constants corresponding to the Execution State returned by the server.
+ *
  * @author Nikhil Peter Raj
  */
 public class ExecutionState {

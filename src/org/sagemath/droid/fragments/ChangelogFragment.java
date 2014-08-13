@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import org.sagemath.droid.R;
 
 /**
+ * Fragment hosting the Changelog
  * @author Nikhil Peter Raj
  */
 public class ChangelogFragment extends Fragment {

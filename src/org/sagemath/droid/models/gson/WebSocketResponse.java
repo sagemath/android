@@ -1,6 +1,8 @@
 package org.sagemath.droid.models.gson;
 
 /**
+ * The Response containing the paths for the websockets.
+ *
  * @author Nikhil Peter Raj
  */
 public class WebSocketResponse extends BaseResponse {

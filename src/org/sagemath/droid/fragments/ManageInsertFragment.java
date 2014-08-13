@@ -16,12 +16,13 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.adapters.InsertsAdapter;
 import org.sagemath.droid.dialogs.DeleteInsertDialogFragment;
 import org.sagemath.droid.dialogs.InsertDialogFragment;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 import org.sagemath.droid.utils.ToastUtils;
 
 import java.util.ArrayList;
 
 /**
+ * Fragment which manages inserts
  * @author Nikhil Peter Raj
  */
 public class ManageInsertFragment extends ListFragment implements SearchView.OnQueryTextListener {
@@ -93,8 +94,8 @@ public class ManageInsertFragment extends ListFragment implements SearchView.OnQ
 
                         case R.id.menu_action_edit:
                             if (isEditEnabled) {
-                                ArrayList<Inserts> editSelection = adapter.getSelectedInserts(getListView().getCheckedItemPositions());
-                                Inserts insert = editSelection.get(0);
+                                ArrayList<Insert> editSelection = adapter.getSelectedInserts(getListView().getCheckedItemPositions());
+                                Insert insert = editSelection.get(0);
                                 FragmentManager fm = getActivity().getSupportFragmentManager();
                                 InsertDialogFragment dialog = InsertDialogFragment.newInstance(insert);
                                 dialog.show(fm, ARG_EDIT_INSERT);
@@ -107,7 +108,7 @@ public class ManageInsertFragment extends ListFragment implements SearchView.OnQ
                             break;
 
                         case R.id.menu_action_delete:
-                            ArrayList<Inserts> deleteSelection = adapter.getSelectedInserts(getListView().getCheckedItemPositions());
+                            ArrayList<Insert> deleteSelection = adapter.getSelectedInserts(getListView().getCheckedItemPositions());
                             DeleteInsertDialogFragment dialog = DeleteInsertDialogFragment.newInstance(deleteSelection);
                             FragmentManager fm = getActivity().getSupportFragmentManager();
                             dialog.show(fm, ARG_DELETE_INSERT);
@@ -144,9 +145,9 @@ public class ManageInsertFragment extends ListFragment implements SearchView.OnQ
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        ArrayList<Inserts> items = new ArrayList<>();
+        ArrayList<Insert> items = new ArrayList<>();
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        Inserts insert;
+        Insert insert;
 
         switch (item.getItemId()) {
             case R.id.menu_toggle_fav:
@@ -154,13 +155,13 @@ public class ManageInsertFragment extends ListFragment implements SearchView.OnQ
                 break;
 
             case R.id.menu_edit:
-                insert = (Inserts) adapter.getItem(info.position);
+                insert = (Insert) adapter.getItem(info.position);
                 InsertDialogFragment dialog = InsertDialogFragment.newInstance(insert);
                 dialog.show(fm, ARG_EDIT_INSERT);
                 break;
 
             case R.id.menu_delete:
-                insert = (Inserts) adapter.getItem(info.position);
+                insert = (Insert) adapter.getItem(info.position);
                 items.add(insert);
                 DeleteInsertDialogFragment deleteDialog = DeleteInsertDialogFragment.newInstance(items);
                 deleteDialog.show(fm, ARG_DELETE_INSERT);

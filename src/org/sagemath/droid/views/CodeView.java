@@ -15,6 +15,10 @@ import android.webkit.WebView;
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
+ * The {@linkplain android.webkit.WebView} which serves as the input.
+ *
+ * <p>Uses CodeMirror internally to provide syntax highlighting.</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class CodeView extends WebView {

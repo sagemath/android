@@ -11,6 +11,7 @@ import android.widget.ScrollView;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 /**
+ * Fragment which displays an html file loaded from raw
  * @author Nikhil Peter Raj
  */
 public class HelpHtmlFragment extends Fragment {

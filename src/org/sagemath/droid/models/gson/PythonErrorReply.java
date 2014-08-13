@@ -1,13 +1,15 @@
 package org.sagemath.droid.models.gson;
 
 /**
+ * Response from server indicating an error in the input.
+ *
  * @author Nikhil Peter Raj
  */
 public class PythonErrorReply extends BaseReply {
 
     private PythonErrorContent content;
 
-    public PythonErrorReply(){
+    public PythonErrorReply() {
         super();
     }
 

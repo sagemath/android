@@ -27,7 +27,7 @@ import java.util.List;
 
 
 /**
- * CellGroupsFragment - fragment showing the group list
+ * Fragmemt which displays the Cell Groups
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan

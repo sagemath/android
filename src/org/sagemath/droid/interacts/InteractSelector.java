@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
+ * A View which holds a Spinner
+ *
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

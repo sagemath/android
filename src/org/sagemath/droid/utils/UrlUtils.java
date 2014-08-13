@@ -6,6 +6,8 @@ import android.util.Log;
 import static org.sagemath.droid.constants.StringConstants.*;
 
 /**
+ * Utils to construct URLs.
+ *
  * @author Nikhil Peter Raj
  */
 public class UrlUtils {
@@ -33,7 +35,7 @@ public class UrlUtils {
                 .appendPath(PATH_PERMALINK)
                 .build();
 
-        Log.i(TAG,"Permalink URL: "+builder.toString());
+        Log.i(TAG, "Permalink URL: " + builder.toString());
 
         return builder.toString();
     }

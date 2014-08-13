@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
+ * The class used to construct requests from the input.
+ *
  * @author Nikhil Peter Raj
  */
 public class Request implements Parcelable {

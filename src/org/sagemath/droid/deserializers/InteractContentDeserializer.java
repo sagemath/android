@@ -8,6 +8,8 @@ import org.sagemath.droid.models.gson.InteractReply.InteractData;
 import java.lang.reflect.Type;
 
 /**
+ * Deserializer for {@link org.sagemath.droid.models.gson.InteractReply.InteractContent}
+ *
  * @author Nikhil Peter Raj
  */
 public class InteractContentDeserializer implements JsonDeserializer<InteractContent> {

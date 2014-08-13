@@ -7,6 +7,8 @@ import org.sagemath.droid.events.CodeReceivedEvent;
 import org.sagemath.droid.utils.BusProvider;
 
 /**
+ * The JavaScript Interface to communicate with CodeMirror.
+ *
  * @author Nikhil Peter Raj
  */
 public class SageJavascriptInterface {

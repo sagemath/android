@@ -14,6 +14,7 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.utils.BusProvider;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} which displays the share options</p>
  * @author Nikhil Peter Raj
  */
 public class ShareDialogFragment extends DialogFragment {

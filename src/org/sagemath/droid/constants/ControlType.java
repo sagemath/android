@@ -1,11 +1,13 @@
 package org.sagemath.droid.constants;
 
 /**
+ * Constants corresponding to Interact Control Types in JSON
+ *
  * @author Nikhil Peter Raj
  */
 public class ControlType {
 
-    public static final int CONTROL_ERROR=0x000400;
+    public static final int CONTROL_ERROR = 0x000400;
 
     public static final int CONTROL_SLIDER = 0x000401;
     public static final int CONTROL_SELECTOR = 0x000402;
