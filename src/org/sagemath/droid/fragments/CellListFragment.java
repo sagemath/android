@@ -29,7 +29,7 @@ import java.util.List;
 
 
 /**
- * CellListFragment - fragment containing list of cells in current group
+ * CellListFragment - Fragment containing list of cells in current group
  * shown in CellActivity (tablets) or CellListActivity (phones)
  *
  * @author Rasmi.Elasmar

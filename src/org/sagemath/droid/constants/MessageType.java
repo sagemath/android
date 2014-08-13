@@ -1,6 +1,8 @@
 package org.sagemath.droid.constants;
 
 /**
+ * Constants corresponding to the Message Type reutrned by the Sage Server.
+ *
  * @author Nikhil Peter Raj
  */
 public class MessageType {

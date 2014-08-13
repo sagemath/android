@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
+ * Deserializer for {@link org.sagemath.droid.models.gson.InteractReply.SageInteract}
+ * <p>This deserializer modifies the obtained JSON so it can be directly converted to a {@link java.util.List}.
+ * Most of the previous deserializers are just to obtain this data in a neat way</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class SageInteractDeserializer implements JsonDeserializer<SageInteract> {

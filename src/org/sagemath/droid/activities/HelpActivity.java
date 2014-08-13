@@ -13,6 +13,8 @@ import org.sagemath.droid.fragments.HelpAboutFragment;
 import org.sagemath.droid.fragments.HelpHtmlFragment;
 
 /**
+ * The Activity which hosts the Help Fragments
+ *
  * @author Nikhil Peter Raj
  */
 public class HelpActivity extends ActionBarActivity {

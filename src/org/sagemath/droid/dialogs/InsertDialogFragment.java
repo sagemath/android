@@ -14,10 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import org.sagemath.droid.R;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 import org.sagemath.droid.utils.AnimationHelper;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} used to add or edit an insert</p>
  * @author Nikhil Peter Raj
  */
 public class InsertDialogFragment extends DialogFragment {
@@ -36,11 +37,11 @@ public class InsertDialogFragment extends DialogFragment {
     }
 
     private View dialogView;
-    private Inserts insert;
+    private Insert insert;
     private EditText insertText, insertDescription;
     private CheckBox favoriteCheck;
 
-    public static InsertDialogFragment newInstance(Inserts insert) {
+    public static InsertDialogFragment newInstance(Insert insert) {
         InsertDialogFragment fragment = new InsertDialogFragment();
 
         Bundle args = new Bundle();
@@ -109,9 +110,9 @@ public class InsertDialogFragment extends DialogFragment {
                         }
                     } else {
                         if (insert == null) {
-                            insert = new Inserts();
+                            insert = new Insert();
                         } else {
-                            insert = new Inserts(insert.getId());
+                            insert = new Insert(insert.getId());
                         }
                         insert.setFavorite(favoriteCheck.isChecked());
                         insert.setInsertText(insertText.getText().toString());

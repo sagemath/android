@@ -1,7 +1,10 @@
 package org.sagemath.droid.constants;
 
 /**
- * Created by Haven on 18-07-2014.
+ * Constants for {@linkplain org.sagemath.droid.dialogs.CellDialogFragment} and
+ * {@linkplain org.sagemath.droid.dialogs.GroupDialogFragment}
+ *
+ * @author Nikhil Peter Raj
  */
 public class IntConstants {
 

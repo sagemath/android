@@ -15,6 +15,7 @@ import org.sagemath.droid.utils.BusProvider;
 import java.util.ArrayList;
 
 /**
+ * Base View which hosts all interacts
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

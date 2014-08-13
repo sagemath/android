@@ -6,6 +6,8 @@ import org.sagemath.droid.R;
 import org.sagemath.droid.fragments.ManageInsertFragment;
 
 /**
+ * The activity that hosts the Insert Fragment
+ *
  * @author Nikhil Peter Raj
  */
 public class ManageInsertActivity extends ActionBarActivity {

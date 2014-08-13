@@ -3,14 +3,15 @@ package org.sagemath.droid.models.gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Reply representing an HTML string.
+ *
  * @author Nikhil Peter Raj
- * Reply having a String to be displayed as HTML
  */
 public class HtmlReply extends BaseReply {
 
     private HtmlContent content;
 
-    public HtmlReply(){
+    public HtmlReply() {
         super();
     }
 
@@ -52,7 +53,7 @@ public class HtmlReply extends BaseReply {
         return content;
     }
 
-    public String toString(){
+    public String toString() {
         return gson.toJson(this);
     }
 }

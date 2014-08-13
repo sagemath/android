@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} which is used to add or delete a cell</p>
  * @author Nikhil Peter Raj
  */
 public class CellDialogFragment extends BaseActionDialogFragment {

@@ -11,13 +11,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import org.sagemath.droid.R;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 import org.sagemath.droid.utils.Highlighter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The Adapter responsible for displaying the Inserts.
  * @author Nikhil Peter Raj
  */
 public class InsertsAdapter extends BaseAdapter {
@@ -33,7 +34,7 @@ public class InsertsAdapter extends BaseAdapter {
     private boolean fullDescription = false;
     private String searchQuery = null;
 
-    private List<Inserts> inserts;
+    private List<Insert> inserts;
 
     public InsertsAdapter(Context context, boolean fullDescription) {
         this.context = context;
@@ -63,8 +64,8 @@ public class InsertsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public ArrayList<Inserts> getSelectedInserts(SparseBooleanArray selection) {
-        ArrayList<Inserts> selectedInserts = new ArrayList<>();
+    public ArrayList<Insert> getSelectedInserts(SparseBooleanArray selection) {
+        ArrayList<Insert> selectedInserts = new ArrayList<>();
         for (int i = 0; i < selection.size(); i++) {
             if (selection.valueAt(i)) {
                 selectedInserts.add(inserts.get(selection.keyAt(i)));
@@ -73,27 +74,11 @@ public class InsertsAdapter extends BaseAdapter {
         return selectedInserts;
     }
 
-    public void deleteSelection(SparseBooleanArray selection) {
-        List<Inserts> deleteSelection = new ArrayList<>();
-        for (int i = 0; i < selection.size(); i++) {
-            if (selection.valueAt(i)) {
-                deleteSelection.add(inserts.get(selection.keyAt(i)));
-            }
-        }
-        helper.deleteInsert(deleteSelection);
-        refreshAdapter();
-    }
-
-    public void deleteSelection(int position) {
-        helper.deleteInsert(inserts.get(position));
-        refreshAdapter();
-    }
-
     public void toggleSelection(SparseBooleanArray selection) {
-        List<Inserts> toggleSelection = new ArrayList<>();
+        List<Insert> toggleSelection = new ArrayList<>();
         for (int i = 0; i < selection.size(); i++) {
             if (selection.valueAt(i)) {
-                Inserts insert = inserts.get(selection.keyAt(i));
+                Insert insert = inserts.get(selection.keyAt(i));
                 insert.setFavorite(!insert.isFavorite());
                 toggleSelection.add(insert);
             }
@@ -103,7 +88,7 @@ public class InsertsAdapter extends BaseAdapter {
     }
 
     public void toggleSelection(int position) {
-        Inserts insert = inserts.get(position);
+        Insert insert = inserts.get(position);
         insert.setFavorite(!insert.isFavorite());
         helper.addInsert(insert);
         refreshAdapter();
@@ -148,7 +133,7 @@ public class InsertsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        final Inserts insert = inserts.get(position);
+        final Insert insert = inserts.get(position);
 
         if (fullDescription) {
             viewHolder.insertText.setText(insert.getInsertText());

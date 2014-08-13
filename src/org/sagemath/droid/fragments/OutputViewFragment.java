@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
+ * Fragment which displays the output
+ *
  * @author Nikhil Peter Raj
  */
 public class OutputViewFragment extends BaseFragment {

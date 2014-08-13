@@ -12,6 +12,8 @@ import android.widget.TextView;
 import org.sagemath.droid.R;
 
 /**
+ * A {@linkplain android.preference.DialogPreference} which contains a {@linkplain android.widget.SeekBar}
+ *
  * @author Nikhil Peter Raj
  */
 public class SeekBarDialogPreference extends DialogPreference {

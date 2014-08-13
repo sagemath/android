@@ -11,6 +11,7 @@ import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 import java.util.Arrays;
 
 /**
+ * View with ProgressBar that displays continuous values
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

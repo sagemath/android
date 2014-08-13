@@ -11,6 +11,8 @@ import org.sagemath.droid.models.database.Cell;
 import java.util.ArrayList;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} used to delete a cell</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class DeleteCellDialogFragment extends BaseDeleteDialogFragment {

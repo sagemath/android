@@ -6,8 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import org.sagemath.droid.utils.UrlUtils;
 
 /**
+ * Reply containing an Image URL.
+ *
  * @author Nikhil Peter Raj
- *         Reply which contains an image name
  */
 public class ImageReply extends BaseReply {
     private static final String TAG = "SageDroid:ImageReply";

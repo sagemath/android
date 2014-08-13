@@ -12,7 +12,7 @@ import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.SimpleEula;
 
 /**
- * CellActivity - main activity, first screen
+ * CellActivity - Main Activity, First Screen
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan

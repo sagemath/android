@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
+ * Server reply corresponding to a "sage-clear" response.
+ * <p/>
+ * <p>Currently, this class is not used, except to figure out when such a response is received.</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class SageClearReply extends BaseReply {

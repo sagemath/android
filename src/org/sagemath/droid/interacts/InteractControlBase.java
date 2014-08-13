@@ -5,6 +5,7 @@ import android.widget.LinearLayout;
 import org.sagemath.droid.models.gson.InteractReply.InteractControl;
 
 /**
+ * The base Control class, all Interact Controls should extend this
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

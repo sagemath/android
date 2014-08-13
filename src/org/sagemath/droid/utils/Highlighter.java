@@ -9,6 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Util to highlight a given span depending on it's query
+ *
  * @author Nikhil Peter Raj
  */
 public class Highlighter {

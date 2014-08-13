@@ -9,6 +9,8 @@ import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.models.database.Group;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} used to delete a group</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class DeleteGroupDialogFragment extends BaseDeleteDialogFragment {

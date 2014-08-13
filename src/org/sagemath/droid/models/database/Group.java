@@ -4,6 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Database model representing a group.
+ * <p/>
+ * <p>Group is implemented as a seperate model
+ * to have decoupling between the Groups and the cells associated with them</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class Group implements Parcelable {
