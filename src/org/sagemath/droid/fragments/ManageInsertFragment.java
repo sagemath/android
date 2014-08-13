@@ -22,7 +22,8 @@ import org.sagemath.droid.utils.ToastUtils;
 import java.util.ArrayList;
 
 /**
- * Fragment which manages inserts
+ * ListFragment which displays the Insert
+ *
  * @author Nikhil Peter Raj
  */
 public class ManageInsertFragment extends ListFragment implements SearchView.OnQueryTextListener {

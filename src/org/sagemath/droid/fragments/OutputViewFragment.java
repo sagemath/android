@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
- * Fragment which displays the output
+ * Fragment which hosts the {@linkplain org.sagemath.droid.views.OutputView}
  *
  * @author Nikhil Peter Raj
  */
