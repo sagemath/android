@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import org.sagemath.droid.R;
 import org.sagemath.droid.constants.IntConstants;
-import org.sagemath.droid.database.SageSQLiteOpenHelper;
 import org.sagemath.droid.dialogs.BaseActionDialogFragment;
 import org.sagemath.droid.dialogs.CellDialogFragment;
 import org.sagemath.droid.dialogs.GroupDialogFragment;
@@ -51,7 +50,6 @@ public class CellActivity
         } catch (Exception e) {
             Log.e(TAG, "Error showing EULA: " + e.toString());
             e.printStackTrace();
-            //this.finish();
         }
 
         getSupportActionBar().setTitle(R.string.main_menu_title);
@@ -65,13 +63,29 @@ public class CellActivity
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Now that the UI is visible to user, if both fragments are visible and we are in Landscape,
+        //select the first group as default
+        if (groupsFragment != null && listFragment != null && isLandscape()) {
+            View view = groupsFragment.getListAdapter().getView(0, null, null);
+            long id = groupsFragment.getListAdapter().getItemId(0);
+            //If getView() returns null, we have no groups, so don't perform the click
+            if (view != null) {
+                groupsFragment.getListView().performItemClick(view, 0, id);
+            }
+
+        }
+    }
+
     public static final String INTENT_SWITCH_GROUP = "intent_switch_group";
 
     @Override
     public void onGroupSelected(Group group) {
         CellListFragment listFragment = (CellListFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cellListFragment);
-        if (listFragment == null) {
+        if (listFragment == null || !listFragment.isInLayout()) {
             //Start new Activity since we are in Phone Layout
             Intent i = new Intent(getApplicationContext(), CellListActivity.class);
             i.putExtra(INTENT_SWITCH_GROUP, group);
@@ -79,14 +93,6 @@ public class CellActivity
         } else {
             listFragment.setGroup(group);
         }
-    }
-
-    private Group getFirstGroup() {
-        SageSQLiteOpenHelper helper = SageSQLiteOpenHelper.getInstance(this);
-        if (helper.getGroups().size() != 0) {
-            return helper.getGroups().get(0);
-        }
-        return null;
     }
 
     @Override
@@ -167,7 +173,6 @@ public class CellActivity
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.show();
     }
-
 
     private boolean isLandscape() {
         return Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation;

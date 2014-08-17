@@ -240,7 +240,8 @@ public class CellListFragment extends BaseListFragment
 
     @Override
     public boolean onQueryTextChange(String query) {
-        adapter.setQueryCells(helper.getQueryCells(group, query), query);
+        if (adapter != null)
+            adapter.setQueryCells(helper.getQueryCells(group, query), query);
         return true;
     }
 
