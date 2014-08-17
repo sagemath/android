@@ -64,8 +64,7 @@ public class CellGroupsFragment extends ListFragment {
         if (isLandscape()) {
             //In Landscape, highlight the current group and also select it
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                getListView().setItemChecked(position, true);
-                getListView().performClick();
+                getListView().setItemChecked(position, true);                
             }
         }
         listener.onGroupSelected(group);
