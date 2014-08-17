@@ -62,9 +62,9 @@ public class CellGroupsFragment extends ListFragment {
     public void onListItemClick(ListView parent, View view, int position, long id) {
         Group group = groups.get(position);
         if (isLandscape()) {
-            //In Landscape, highlight the current group and also select it
+            //Set the current item as checked in landscape orientation.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                getListView().setItemChecked(position, true);                
+                getListView().setItemChecked(position, true);
             }
         }
         listener.onGroupSelected(group);
