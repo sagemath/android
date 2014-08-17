@@ -1,15 +1,15 @@
 package org.sagemath.droid.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.*;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 import com.github.johnpersano.supertoasts.SuperToast;
 import org.sagemath.droid.R;
@@ -57,9 +57,17 @@ public class CellGroupsFragment extends ListFragment {
         this.listener = listener;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onListItemClick(ListView parent, View view, int position, long id) {
         Group group = groups.get(position);
+        if (isLandscape()) {
+            //In Landscape, highlight the current group and also select it
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                getListView().setItemChecked(position, true);
+                getListView().performClick();
+            }
+        }
         listener.onGroupSelected(group);
     }
 
@@ -96,7 +104,9 @@ public class CellGroupsFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+        getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        if (!isLandscape())
+            setHasOptionsMenu(true);
         registerForContextMenu(getListView());
         playgroundItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,6 +191,12 @@ public class CellGroupsFragment extends ListFragment {
 
     }
 
+    //For external access
+    public void updateGroups() {
+        groups = helper.getGroups();
+        adapter.refreshAdapter(groups);
+    }
+
     private void showPlaygroundInfoToast() {
         SuperCardToast toast = new SuperCardToast(getActivity());
         toast.setText(getString(R.string.toast_playground_info));
@@ -189,5 +205,9 @@ public class CellGroupsFragment extends ListFragment {
         toast.setTextColor(Color.BLACK);
         toast.setDuration(3000);
         toast.show();
+    }
+
+    private boolean isLandscape() {
+        return Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation;
     }
 }
