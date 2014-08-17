@@ -191,6 +191,7 @@ public class ManageInsertFragment extends ListFragment implements SearchView.OnQ
         final MenuItem searchItem = menu.findItem(R.id.menu_search_inserts);
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.insert_query_hint));
         searchView.setOnQueryTextListener(this);
 
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
