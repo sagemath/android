@@ -29,6 +29,11 @@ public class SageJavascriptInterface {
         this.forRun = forRun;
     }
 
+    /**
+     * Obtain the text in the CodeMirror editor via the Javascript function of the same name.
+     *
+     * @param html
+     */
     @JavascriptInterface
     public void getHtml(String html) {
         Log.i(TAG, "Got Text from Editor: " + html);

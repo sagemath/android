@@ -92,6 +92,7 @@ public class CodeEditorFragment extends BaseFragment {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void codeReceived(CodeReceivedEvent event) {
         Log.d(TAG, "Received code from editor: " + event.getReceivedCode());
@@ -105,6 +106,7 @@ public class CodeEditorFragment extends BaseFragment {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onComputationFinished(InteractFinishEvent event) {
         codeViewToggleButton.requestFocus();
@@ -116,13 +118,15 @@ public class CodeEditorFragment extends BaseFragment {
         codeView.setEditorText(text);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onProgressUpdate(ProgressEvent event) {
         if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_START)) {
-            if (!codeViewToggleButton.isEnabled()) {
+            if (codeViewToggleButton.isEnabled()) {
                 codeViewToggleButton.setEnabled(false);
             }
         } else if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_END)) {
+            codeViewToggleButton.setEnabled(true);
         }
     }
 

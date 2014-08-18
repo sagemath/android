@@ -77,6 +77,7 @@ public class CodeView extends WebView {
     }
 
     public void setEditorText(String text) {
+        //Escape Javascript
         final String functionCall = "javascript:setEditorText(\"%s\");";
         final String textToSet = StringEscapeUtils.escapeJavaScript(text);
         Log.i(TAG, "Calling js: " + String.format(functionCall, textToSet));
