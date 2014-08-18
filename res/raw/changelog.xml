@@ -2,6 +2,11 @@
 
 <changelog bulletedList="true">
 
+    <changelogversion versionName="1.0.0" changeDate="Aug 17,2014">
+        <changelogimprovement>Better Tablet Layouts</changelogimprovement>
+        <changelogbug>Fix crash on rotation in tablets</changelogbug>
+    </changelogversion>
+
     <changelogversion versionName="0.9.5 Beta" changeDate="Aug 8,2014">
         <changelogimprovement>Tablet layouts</changelogimprovement>
         <changelogimprovement>Better UI,Dialogs and Animations</changelogimprovement>

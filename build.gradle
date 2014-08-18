@@ -11,9 +11,9 @@ buildscript {
 apply plugin: "com.android.application"
 
 //Shamelessly copied from philm
-def versionMajor = 0 //Major change external and internal
-def versionMinor = 9 //Major Internal Change
-def versionPatch = 5 //Moderate internal change
+def versionMajor = 1 //Major change external and internal
+def versionMinor = 0 //Major Internal Change
+def versionPatch = 0 //Moderate internal change
 def versionBuild = 0 //Quickfixes and random bugfixes
 
 android {
