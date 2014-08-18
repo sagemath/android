@@ -62,7 +62,7 @@ public class CodeEditorFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(ARG_CURRENT_INPUT)) {
             currentInput = savedInstanceState.getString(ARG_CURRENT_INPUT);
             setAndFocusEditor(currentInput);
         }
@@ -96,8 +96,10 @@ public class CodeEditorFragment extends BaseFragment {
     public void codeReceived(CodeReceivedEvent event) {
         Log.d(TAG, "Received code from editor: " + event.getReceivedCode());
         String receivedCode = event.getReceivedCode();
-        cell.setInput(receivedCode);
-        SageSQLiteOpenHelper.getInstance(getActivity()).saveEditedCell(cell);
+        if (cell != null) {
+            cell.setInput(receivedCode);
+            SageSQLiteOpenHelper.getInstance(getActivity()).saveEditedCell(cell);
+        }
         if (!event.isForRun()) {
             Toast.makeText(getActivity(), R.string.toast_cell_saved, Toast.LENGTH_SHORT).show();
         }
