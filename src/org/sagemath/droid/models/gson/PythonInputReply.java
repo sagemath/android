@@ -1,7 +1,11 @@
 package org.sagemath.droid.models.gson;
 
 /**
- * For pyin messages
+ * Reply from the server representing Python input.
+ * <p/>
+ * <p>This class returns no data which must be displayed, instead it
+ * is used to determine the server status, and accordingly perform required operations.</p>
+ *
  * @author Nikhil Peter Raj
  */
 

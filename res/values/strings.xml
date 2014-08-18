@@ -94,6 +94,9 @@
     <string name="menu_group_edit">Edit this Group</string>
     <string name="menu_group_delete">Delete this group</string>
     <string name="menu_help">Help</string>
+    <string name="menu_add_group_or_cell">Add Group/Cell</string>
+    <string name="menu_new_group">Add New Group</string>
+    <string name="menu_new_cell">Add New Cell</string>
 
     <!-- Do not change this, repo link, will be same in any language-->
     <string name="git_link_text"><![CDATA[<a href="https://github.com/sagemath/android">GitHub Repo</a>]]></string>
@@ -135,5 +138,7 @@
     <!--Misc-->
     <string name="header_fav_text">FAVORITES</string>
     <string name="pref_font_summary">Change the font size of the code editor</string>
+    <string name="cell_query_hint">Search Cells</string>
+    <string name="insert_query_hint">Search Inserts</string>
 
 </resources>

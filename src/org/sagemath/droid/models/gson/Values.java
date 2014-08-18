@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * A reply corresponding to a single int or an array of values.
+ *
  * @author Nikhil Peter Raj
  */
 public class Values implements Parcelable {

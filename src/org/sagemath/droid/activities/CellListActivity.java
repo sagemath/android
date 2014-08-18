@@ -14,7 +14,7 @@ import org.sagemath.droid.models.database.Group;
 
 
 /**
- * CellListActivity - when the CellListFragment has its own activity (phones)
+ * CellListActivity - This Activity is only used on non-tablet devices
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan

@@ -1,6 +1,8 @@
 package org.sagemath.droid.events;
 
 /**
+ * <p>The event for receiving a code from the user/editor</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class CodeReceivedEvent {

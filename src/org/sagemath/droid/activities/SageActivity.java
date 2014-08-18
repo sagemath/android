@@ -32,13 +32,13 @@ import org.sagemath.droid.fragments.CellGroupsFragment;
 import org.sagemath.droid.fragments.CodeEditorFragment;
 import org.sagemath.droid.fragments.OutputViewFragment;
 import org.sagemath.droid.models.database.Cell;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 import org.sagemath.droid.models.gson.BaseReply;
 import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.utils.ToastUtils;
 
 /**
- * SageActivity - handling of single cell display and input
+ * All calculations are performed and displayed here
  *
  * @author vbraun
  * @author Rasmi.Elasmar
@@ -284,7 +284,7 @@ public class SageActivity
     }
 
     @Override
-    public void onInsertSelected(Inserts insert) {
+    public void onInsertSelected(Insert insert) {
         codeEditorFragment.getCodeView().paste(insert.getInsertText());
     }
 
@@ -299,6 +299,7 @@ public class SageActivity
         outputViewFragment.saveOutputToImage();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onRun(CodeReceivedEvent event) {
         if (event.isForRun()) {
@@ -342,6 +343,7 @@ public class SageActivity
         taskFragment.cancel();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onShareEvent(ShareAvailableEvent event) {
         isShareAvailable = true;
@@ -349,11 +351,13 @@ public class SageActivity
         ActivityCompat.invalidateOptionsMenu(this);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onInteractFinished(InteractFinishEvent event) {
         hideProgress();
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onInteractDisconnected(ServerDisconnectEvent event) {
         Log.i(TAG, "Interact Disconnected, Showing Message");
@@ -411,6 +415,7 @@ public class SageActivity
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onProgressUpdate(ProgressEvent progressEvent) {
         Log.i(TAG, "Received Progress Update: " + progressEvent.getProgressState());

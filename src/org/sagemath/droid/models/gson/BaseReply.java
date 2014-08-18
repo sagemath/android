@@ -9,7 +9,7 @@ import org.sagemath.droid.deserializers.*;
 
 /**
  * Base Reply from the Server
- * All *Reply classes should extend this
+ * <p>All *Reply classes should extend this</p>
  *
  * @author Nikhil Peter Raj
  */
@@ -135,7 +135,7 @@ public class BaseReply {
                 .registerTypeAdapter(InteractReply.InteractContent.class, new InteractContentDeserializer())
                 .registerTypeAdapter(InteractReply.InteractData.class, new InteractDataDeserializer())
                 .registerTypeAdapter(InteractReply.SageInteract.class, new SageInteractDeserializer())
-                .registerTypeAdapter(Values.class,new ValueDeserializer())
+                .registerTypeAdapter(Values.class, new ValueDeserializer())
                 .create();
 
         //Return the appropriate BaseReply

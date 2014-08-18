@@ -4,9 +4,11 @@ import android.net.Uri;
 import org.sagemath.droid.utils.UrlUtils;
 
 /**
+ * Response from server containing the permalink paths.
+ *
  * @author Nikhil Peter Raj
  */
-public class PermalinkResponse extends BaseResponse{
+public class PermalinkResponse extends BaseResponse {
 
     private String query;
     private String zip;

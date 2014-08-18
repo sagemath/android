@@ -1,6 +1,8 @@
 package org.sagemath.droid.models.gson;
 
 /**
+ * Reply corresponding to a Stream output which must be displayed.
+ *
  * @author Nikhil Peter Raj
  */
 public class StreamReply extends BaseReply {

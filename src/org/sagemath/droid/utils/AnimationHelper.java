@@ -10,6 +10,8 @@ import com.nineoldandroids.view.animation.AnimatorProxy;
 import org.sagemath.droid.R;
 
 /**
+ * A helper which has animations for different API versions, as required.
+ *
  * @author Nikhil Peter Raj
  */
 public class AnimationHelper {

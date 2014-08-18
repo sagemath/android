@@ -6,12 +6,13 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import org.sagemath.droid.R;
 import org.sagemath.droid.database.SageSQLiteOpenHelper;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 import org.sagemath.droid.utils.BusProvider;
 
 import java.util.ArrayList;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} used to delete an insert</p>
  * @author Nikhil Peter Raj
  */
 public class DeleteInsertDialogFragment extends BaseDeleteDialogFragment {
@@ -19,9 +20,9 @@ public class DeleteInsertDialogFragment extends BaseDeleteDialogFragment {
 
     private static final String ARG_INSERTS = "inserts";
 
-    private ArrayList<Inserts> inserts;
+    private ArrayList<Insert> inserts;
 
-    public static DeleteInsertDialogFragment newInstance(ArrayList<Inserts> inserts) {
+    public static DeleteInsertDialogFragment newInstance(ArrayList<Insert> inserts) {
         DeleteInsertDialogFragment fragment = new DeleteInsertDialogFragment();
         Bundle args = new Bundle();
 

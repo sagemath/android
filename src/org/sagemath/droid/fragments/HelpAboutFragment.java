@@ -14,6 +14,7 @@ import org.sagemath.droid.R;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 /**
+ * Fragment which displays the Help About page
  * @author Nikhil Peter Raj
  */
 public class HelpAboutFragment extends Fragment {

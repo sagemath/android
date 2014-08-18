@@ -2,6 +2,7 @@ package org.sagemath.droid.fragments;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -29,7 +30,7 @@ import java.util.List;
 
 
 /**
- * CellListFragment - fragment containing list of cells in current group
+ * CellListFragment - Fragment containing list of cells in current group
  * shown in CellActivity (tablets) or CellListActivity (phones)
  *
  * @author Rasmi.Elasmar
@@ -63,7 +64,7 @@ public class CellListFragment extends BaseListFragment
         if (group != null && adapter != null) {
             Log.i(TAG, "Updating Cells with group:" + group);
             adapter.refreshAdapter(group);
-            list.setEmptyView(emptyView);
+            //list.setEmptyView(emptyView);
         }
     }
 
@@ -77,7 +78,7 @@ public class CellListFragment extends BaseListFragment
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "In onCreate");
         super.onCreate(savedInstanceState);
-        if ((savedInstanceState != null) && (savedInstanceState.getString(ARG_GROUP) != null)) {
+        if ((savedInstanceState != null) && (savedInstanceState.containsKey(ARG_GROUP))) {
             this.group = savedInstanceState.getParcelable(ARG_GROUP);
         }
     }
@@ -87,6 +88,12 @@ public class CellListFragment extends BaseListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.layout_cell_list, getContainer());
+
+        if (isLandscape()) {
+            SearchView listSearch = (SearchView) view.findViewById(R.id.cellListSearch);
+            listSearch.setOnQueryTextListener(this);
+            listSearch.setIconifiedByDefault(false);
+        }
 
         list = (StickyListHeadersListView) view.findViewById(R.id.cell_list);
         list.setOnItemClickListener(this);
@@ -105,6 +112,10 @@ public class CellListFragment extends BaseListFragment
         list.setAreHeadersSticky(true);
         list.setDrawingListUnderStickyHeader(false);
         list.setFastScrollEnabled(true);
+
+        if (!isLandscape())
+            getActivity().setTitle(group.getCellGroup());
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -166,7 +177,8 @@ public class CellListFragment extends BaseListFragment
             registerForContextMenu(list);
         }
 
-        setHasOptionsMenu(true);
+        if (!isLandscape())
+            setHasOptionsMenu(true);
         setContentShown(false);
     }
 
@@ -217,7 +229,6 @@ public class CellListFragment extends BaseListFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cell cell = cells.get(position);
         Intent i = new Intent(getActivity().getApplicationContext(), SageActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra(StringConstants.ID, cell.getID());
         startActivity(i);
     }
@@ -229,7 +240,8 @@ public class CellListFragment extends BaseListFragment
 
     @Override
     public boolean onQueryTextChange(String query) {
-        adapter.setQueryCells(helper.getQueryCells(group, query), query);
+        if (adapter != null)
+            adapter.setQueryCells(helper.getQueryCells(group, query), query);
         return true;
     }
 
@@ -271,7 +283,6 @@ public class CellListFragment extends BaseListFragment
 
     public void setGroup(Group group) {
         this.group = group;
-        getActivity().setTitle(group.getCellGroup());
         cells = helper.getCellsWithGroup(group);
         adapter = new CellListAdapter(getActivity(), group);
         list.setAdapter(adapter);
@@ -313,12 +324,20 @@ public class CellListFragment extends BaseListFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //Handle search normally
         getActivity().getMenuInflater().inflate(R.menu.menu_cell_list, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_search);
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.cell_query_hint));
         searchView.setOnQueryTextListener(this);
 
+        initSearchView(searchView, searchItem);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void initSearchView(final SearchView searchView, final MenuItem searchItem) {
         //Collapse SearchView if focus is lost
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -342,8 +361,10 @@ public class CellListFragment extends BaseListFragment
                 return true;
             }
         });
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private boolean isLandscape() {
+        return Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation;
+    }
 
 }

@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBarActivity;
 import java.util.ArrayList;
 
 /**
+ * The Adapter for the {@linkplain android.support.v4.view.ViewPager} in HelpActivity.
+ *
  * @author Nikhil Peter Raj
  */
 public class HelpPagerAdapter extends FragmentPagerAdapter {

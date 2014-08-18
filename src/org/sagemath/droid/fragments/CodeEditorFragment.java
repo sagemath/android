@@ -20,6 +20,8 @@ import org.sagemath.droid.utils.BusProvider;
 import org.sagemath.droid.views.CodeView;
 
 /**
+ * Fragment which hosts the {@linkplain org.sagemath.droid.views.CodeView}
+ *
  * @author Nikhil Peter Raj
  */
 public class CodeEditorFragment extends BaseFragment {
@@ -60,7 +62,7 @@ public class CodeEditorFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(ARG_CURRENT_INPUT)) {
             currentInput = savedInstanceState.getString(ARG_CURRENT_INPUT);
             setAndFocusEditor(currentInput);
         }
@@ -90,17 +92,21 @@ public class CodeEditorFragment extends BaseFragment {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void codeReceived(CodeReceivedEvent event) {
         Log.d(TAG, "Received code from editor: " + event.getReceivedCode());
         String receivedCode = event.getReceivedCode();
-        cell.setInput(receivedCode);
-        SageSQLiteOpenHelper.getInstance(getActivity()).saveEditedCell(cell);
+        if (cell != null) {
+            cell.setInput(receivedCode);
+            SageSQLiteOpenHelper.getInstance(getActivity()).saveEditedCell(cell);
+        }
         if (!event.isForRun()) {
             Toast.makeText(getActivity(), R.string.toast_cell_saved, Toast.LENGTH_SHORT).show();
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onComputationFinished(InteractFinishEvent event) {
         codeViewToggleButton.requestFocus();
@@ -112,13 +118,15 @@ public class CodeEditorFragment extends BaseFragment {
         codeView.setEditorText(text);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onProgressUpdate(ProgressEvent event) {
         if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_START)) {
-            if (!codeViewToggleButton.isEnabled()) {
+            if (codeViewToggleButton.isEnabled()) {
                 codeViewToggleButton.setEnabled(false);
             }
         } else if (event.getProgressState().equals(StringConstants.ARG_PROGRESS_END)) {
+            codeViewToggleButton.setEnabled(true);
         }
     }
 

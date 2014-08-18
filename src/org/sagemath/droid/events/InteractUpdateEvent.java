@@ -3,6 +3,7 @@ package org.sagemath.droid.events;
 import org.sagemath.droid.models.gson.InteractReply;
 
 /**
+ * <p>The event received when an interact is updated</p>
  * @author Nikhil Peter Raj
  */
 public class InteractUpdateEvent {

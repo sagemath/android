@@ -9,8 +9,10 @@ import org.sagemath.droid.models.gson.Values;
 import java.lang.reflect.Type;
 
 /**
- * This Deserializer required is due to the fact that the key "values" can have value either a JSONArray
- * or an int
+ * Deserializer for {@link org.sagemath.droid.models.gson.Values}
+ *
+ * <p>This Deserializer required is due to the fact that the key "values" can have value either a JSONArray
+ * or an int</p>
  *
  * @author Nikhil Peter Raj
  */

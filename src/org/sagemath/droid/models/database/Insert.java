@@ -4,9 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Database model representing a single Insert
  * @author Nikhil Peter Raj
  */
-public class Inserts implements Parcelable {
+public class Insert implements Parcelable {
     private static final String TAG = "SageDroid:Inserts";
 
     Long _id;
@@ -14,11 +15,11 @@ public class Inserts implements Parcelable {
     String insertText;
     boolean isFavorite;
 
-    public Inserts() {
+    public Insert() {
 
     }
 
-    public Inserts(long _id) {
+    public Insert(long _id) {
         this._id = _id;
     }
 
@@ -60,22 +61,22 @@ public class Inserts implements Parcelable {
                 "isFavorite=" + isFavorite + "," + "]";
     }
 
-    private Inserts(Parcel in) {
+    private Insert(Parcel in) {
         _id = in.readLong();
         insertDescription = in.readString();
         insertText = in.readString();
         isFavorite = in.readInt() == 1;
     }
 
-    public static final Creator<Inserts> CREATOR = new Creator<Inserts>() {
+    public static final Creator<Insert> CREATOR = new Creator<Insert>() {
         @Override
-        public Inserts createFromParcel(Parcel source) {
-            return new Inserts(source);
+        public Insert createFromParcel(Parcel source) {
+            return new Insert(source);
         }
 
         @Override
-        public Inserts[] newArray(int size) {
-            return new Inserts[size];
+        public Insert[] newArray(int size) {
+            return new Insert[size];
         }
     };
 

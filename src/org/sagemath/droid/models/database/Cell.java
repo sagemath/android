@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.UUID;
 
 /**
+ * Database model corresponding to a single cell.
+ *
  * @author Nikhil Peter Raj
  */
 public class Cell implements Parcelable {
@@ -49,7 +51,7 @@ public class Cell implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(_id);
         dest.writeString(uuid);
-        dest.writeParcelable(cellGroup,flags);
+        dest.writeParcelable(cellGroup, flags);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeString(input);

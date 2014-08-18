@@ -39,6 +39,8 @@ import java.net.URI;
 import java.util.ArrayList;
 
 /**
+ * <p>The Headless Fragment which performs all computations</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class AsyncTaskFragment extends Fragment {
@@ -217,9 +219,10 @@ public class AsyncTaskFragment extends Fragment {
             StatusReply statusReply = (StatusReply) reply;
             if (statusReply.getContent().getExecutionState() == ExecutionState.IDLE
                     || statusReply.getContent().getExecutionState() == ExecutionState.DEAD) {
-                if (callBacks != null){
+                if (callBacks != null) {
                     callBacks.onReply(reply);
-                    callBacks.onComputationFinished();}
+                    callBacks.onComputationFinished();
+                }
             }
         } else if (reply instanceof PythonInputReply) {
             if (((PythonInputReply) reply).isInteractUpdateReply()) {

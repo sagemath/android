@@ -7,7 +7,7 @@ import android.util.Log;
 import org.sagemath.droid.R;
 import org.sagemath.droid.models.database.Cell;
 import org.sagemath.droid.models.database.Group;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 import org.sagemath.droid.utils.FileXMLParser;
 
 import java.io.InputStream;
@@ -17,6 +17,8 @@ import java.util.List;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
+ * SQLiteHelper for this app, uses Cupboard instead of general SQL statements
+ *
  * @author Nikhil Peter Raj
  */
 public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
@@ -34,7 +36,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
     static {
         cupboard().register(Cell.class);
         cupboard().register(Group.class);
-        cupboard().register(Inserts.class);
+        cupboard().register(Insert.class);
     }
 
     public static SageSQLiteOpenHelper getInstance(Context context) {
@@ -88,12 +90,12 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private void addInitialInserts(SQLiteDatabase db) {
 
-        Inserts insert1 = new Inserts();
+        Insert insert1 = new Insert();
         insert1.setInsertDescription("List Comprehension");
         insert1.setInsertText("[ i for i in range(0,10) ]");
         insert1.setFavorite(false);
 
-        Inserts insert2 = new Inserts();
+        Insert insert2 = new Insert();
         insert2.setInsertDescription("For Loop");
         insert2.setInsertText("for i in range(0,10):");
         insert2.setFavorite(false);
@@ -244,14 +246,14 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Inserts> getQueryInserts(String query) {
+    public List<Insert> getQueryInserts(String query) {
         String queryInsert = "%" + query + "%";
-        List<Inserts> inserts = null;
+        List<Insert> inserts = null;
 
         try {
             inserts = cupboard()
                     .withDatabase(getReadableDatabase())
-                    .query(Inserts.class)
+                    .query(Insert.class)
                     .withSelection("insertDescription LIKE ?", queryInsert)
                     .orderBy("insertDescription asc")
                     .query()
@@ -262,14 +264,14 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return inserts;
     }
 
-    public List<Inserts> getInserts() {
+    public List<Insert> getInserts() {
 
-        List<Inserts> inserts = null;
+        List<Insert> inserts = null;
 
         try {
             inserts = cupboard()
                     .withDatabase(getReadableDatabase())
-                    .query(Inserts.class)
+                    .query(Insert.class)
                     .orderBy("insertDescription asc")
                     .query()
                     .list();
@@ -284,7 +286,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return inserts;
     }
 
-    public void addInsert(Inserts insert) {
+    public void addInsert(Insert insert) {
         try {
             cupboard().withDatabase(getWritableDatabase()).put(insert);
         } catch (Exception e) {
@@ -292,11 +294,11 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean addInsert(List<Inserts> inserts) {
+    public boolean addInsert(List<Insert> inserts) {
         SQLiteDatabase db = getWritableDatabase();
         try {
             db.beginTransaction();
-            for (Inserts insert : inserts) {
+            for (Insert insert : inserts) {
                 cupboard().withDatabase(db).put(inserts);
             }
             db.setTransactionSuccessful();
@@ -309,7 +311,7 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteInsert(Inserts insert) {
+    public void deleteInsert(Insert insert) {
         try {
             cupboard().withDatabase(getWritableDatabase()).delete(insert);
         } catch (Exception e) {
@@ -317,12 +319,12 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean deleteInsert(List<Inserts> inserts) {
+    public boolean deleteInsert(List<Insert> inserts) {
         SQLiteDatabase db = getWritableDatabase();
 
         try {
             db.beginTransaction();
-            for (Inserts insert : inserts) {
+            for (Insert insert : inserts) {
                 Log.i(TAG, "Deleting:" + insert);
                 cupboard().withDatabase(db).delete(insert);
             }
@@ -352,11 +354,11 @@ public class SageSQLiteOpenHelper extends SQLiteOpenHelper {
         return favs;
     }
 
-    private List<Inserts> sortInsertsByFavorite(List<Inserts> inserts) {
-        ArrayList<Inserts> favs = new ArrayList<>();
-        ArrayList<Inserts> others = new ArrayList<>();
+    private List<Insert> sortInsertsByFavorite(List<Insert> inserts) {
+        ArrayList<Insert> favs = new ArrayList<>();
+        ArrayList<Insert> others = new ArrayList<>();
 
-        for (Inserts insert : inserts) {
+        for (Insert insert : inserts) {
             if (insert.isFavorite()) {
                 favs.add(insert);
             } else {
