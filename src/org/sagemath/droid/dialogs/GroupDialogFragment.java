@@ -16,6 +16,7 @@ import org.sagemath.droid.models.database.Group;
 import org.sagemath.droid.utils.AnimationHelper;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} used to add/edit a group</p>
  * @author Nikhil Peter Raj
  */
 public class GroupDialogFragment extends BaseActionDialogFragment {

@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
+ * A View which holds a {@linkplain android.widget.SeekBar}
+ *
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

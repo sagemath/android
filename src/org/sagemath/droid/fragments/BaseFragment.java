@@ -6,6 +6,10 @@ import android.support.v4.app.Fragment;
 import org.sagemath.droid.models.database.Cell;
 
 /**
+ * <p>Base {@linkplain android.support.v4.app.Fragment} for
+ * {@linkplain org.sagemath.droid.fragments.CodeEditorFragment} &
+ * {@linkplain org.sagemath.droid.fragments.OutputViewFragment}</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class BaseFragment extends Fragment {

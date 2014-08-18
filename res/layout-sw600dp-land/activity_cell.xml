@@ -27,6 +27,13 @@
                 android:name="org.sagemath.droid.fragments.CellGroupsFragment"
                 android:id="@+id/cellGroupFragment" tools:layout="@layout/layout_cell_group"/>
 
+        <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/black"/>
+
         <fragment
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

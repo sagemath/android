@@ -3,6 +3,8 @@ package org.sagemath.droid.utils;
 import com.squareup.otto.Bus;
 
 /**
+ * Provides an instance of {@linkplain com.squareup.otto.Bus}
+ *
  * @author Nikhil Peter Raj
  */
 public class BusProvider {

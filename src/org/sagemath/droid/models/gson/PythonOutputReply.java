@@ -3,6 +3,8 @@ package org.sagemath.droid.models.gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Reply representing a Python Output.
+ *
  * @author Nikhil Peter Raj
  */
 public class PythonOutputReply extends BaseReply {
@@ -12,7 +14,7 @@ public class PythonOutputReply extends BaseReply {
         return content;
     }
 
-    public PythonOutputReply(){
+    public PythonOutputReply() {
         super();
     }
 

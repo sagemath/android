@@ -21,6 +21,8 @@ import org.sagemath.droid.states.OutputViewState;
 import org.sagemath.droid.utils.BusProvider;
 
 /**
+ * The View hosting the interacts, if any.
+ *
  * @author Rasmi Elsamar
  * @author Nikhil Peter Raj
  */

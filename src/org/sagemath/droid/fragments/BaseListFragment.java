@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import org.sagemath.droid.R;
 
 /**
+ * <p>This {@linkplain android.support.v4.app.Fragment} emulates certain functionalities of {@linkplain android.support.v4.app.ListFragment}
+ * , required mainly because we are using StickyListHeaders
+ * </p>
+ *
  * @author Nikhil Peter Raj
  */
 public class BaseListFragment extends Fragment {

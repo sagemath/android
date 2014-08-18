@@ -7,6 +7,10 @@ import org.sagemath.droid.constants.MessageType;
 import java.util.UUID;
 
 /**
+ * The Base Header returned by the server.
+ * <p/>
+ * <p>All server responses are guaranteed to have atleast these fields.</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class Header implements Parcelable {
@@ -31,7 +35,7 @@ public class Header implements Parcelable {
     private String msg_type;
     private String date;
 
-    public Header(){
+    public Header() {
 
     }
 

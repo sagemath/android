@@ -22,6 +22,8 @@ import java.util.UUID;
 
 
 /**
+ * The parser which loads the inital cells from cell_collection.xml
+ *
  * @author Rasmi.Elasmar
  * @author Nikhil Peter Raj
  */

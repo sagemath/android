@@ -7,6 +7,8 @@ import android.preference.PreferenceActivity;
 import org.sagemath.droid.R;
 
 /**
+ * The Settings Activity
+ *
  * @author Nikhil Peter Raj
  */
 @SuppressWarnings("deprecation")

@@ -4,6 +4,8 @@ import android.content.Context;
 import com.github.johnpersano.supertoasts.SuperToast;
 
 /**
+ * Utils for {@linkplain com.github.johnpersano.supertoasts.SuperToast}
+ *
  * @author Nikhil Peter Raj
  */
 public class ToastUtils {

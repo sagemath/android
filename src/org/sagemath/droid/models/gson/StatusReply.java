@@ -3,6 +3,8 @@ package org.sagemath.droid.models.gson;
 import org.sagemath.droid.constants.ExecutionState;
 
 /**
+ * Reply corresponding to server status.
+ *
  * @author Nikhil Peter Raj
  */
 public class StatusReply extends BaseReply {

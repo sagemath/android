@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.view.View;
 
 /**
+ * The {@linkplain android.view.View.BaseSavedState} for {@linkplain org.sagemath.droid.views.OutputView}
+ *
  * @author Nikhil Peter Raj
  */
 public class OutputViewState extends View.BaseSavedState {

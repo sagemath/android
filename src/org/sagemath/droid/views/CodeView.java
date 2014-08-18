@@ -15,6 +15,10 @@ import android.webkit.WebView;
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
+ * The {@linkplain android.webkit.WebView} which serves as the input.
+ *
+ * <p>Uses CodeMirror internally to provide syntax highlighting.</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class CodeView extends WebView {
@@ -73,6 +77,7 @@ public class CodeView extends WebView {
     }
 
     public void setEditorText(String text) {
+        //Escape Javascript
         final String functionCall = "javascript:setEditorText(\"%s\");";
         final String textToSet = StringEscapeUtils.escapeJavaScript(text);
         Log.i(TAG, "Calling js: " + String.format(functionCall, textToSet));

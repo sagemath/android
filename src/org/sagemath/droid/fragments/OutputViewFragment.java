@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
+ * Fragment which hosts the {@linkplain org.sagemath.droid.views.OutputView}
+ *
  * @author Nikhil Peter Raj
  */
 public class OutputViewFragment extends BaseFragment {

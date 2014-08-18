@@ -15,6 +15,9 @@ import org.sagemath.droid.utils.BusProvider;
 
 import java.util.ArrayList;
 
+/**
+ * The {@linkplain android.webkit.WebView} which displays the output from server.
+ */
 public class OutputWebView extends WebView {
     private final static String TAG = "SageDroid:OutputBlock";
 

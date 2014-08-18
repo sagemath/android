@@ -12,7 +12,7 @@ import org.sagemath.droid.models.database.Group;
 import java.util.List;
 
 /**
- * CellGroupsAdapter
+ * Adapter which is responsible for the Cell Groups
  *
  * @author Rasmi.Elasmar
  * @author Ralf.Stephan

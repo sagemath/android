@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Adapter which is responsible for displaying the cells associated with each group.
+ *
  * @author Rasmi.Elasmar
  * @author Nikhil Peter Raj
  */

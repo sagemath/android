@@ -7,16 +7,18 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import org.sagemath.droid.R;
 import org.sagemath.droid.adapters.InsertsAdapter;
-import org.sagemath.droid.models.database.Inserts;
+import org.sagemath.droid.models.database.Insert;
 
 /**
+ * <p>The {@link android.support.v4.app.DialogFragment} which displays the insert selection dialog in {@link org.sagemath.droid.activities.SageActivity}</p>
+ *
  * @author Nikhil Peter Raj
  */
 public class InsertSpinnerDialogFragment extends DialogFragment {
     private static final String TAG = "SageDroid:InsertSpinnerDialogFragment";
 
     public interface OnInsertSelectedListener {
-        public void onInsertSelected(Inserts insert);
+        public void onInsertSelected(Insert insert);
     }
 
     private OnInsertSelectedListener listener;
@@ -40,7 +42,7 @@ public class InsertSpinnerDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (listener != null) {
-                    listener.onInsertSelected((Inserts) adapter.getItem(which));
+                    listener.onInsertSelected((Insert) adapter.getItem(which));
                 }
                 dismiss();
             }

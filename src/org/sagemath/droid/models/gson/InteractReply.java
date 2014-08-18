@@ -9,6 +9,8 @@ import org.sagemath.droid.constants.ControlType;
 import java.util.ArrayList;
 
 /**
+ * Reply representing an Interact.
+ *
  * @author Nikhil Peter Raj
  */
 public class InteractReply extends BaseReply {

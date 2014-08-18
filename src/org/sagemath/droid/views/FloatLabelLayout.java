@@ -27,8 +27,10 @@ import org.sagemath.droid.R;
 /**
  * Layout which an {@link android.widget.EditText} to show a floating label when the hint is hidden
  * due to the user inputting text.
- * <p/>
- * Copied almost in entirety from <a href="https://github.com/chrisbanes/philm/blob/master/app/src/main/java/app/philm/in/view/FloatLabelLayout.java">Chris Bane's Philm </a>
+ *
+ * <p>Copied almost in entirety from
+ * <a href="https://github.com/chrisbanes/philm/blob/master/app/src/main/java/app/philm/in/view/FloatLabelLayout.java">Chris Bane's Philm</a>
+ * apart from tweaks to make it work with {@linkplain android.widget.AutoCompleteTextView} and older Android versions.</p>
  *
  * @see <a href="https://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction">Matt D. Smith on Dribble</a>
  * @see <a href="http://bradfrostweb.com/blog/post/float-label-pattern/">Brad Frost's blog post</a>
