@@ -12,7 +12,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.webkit.WebView;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * The {@linkplain android.webkit.WebView} which serves as the input.
@@ -79,7 +79,7 @@ public class CodeView extends WebView {
     public void setEditorText(String text) {
         //Escape Javascript
         final String functionCall = "javascript:setEditorText(\"%s\");";
-        final String textToSet = StringEscapeUtils.escapeJavaScript(text);
+        final String textToSet = StringEscapeUtils.escapeEcmaScript(text);
         Log.i(TAG, "Calling js: " + String.format(functionCall, textToSet));
         this.postDelayed(new Runnable() {
             @Override
@@ -91,7 +91,7 @@ public class CodeView extends WebView {
 
     public void paste(final String text) {
         final String functionCall = "javascript:paste(\"%s\");";
-        final String textToSet = StringEscapeUtils.escapeJavaScript(text);
+        final String textToSet = StringEscapeUtils.escapeEcmaScript(text);
         this.postDelayed(new Runnable() {
             @Override
             public void run() {
