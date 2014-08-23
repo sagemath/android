@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
 
@@ -14,7 +14,7 @@ apply plugin: "com.android.application"
 def versionMajor = 1 //Major change external and internal
 def versionMinor = 0 //Major Internal Change
 def versionPatch = 0 //Moderate internal change
-def versionBuild = 0 //Quickfixes and random bugfixes
+def versionBuild = 2 //Quickfixes and random bugfixes
 
 android {
     compileSdkVersion 19
@@ -69,8 +69,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.+'
-    compile 'com.android.support:appcompat-v7:19.1.+'
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:appcompat-v7:20.0.0'
     compile project(":libs:html-textview")
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.nineoldandroids:library:2.4.0'
