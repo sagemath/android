@@ -1,8 +1,11 @@
 package org.sagemath.droid.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -325,13 +328,17 @@ public class SageActivity
             //Computation already running, stop
             cancelComputation();
         } else {
-            //Invalidate share
-            isShareAvailable = false;
-            isServerRunning = false;
-            permalinkURL = null;
-            ActivityCompat.invalidateOptionsMenu(this);
-            outputViewFragment.getOutputView().clear();
-            codeEditorFragment.getCodeView().getEditorText(true);
+            //Check for Network Connection
+            if (!isConnected()) {
+                ToastUtils.getAlertToast(this, R.string.toast_network_error, SuperToast.Duration.MEDIUM).show();
+            } else {
+                isShareAvailable = false;
+                isServerRunning = false;
+                permalinkURL = null;
+                ActivityCompat.invalidateOptionsMenu(this);
+                outputViewFragment.getOutputView().clear();
+                codeEditorFragment.getCodeView().getEditorText(true);
+            }
         }
     }
 
@@ -341,6 +348,13 @@ public class SageActivity
         hideProgress();
         outputViewFragment.getOutputView().clear();
         taskFragment.cancel();
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     @SuppressWarnings("unused")
@@ -361,19 +375,50 @@ public class SageActivity
     @Subscribe
     public void onInteractDisconnected(ServerDisconnectEvent event) {
         Log.i(TAG, "Interact Disconnected, Showing Message");
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                toast = new SuperCardToast(SageActivity.this);
-                toast.setText(getResources().getString(R.string.toast_info_disconnected));
-                toast.setBackground(SuperToast.Background.RED);
-                toast.setTextColor(Color.BLACK);
-                toast.setDuration(3000);
-                toast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
-                toast.setSwipeToDismiss(true);
-                toast.show();
-            }
-        });
+
+        //Hide Progress Bar, if it is showing
+        hideProgress();
+
+        //Prepare a Toast
+        toast = new SuperCardToast((SageActivity.this));
+        toast.setBackground(SuperToast.Background.RED);
+        toast.setTextColor(Color.BLACK);
+        toast.setDuration(3000);
+        toast.setIcon(android.R.drawable.ic_dialog_alert, SuperToast.IconPosition.LEFT);
+        toast.setSwipeToDismiss(true);
+
+        switch (event.getDisconnectType()) {
+
+            case DISCONNECT_INTERACT:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.setText(getString(R.string.toast_error_interact_timeout));
+                        toast.show();
+                    }
+                });
+                break;
+
+            case DISCONNECT_SOCKET:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.setText(getString(R.string.toast_error_websocket_disconnected));
+                        toast.show();
+                    }
+                });
+                break;
+
+            case DISCONNECT_TIMEOUT:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.setText(getString(R.string.toast_error_timeout));
+                        toast.show();
+                    }
+                });
+
+        }
     }
 
     @Override

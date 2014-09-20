@@ -67,6 +67,7 @@
     <string name="choose_group_text">CHOOSE A GROUP</string>
 
     <!--Toast Strings-->
+    <string name="toast_network_error">An Internet connection is required to run!</string>
     <string name="toast_cell_saved">Input saved successfully</string>
     <string name="toast_share_unavailable">You must run a computation first!</string>
     <string name="toast_link_copied">Link copied to ClipBoard</string>
@@ -74,7 +75,9 @@
     <string name="toast_external_storage_unmounted">External Storage is not mounted,please try again</string>
     <string name="toast_share_server_running">Please wait for the current computation to finish</string>
     <string name="toast_edit_multiple_error">You cannot edit multiple cells</string>
-    <string name="toast_info_disconnected">Server Disconnected</string>
+    <string name="toast_error_interact_timeout">Server Disconnected</string>
+    <string name="toast_error_websocket_disconnected">Unable to complete computation</string>
+    <string name="toast_error_timeout">Connection Timed Out</string>
     <string name="toast_playground_info">The playground allows you to quickly run and share computations</string>
 
     <!--Menu Strings-->

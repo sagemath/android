@@ -6,13 +6,26 @@ package org.sagemath.droid.events;
  * @author Nikhil Peter Raj
  */
 public class ServerDisconnectEvent {
-    private boolean isDisconnected;
 
-    public ServerDisconnectEvent(boolean isDisconnected) {
-        this.isDisconnected = isDisconnected;
+    public static enum DisconnectType {
+        DISCONNECT_TIMEOUT,
+        DISCONNECT_INTERACT,
+        DISCONNECT_SOCKET
     }
 
-    public boolean isDisconnected() {
-        return isDisconnected;
+    private DisconnectType disconnectType;
+
+    private boolean isInteractDisconnect;
+
+    public ServerDisconnectEvent(DisconnectType disconnectType) {
+        this.disconnectType = disconnectType;
+    }
+
+    public boolean isInteractDisconnect() {
+        return isInteractDisconnect;
+    }
+
+    public DisconnectType getDisconnectType() {
+        return disconnectType;
     }
 }

@@ -17,6 +17,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -38,13 +39,16 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 
+import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.DISCONNECT_INTERACT;
+import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.DISCONNECT_SOCKET;
+import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.DISCONNECT_TIMEOUT;
+
 /**
  * <p>The Headless Fragment which performs all computations</p>
  *
  * @author Nikhil Peter Raj
  */
 public class AsyncTaskFragment extends Fragment {
-
     private static final String TAG = "SageDroid:AsyncTaskFragment";
 
     public static interface ServerCallbacks {
@@ -239,6 +243,7 @@ public class AsyncTaskFragment extends Fragment {
         return String.format(template, interactID, name, value);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void onInteractUpdate(InteractUpdateEvent event) {
         if (event.getReply() != null) {
@@ -358,10 +363,17 @@ public class AsyncTaskFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                BusProvider.getInstance().post(new ServerDisconnectEvent(true));
+                                BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_INTERACT));
                             }
                         });
-                        Log.i(TAG, "Disconnect posted");
+                    } else {
+                        //Disconnect due to some other reason, inform user anyway
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_SOCKET));
+                            }
+                        });
                     }
                 }
             });
@@ -384,8 +396,10 @@ public class AsyncTaskFragment extends Fragment {
                 webSocketResponse = sendInitialRequest();
 
                 return Pair.create(permalinkResponse, webSocketResponse);
+            } catch (ConnectTimeoutException timeoutException) {
+                BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_TIMEOUT));
             } catch (Exception e) {
-                Log.e(TAG, "Error in sending request");
+                Log.e(TAG, "Could not send request: " + e.getMessage());
             }
             return null;
 
@@ -395,6 +409,5 @@ public class AsyncTaskFragment extends Fragment {
         protected void onPostExecute(Pair<BaseResponse, BaseResponse> responses) {
             parseResponses(responses);
         }
-
     }
 }
