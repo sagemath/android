@@ -399,7 +399,7 @@ public class SageActivity
                 });
                 break;
 
-            case DISCONNECT_SOCKET:
+            case DISCONNECT_HTTP_ERROR:
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -441,6 +441,9 @@ public class SageActivity
 
     @Override
     public void onBackPressed() {
+        if(taskFragment!=null){
+            taskFragment.closeWebSockets();
+        }
         super.onBackPressed();
     }
 

@@ -13,7 +13,7 @@ apply plugin: "com.android.application"
 //Shamelessly copied from philm
 def versionMajor = 1 //Major change external and internal
 def versionMinor = 0 //Major Internal Change
-def versionPatch = 0 //Moderate internal change
+def versionPatch = 1 //Moderate internal change
 def versionBuild = 3 //Quickfixes and random bugfixes
 
 android {
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 19
     }
 
@@ -76,9 +76,11 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.castorflex.smoothprogressbar:library:0.5.1'
     compile 'se.emilsjolander:stickylistheaders:2.5.0'
-    compile 'com.koushikdutta.async:androidasync:1.3.7'
     compile 'com.github.johnpersano:supertoasts:1.3.4@aar'
     compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.okio:okio:1.0.1'
+    compile 'org.java-websocket:Java-WebSocket:1.3.0'
     compile 'com.squareup:otto:1.3.5'
     compile 'nl.qbusict:cupboard:2.0.1'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.1'

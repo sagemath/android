@@ -10,7 +10,7 @@ public class ServerDisconnectEvent {
     public static enum DisconnectType {
         DISCONNECT_TIMEOUT,
         DISCONNECT_INTERACT,
-        DISCONNECT_SOCKET
+        DISCONNECT_HTTP_ERROR
     }
 
     private DisconnectType disconnectType;

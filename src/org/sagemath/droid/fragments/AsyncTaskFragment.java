@@ -6,23 +6,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.Pair;
+import android.webkit.CookieSyncManager;
 import com.google.gson.Gson;
-import com.koushikdutta.async.callback.CompletedCallback;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.WebSocket;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 import com.squareup.otto.Subscribe;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpParams;
 import org.sagemath.droid.constants.ExecutionState;
 import org.sagemath.droid.constants.StringConstants;
 import org.sagemath.droid.events.InteractUpdateEvent;
@@ -31,17 +23,19 @@ import org.sagemath.droid.events.ServerDisconnectEvent;
 import org.sagemath.droid.events.ShareAvailableEvent;
 import org.sagemath.droid.models.gson.*;
 import org.sagemath.droid.utils.BusProvider;
+import org.sagemath.droid.utils.CookieManagerProvider;
 import org.sagemath.droid.utils.UrlUtils;
+import org.sagemath.droid.websocket.WebSocketClient;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.CookieManager;
+import java.net.HttpCookie;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.DISCONNECT_INTERACT;
-import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.DISCONNECT_SOCKET;
-import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.DISCONNECT_TIMEOUT;
+import static org.sagemath.droid.events.ServerDisconnectEvent.DisconnectType.*;
 
 /**
  * <p>The Headless Fragment which performs all computations</p>
@@ -64,11 +58,12 @@ public class AsyncTaskFragment extends Fragment {
     private static final String VALUE_IDENTITY = "identity";
     private static final String VALUE_CODE = "code";
 
-    private HttpClient httpClient;
+    private OkHttpClient httpClient;
+    private CookieManager cookieManager;
     private Gson gson;
     private SageAsyncTask asyncTask;
 
-    private WebSocket shellSocket, ioPubSocket;
+    private WebSocketClient shellClient, ioPubClient;
 
     private String queryCode;
     private String kernelID;
@@ -114,16 +109,16 @@ public class AsyncTaskFragment extends Fragment {
     }
 
     private void init() {
-        HttpParams params = new BasicHttpParams();
-        params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        httpClient = new DefaultHttpClient(params);
+        httpClient = new OkHttpClient();
+        cookieManager = CookieManagerProvider.getInstance();
+        httpClient.setCookieHandler(cookieManager);
         gson = new Gson();
     }
 
     public void closeWebSockets() {
-        if (shellSocket != null && ioPubSocket != null) {
-            shellSocket.close();
-            ioPubSocket.close();
+        if (shellClient != null && ioPubClient != null) {
+            shellClient.disconnect();
+            ioPubClient.disconnect();
         }
         Log.i(TAG, "Sockets closed");
     }
@@ -149,29 +144,25 @@ public class AsyncTaskFragment extends Fragment {
 
         PermalinkResponse permalinkResponse;
 
-        HttpParams params = new BasicHttpParams();
-        params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        httpClient = new DefaultHttpClient(params);
-
         String url = UrlUtils.getPermalinkURL();
 
-        HttpPost permalinkPost = new HttpPost();
-        permalinkPost.setURI(URI.create(url));
-        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair(VALUE_CODE, request.getContent().getCode()));
-        permalinkPost.setEntity(new UrlEncodedFormEntity(postParameters));
+        RequestBody formBody = new FormEncodingBuilder()
+                .add(VALUE_CODE, request.getContent().getCode())
+                .build();
 
-        Log.i(TAG, "Permalink URL: " + url);
-        Log.i(TAG, "Permalink code: " + request.getContent().getCode());
+        com.squareup.okhttp.Request permalinkRequest = new com.squareup.okhttp.Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
 
-        HttpResponse httpResponse = httpClient.execute(permalinkPost);
-        InputStream inputStream = httpResponse.getEntity().getContent();
+        Response response = httpClient.newCall(permalinkRequest).execute();
 
-        permalinkResponse = gson.fromJson(new InputStreamReader(inputStream), PermalinkResponse.class);
+        if (!response.isSuccessful())
+            BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_HTTP_ERROR));
+
+        permalinkResponse = gson.fromJson(response.body().charStream(), PermalinkResponse.class);
 
         Log.i(TAG, "Permalink Response" + gson.toJson(permalinkResponse));
-
-        inputStream.close();
 
         return permalinkResponse;
     }
@@ -180,24 +171,28 @@ public class AsyncTaskFragment extends Fragment {
 
         WebSocketResponse webSocketResponse;
 
-        HttpPost httpPost = new HttpPost();
-
         String url = UrlUtils.getInitialKernelURL();
 
-        httpPost.setURI(URI.create(url));
+        RequestBody formBody = new FormEncodingBuilder()
+                .add(HEADER_ACCEPT_ENCODING, VALUE_IDENTITY)
+                .add(HEADER_TOS, "true")
+                .build();
 
-        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair(HEADER_ACCEPT_ENCODING, VALUE_IDENTITY));
-        postParameters.add(new BasicNameValuePair(HEADER_TOS, "true"));
-        httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
+        com.squareup.okhttp.Request initialRequest = new com.squareup.okhttp.Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
 
-        HttpResponse httpResponse = httpClient.execute(httpPost);
-        InputStream inputStream = httpResponse.getEntity().getContent();
+        Response response = httpClient.newCall(initialRequest).execute();
 
-        webSocketResponse = gson.fromJson(new InputStreamReader(inputStream), WebSocketResponse.class);
-        inputStream.close();
+        if(!response.isSuccessful())
+            BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_HTTP_ERROR));
+
+        webSocketResponse = gson.fromJson(response.body().charStream(), WebSocketResponse.class);
 
         Log.i(TAG, "Received Websocket Response: " + gson.toJson(webSocketResponse));
+
+        Log.i(TAG, "Cookies" + Arrays.asList(cookieManager.getCookieStore().getCookies()));
 
         return webSocketResponse;
 
@@ -257,7 +252,7 @@ public class AsyncTaskFragment extends Fragment {
             currentExecuteRequest = new Request(sageInput, event.getReply().getHeader().getSession());
 
             Log.i(TAG, "Sending Interact Update Request:" + gson.toJson(currentExecuteRequest));
-            shellSocket.send(gson.toJson(currentExecuteRequest));
+            shellClient.send(gson.toJson(currentExecuteRequest));
         }
     }
 
@@ -284,99 +279,127 @@ public class AsyncTaskFragment extends Fragment {
     }
 
     private void setupWebSockets(String shellURL, String ioPubURL
-            , AsyncHttpClient.WebSocketConnectCallback shellCallback
-            , AsyncHttpClient.WebSocketConnectCallback ioPubCallback) {
+            , WebSocketClient.Listener shellCallback
+            , WebSocketClient.Listener ioPubCallback) {
 
-        AsyncHttpClient.getDefaultInstance().websocket(shellURL, "ws", shellCallback);
-        AsyncHttpClient.getDefaultInstance().websocket(ioPubURL, "ws", ioPubCallback);
+        List<HttpCookie> cookies = cookieManager.getCookieStore().getCookies();
+        ArrayList<BasicNameValuePair> headers = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
+
+        //Add the cookies to websocket request
+
+        CookieSyncManager.createInstance(getActivity());
+        android.webkit.CookieManager manager = android.webkit.CookieManager.getInstance();
+
+        manager.setAcceptCookie(true);
+        manager.removeSessionCookie();
+        CookieSyncManager.getInstance().sync();
+
+        for (int i = 0; i < cookies.size(); i++) {
+
+            //Add the same cookies to WebKit so WebViews can use it
+            manager.setCookie(cookies.get(i).getDomain(),cookies.get(i).getName() + "=" + cookies.get(i).getValue());
+
+            if (i < cookies.size() - 1)
+                builder.append(cookies.get(i).getName() + "=" + cookies.get(i).getValue() + ";");
+            else
+                builder.append(cookies.get(i).getName() + "=" + cookies.get(i).getValue());
+        }
+
+        //Sync the Cookies for WebViews
+        CookieSyncManager.getInstance().sync();
+
+        Log.i(TAG, "Adding Cookies: " + builder.toString());
+        headers.add(new BasicNameValuePair("Cookie", builder.toString()));
+
+        shellClient = new WebSocketClient(URI.create(shellURL), shellCallback, headers);
+        ioPubClient = new WebSocketClient(URI.create(ioPubURL), ioPubCallback, headers);
+
+        shellClient.connect();
+        ioPubClient.connect();
     }
 
-    private AsyncHttpClient.WebSocketConnectCallback shellCallback = new AsyncHttpClient.WebSocketConnectCallback() {
+    private WebSocketClient.Listener shellCallback = new WebSocketClient.Listener() {
         @Override
-        public void onCompleted(Exception e, WebSocket webSocket) {
-            //Send the execute_request
-            if (e != null) {
-                Log.i(TAG, e.getMessage());
-            }
-            shellSocket = webSocket;
+        public void onConnect() {
             Log.i(TAG, "Shell Connected, Sending " + queryCode);
-            shellSocket.send(queryCode);
+            shellClient.send(queryCode);
+        }
 
-            shellSocket.setStringCallback(new WebSocket.StringCallback() {
-                @Override
-                public void onStringAvailable(String s) {
-                    Log.i(TAG, "Shell Received Message" + s);
-                }
-            });
+        @Override
+        public void onMessage(String message) {
+            Log.i(TAG, "Shell Received Message" + message);
+        }
 
-            shellSocket.setClosedCallback(new CompletedCallback() {
-                @Override
-                public void onCompleted(Exception e) {
-                    if (e != null)
-                        Log.i(TAG, "Shell Closed due to: " + e.getMessage());
-                    else
-                        Log.i(TAG, "Shell Closed");
-                }
-            });
+        @Override
+        public void onMessage(byte[] data) {
+
+        }
+
+        @Override
+        public void onDisconnect(int code, String reason) {
+            Log.i(TAG, "Shell Closed" + reason);
+        }
+
+        @Override
+        public void onError(Exception error) {
+            Log.i(TAG, "Shell Error: " + error.getMessage());
         }
     };
 
-    private AsyncHttpClient.WebSocketConnectCallback ioPubCallback = new AsyncHttpClient.WebSocketConnectCallback() {
+    private WebSocketClient.Listener ioPubCallback = new WebSocketClient.Listener() {
         @Override
-        public void onCompleted(Exception e, WebSocket webSocket) {
-            if (e != null) {
+        public void onConnect() {
+
+        }
+
+        @Override
+        public void onMessage(String message) {
+            try {
+                Log.i(TAG, "Got Shell Message: " + message);
+                final BaseReply reply = BaseReply.parse(message);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (reply != null)
+                            addReply(reply);
+                    }
+                });
+
+            } catch (Exception e) {
                 Log.i(TAG, e.getMessage());
+                e.printStackTrace();
             }
-            Log.i(TAG, "IOPub Connected");
+        }
 
-            ioPubSocket = webSocket;
-            ioPubSocket.setStringCallback(new WebSocket.StringCallback() {
-                @Override
-                public void onStringAvailable(String s) {
-                    try {
-                        final BaseReply reply = BaseReply.parse(s);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (reply != null)
-                                    addReply(reply);
-                            }
-                        });
 
-                    } catch (Exception e) {
-                        Log.i(TAG, e.getMessage());
-                        e.printStackTrace();
+        @Override
+        public void onMessage(byte[] data) {
+
+        }
+
+        @Override
+        public void onDisconnect(int code, String reason) {
+
+            //If Activity does not exist, i.e Fragment is detached, early breakout
+            if(getActivity()==null)
+                return;
+
+            if (isInteractInput) {
+                Log.i(TAG, "Executing Disconnect Callback");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_INTERACT));
                     }
-                }
-            });
-            ioPubSocket.setClosedCallback(new CompletedCallback() {
-                @Override
-                public void onCompleted(Exception e) {
-                    if (e != null)
-                        Log.i(TAG, "IOPub Closed due to:" + e.getMessage());
-                    else
-                        Log.i(TAG, "IOPub Closed ");
+                });
+            }
 
-                    //If input is interactive, tell the user when the websocket disconnects.
-                    if (isInteractInput) {
-                        Log.i(TAG, "Executing Disconnect Callback");
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_INTERACT));
-                            }
-                        });
-                    } else {
-                        //Disconnect due to some other reason, inform user anyway
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                BusProvider.getInstance().post(new ServerDisconnectEvent(DISCONNECT_SOCKET));
-                            }
-                        });
-                    }
-                }
-            });
+        }
+
+        @Override
+        public void onError(Exception error) {
+            Log.i(TAG, "IOPub Error:" + error);
         }
     };
 

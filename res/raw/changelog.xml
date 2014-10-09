@@ -2,6 +2,11 @@
 
 <changelog bulletedList="true">
 
+    <changelogversion versionName="1.0.1" changeDate="Oct 9,2014">
+        <changelogimprovement>Better error handling</changelogimprovement>
+        <changelogbug>Fix WebSocket connection issues</changelogbug>
+    </changelogversion>
+    
     <changelogversion versionName="1.0.0" changeDate="Aug 17,2014">
         <changelogimprovement>Better Tablet Layouts</changelogimprovement>
         <changelogbug>Fix crash on rotation in tablets</changelogbug>
