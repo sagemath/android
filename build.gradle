@@ -17,14 +17,14 @@ def versionPatch = 1 //Moderate internal change
 def versionBuild = 3 //Quickfixes and random bugfixes
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion '21.0.2'
 
     defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
 
     compileOptions {
