@@ -95,15 +95,20 @@ public class CellActivity
         }
     }
 
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return isLandscape();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        boolean superMenu = super.onCreateOptionsMenu(menu);
         if (isLandscape()) {
             //Let activity handle the addition via Popup
             getMenuInflater().inflate(R.menu.menu_cell_landscape, menu);
-            return superMenu;
+            return true;
         } else {
-            return superMenu;
+            return false;
         }
     }
 
