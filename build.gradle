@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.14.1'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
@@ -18,7 +18,7 @@ def versionBuild = 3 //Quickfixes and random bugfixes
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.0"
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
@@ -71,12 +71,11 @@ android {
 
 repositories {
     mavenCentral()
-    maven { url 'http://repo1.maven.org/maven2' }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.0'
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(":libs:html-textview")
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.nineoldandroids:library:2.4.0'
