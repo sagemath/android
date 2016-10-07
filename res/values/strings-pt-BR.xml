@@ -15,7 +15,7 @@
     <string name="insert_group_hint">Escolher/Criar um Grupo</string>
     <string name="insert_input_label">Entrada</string>
     <string name="insert_input_hint">Digite o seu cálculo.</string>
-    <string name="dialog_confirm_discard">Quer realmente descartar essa célula?</string>
+    <string name="dialog_confirm_discard">Quer realmente descartar esta célula?</string>
 
     <!--General Strings-->
     <string name="ok">OK</string>
@@ -36,8 +36,8 @@
     <string name="dialog_edit_cell_single_title">Editar Célula</string>
     <string name="dialog_edit_cell_multiple_title">Editar Células</string>
     <string name="dialog_new_insert_title">Criar uma nova inserção</string>
-    <string name="dialog_edit_insert_title">Editar essa inserção</string>
-    <string name="dialog_delete_insert_title">Deletar Inserção(ões) ?</string>
+    <string name="dialog_edit_insert_title">Editar esta inserção</string>
+    <string name="dialog_delete_insert_title">Excluir Inserção(ões) ?</string>
     <string name="delete_dialog_title">Excluir Célula?</string>
     <string name="group_new_dialog_title">Criar Grupo</string>
     <string name="group_edit_dialog_title">Editar Group</string>
@@ -83,18 +83,18 @@
     <string name="menu_run">Executar</string>
     <string name="menu_save">Salvar Inserção Atual</string>
     <string name="menu_toggle_favorite">Alternar Favorito</string>
-    <string name="menu_delete_selected">Deletar Itens Selecionados</string>
-    <string name="menu_edit_cell">Editar essa Célula</string>
-    <string name="menu_edit_insert">Editar essa Inserção</string>
-    <string name="menu_delete_insert">Excluir essa Inserção</string>
+    <string name="menu_delete_selected">Excluir Itens Selecionados</string>
+    <string name="menu_edit_cell">Editar esta Célula</string>
+    <string name="menu_edit_insert">Editar esta Inserção</string>
+    <string name="menu_delete_insert">Excluir esta Inserção</string>
     <string name="menu_insert_open">Abrir Menu de Inserções</string>
     <string name="menu_view_inserts">Selecionar uma Inserção</string>
     <string name="menu_add_insert">Adicionar uma nova Inserção</string>
     <string name="menu_manage_inserts">Gerenciar Inserções</string>
     <string name="menu_search_inserts">Procurar Inserções</string>
     <string name="menu_settings">Configurações</string>
-    <string name="menu_group_edit">Editar esse Grupo</string>
-    <string name="menu_group_delete">Excluir esse Grupo p</string>
+    <string name="menu_group_edit">Editar este Grupo</string>
+    <string name="menu_group_delete">Excluir este Grupo p</string>
     <string name="menu_help">Ajuda</string>
     <string name="menu_add_group_or_cell">Adicionar Grupo/Célula</string>
     <string name="menu_new_group">Adicionar Grupo Novo</string>
@@ -109,16 +109,16 @@
 
     <!--Plurals-->
     <plurals name="delete_n_inserts">
-        <item quantity="one">Quer realmente excluir essa inserção?</item>
-        <item quantity="other">Quer realmente excluir essas %d inserções?</item>
+        <item quantity="one">Quer realmente excluir esta inserção?</item>
+        <item quantity="other">Quer realmente excluir estas %d inserções?</item>
     </plurals>
     <plurals name="delete_n_cells">
-        <item quantity="one">Quer realmente excluir essa célula?</item>
-        <item quantity="other">Quer realmente excluir essas %d células?</item>
+        <item quantity="one">Quer realmente excluir esta célula?</item>
+        <item quantity="other">Quer realmente excluir estas %d células?</item>
     </plurals>
 
     <!--Warning Strings-->
-    <string name="delete_group_warning">Quer realmente excluir esse grupo e todas as células associadas à ele?\n\n
+    <string name="delete_group_warning">Quer realmente excluir este grupo e todas as células associadas à ele?\n\n
         <b>WARNING!</b>Isso não pode ser desfeito!
     </string>
     <string name="delete_warning">
