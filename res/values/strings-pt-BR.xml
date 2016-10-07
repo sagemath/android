@@ -77,7 +77,7 @@
     <string name="toast_error_interact_timeout">Servidor Desconectado</string>
     <string name="toast_error_websocket_disconnected">Impossível completar cálculo</string>
     <string name="toast_error_timeout">Tempo de Conexão Esgotado</string>
-    <string name="toast_playground_info">O playground permite você a rapidamente executar e compartilhar cálculos</string>
+    <string name="toast_playground_info">O playground permite que você rapidamente execute e compartilhe cálculos</string>
 
     <!--Menu Strings-->
     <string name="menu_run">Executar</string>
