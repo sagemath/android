@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--App Related-->
+    <string name="hello">Olá mundo, atividade Sage!</string>
+    <string name="app_name">Sage</string>
+    <string name="app_name_long">Sage Para Android</string>
+
+    <!--Hints & Labels-->
+    <string name="history">Histórico</string>
+    <string name="insert_title_hint">Nome da Célula</string>
+    <string name="insert_desc_label">Descrição da Célula</string>
+    <string name="insert_desc_hint">Descrição da Célula</string>
+    <string name="insert_group_label">Grupo</string>
+    <string name="insert_group_hint">Escolher/Criar um Grupo</string>
+    <string name="insert_input_label">Entrada</string>
+    <string name="insert_input_hint">Coloque o seu cálculo.</string>
+    <string name="dialog_confirm_discard">Quer realmente descartar essa célula?</string>
+
+    <!--General Strings-->
+    <string name="ok">OK</string>
+    <string name="discard">Descartar</string>
+    <string name="cancel">Cancelar</string>
+
+    <!--Group Strings-->
+    <string name="group_empty_text">Nenhuma Célula salva</string>
+    <string name="group_misc">Miscelânea</string>
+    <string name="group_playground">Playground</string>
+
+    <!--Title Strings-->
+    <string name="main_menu_title">Menu Principal</string>
+    <string name="activity_help_title">Ajuda</string>
+    <string name="activity_settings_title">Configurações</string>
+    <string name="activity_manage_inserts_title">Gerenciar Inserções</string>
+    <string name="dialog_new_group_title">Criar um novo Grupo</string>
+    <string name="dialog_edit_cell_single_title">Editar Célula</string>
+    <string name="dialog_edit_cell_multiple_title">Editar Células</string>
+    <string name="dialog_new_insert_title">Criar uma nova inserção</string>
+    <string name="dialog_edit_insert_title">Editar essa inserção</string>
+    <string name="dialog_delete_insert_title">Deletar Inserção(ões) ?</string>
+    <string name="delete_dialog_title">Deletar Célula?</string>
+    <string name="group_new_dialog_title">Criar Grupo</string>
+    <string name="group_edit_dialog_title">Editar Group</string>
+    <string name="group_delete_title">Delete Grupo?</string>
+    <string name="dialog_share_title">Escolher uma ação…</string>
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_changelog_title">REGISTRO DE ALTERAÇÕES</string>
+    <string name="help_about_title">SOBRE</string>
+    <string name="preference_dialog_title">Escolher tamanho da fonte</string>
+    <string name="pref_font_title">CodeView tamanho da fonte</string>
+
+    <!--Dialog Strings-->
+    <string name="dialog_new_group_text_hint">Criar um Grupo</string>
+    <string name="dialog_info_button_contentDescription">Um nome vazio irá adicionar a célula no grupo de Miscelânea
+    </string>
+    <string name="dialog_edit_cell_multiple_group_hint">Editar nome(s) do(s) Grupo(s)</string>
+    <string name="dialog_new_cell_title">Criar uma nova Célula</string>
+    <string name="dialog_name_hint">Nome da Célula</string>
+    <string name="dialog_group_hint">Escolher/Criar um Grupo</string>
+    <string name="dialog_description_hint">Descrição da Célula</string>
+    <string name="dialog_insert_title">Inserções Atuais</string>
+    <string name="dialog_manage_insert_checkbox_prompt">Escolher Favorito?</string>
+    <string name="dialog_manage_insert_description_hint">Inserir Descrição</string>
+    <string name="dialog_manage_insert_text_hint">Inserir Texto</string>
+    <string name="group_dialog_hint">Nome do Grupo</string>
+    <string name="choose_group_text">ESCOLHER UM GRUPO</string>
+
+    <!--Toast Strings-->
+    <string name="toast_network_error">Uma conexão com a internet é necessária para executar!</string>
+    <string name="toast_cell_saved">Entrada salva com sucesso</string>
+    <string name="toast_share_unavailable">Você deve executar uma computação primeiro!</string>
+    <string name="toast_link_copied">Link copiado para Área de Tranferência</string>
+    <string name="toast_image_generating">Por favor espere, Gerando Imagem…</string>
+    <string name="toast_external_storage_unmounted">Armazenamento Externo não encontrado,por favor, tente de novo</string>
+    <string name="toast_share_server_running">Por favor espere para a computação atual terminar </string>
+    <string name="toast_edit_multiple_error">Você não pode editar múltiplas células</string>
+    <string name="toast_error_interact_timeout">Servidor Desconectado</string>
+    <string name="toast_error_websocket_disconnected">Impossível completar computação</string>
+    <string name="toast_error_timeout">Tempo de Conexão Esgotado</string>
+    <string name="toast_playground_info">O playground permite você a rapidamente executar e compartilhar computações</string>
+
+    <!--Menu Strings-->
+    <string name="menu_run">Executar</string>
+    <string name="menu_save">Salvar Inserção Atual</string>
+    <string name="menu_toggle_favorite">Alternar Favorito</string>
+    <string name="menu_delete_selected">Deletar Itens Selecionados</string>
+    <string name="menu_edit_cell">Editar essa Célula</string>
+    <string name="menu_edit_insert">Editar essa Inserção</string>
+    <string name="menu_delete_insert">Deletar essa Inserção</string>
+    <string name="menu_insert_open">Abrir Menu de Inserções</string>
+    <string name="menu_view_inserts">Selecionar uma Inserção</string>
+    <string name="menu_add_insert">Adicionar uma nova Inserção</string>
+    <string name="menu_manage_inserts">Gerenciar Inserções</string>
+    <string name="menu_search_inserts">Procurar Inserções</string>
+    <string name="menu_settings">Configurações</string>
+    <string name="menu_group_edit">Editar esse Grupo</string>
+    <string name="menu_group_delete">Deletar esse Grupo p</string>
+    <string name="menu_help">Ajuda</string>
+    <string name="menu_add_group_or_cell">Adicionar Grupo/Célula</string>
+    <string name="menu_new_group">Adicionar Grupo Novo</string>
+    <string name="menu_new_cell">Adicionar Célula Nova</string>
+
+    <!-- Do not change this, repo link, will be same in any language-->
+    <string name="git_link_text"><![CDATA[<a href="https://github.com/sagemath/android">GitHub Repo</a>]]></string>
+
+    <string name="manage_inserts_empty_text">Você não tem Inserções salvas</string>
+    <string name="cell_list_empty_text">Esse grupo não tem células.</string>
+    <string name="cell_group_empty_text">Você não tem grupos.</string>
+
+    <!--Plurals-->
+    <plurals name="delete_n_inserts">
+        <item quantity="one">Quer realmente deletar essa inserção?</item>
+        <item quantity="other">Quer realmente deletar essas %d inserções?</item>
+    </plurals>
+    <plurals name="delete_n_cells">
+        <item quantity="one">Quer realmente deletar essa célula?</item>
+        <item quantity="other">Quer realmente deletar essas %d células?</item>
+    </plurals>
+
+    <!--Warning Strings-->
+    <string name="delete_group_warning">Quer realmente deletar esse grupo e todas as células associadas à ele?\n\n
+        <b>WARNING!</b>Isso não pode ser desfeito!
+    </string>
+    <string name="delete_warning">
+        <b>WARNING!</b>
+        Isso não pode ser desfeito!
+    </string>
+
+    <!--Changelog Lib Strings-->
+    <string name="changelog_row_prefix_bug">[b]Resolver Bug:[/b]</string>
+    <string name="changelog_row_prefix_improvement">[b]Novo!:[/b]</string>
+
+    <!--FontAwesome Strings-->
+    <string name="fa_expand">&#xf065;</string>
+    <string name="fa_collapse">&#xf066;</string>
+    <string name="fa_star">&#xf005;</string>
+    <string name="fa_star_outline">&#xf006;</string>
+    <string name="fa_github">&#xf09b;</string>
+
+    <!--Misc-->
+    <string name="header_fav_text">FAVORITOS</string>
+    <string name="pref_font_summary">Alterar tamanho da fonte do editor de código</string>
+    <string name="cell_query_hint">Procurar Células</string>
+    <string name="insert_query_hint">Procurar Inserções</string>
+
+</resources>
