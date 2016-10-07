@@ -72,7 +72,7 @@
     <string name="toast_link_copied">Link copiado para Área de Tranferência</string>
     <string name="toast_image_generating">Por favor espere, Gerando Imagem…</string>
     <string name="toast_external_storage_unmounted">Armazenamento Externo não encontrado,por favor, tente de novo</string>
-    <string name="toast_share_server_running">Por favor espere para o cálculo atual terminar</string>
+    <string name="toast_share_server_running">Por favor espere o cálculo atual terminar</string>
     <string name="toast_edit_multiple_error">Você não pode editar múltiplas células</string>
     <string name="toast_error_interact_timeout">Servidor Desconectado</string>
     <string name="toast_error_websocket_disconnected">Impossível completar cálculo</string>
